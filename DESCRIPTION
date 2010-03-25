@@ -1,0 +1,13 @@
+Package: MotIV
+Type: Package
+Title: Motif Identification and Validation
+Version: 0.99.0
+Date: 2010-02-09
+Author: Eloi Mercier, Raphael Gottardo
+Maintainer: Eloi Mercier <eloi.mercier@ircm.qc.ca>, Raphael Gottardo <raphael.gottardo@ircm.qc.ca>
+Imports: graphics, grid, IRanges, lattice, methods, rGADEM, stats, utils
+Suggests: rtracklayer
+Description: This package makes use of STAMP for comparing a set of motifs to a given database (e.g. JASPAR). It can also be used to visualize motifs, motif distributions, modules and filter motifs.
+License: GPL 2
+biocViews:  Microarray, ChIPchip, ChIPSeq, GenomicSequence
+Packaged: 2010-03-15 19:45:13 UTC; merciee

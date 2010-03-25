@@ -1,0 +1,446 @@
+%\VignetteIndexEntry{The MotIV users guide}
+%\VignetteDepends{MotIV}
+%\VignetteKeywords{Preprocessing}
+%\VignettePackage{MotIV}
+\documentclass[a4paper]{article}
+
+\usepackage{a4wide}
+\usepackage[latin1]{inputenc}
+\usepackage{verbatim}
+\usepackage[T1]{fontenc} 
+\usepackage{color}
+\usepackage{pdfcolmk}
+\usepackage{Sweave}
+\usepackage{hyperref}
+\usepackage{url}
+\bibliographystyle{plainnat}
+\usepackage[normalem]{ulem}
+\usepackage{graphicx}
+\newcommand{\scscst}{\scriptscriptstyle}
+\newcommand{\scst}{\scriptstyle}
+
+
+\title{Motif Identification and Validation\\MotIV}
+\author{Eloi Mercier\footnote{eloi.mercier@ircm.qc.ca} and Raphael Gottardo\footnote{raphael.gottardo@ircm.qc.ca}}
+
+
+\begin{document}
+
+\DefineVerbatimEnvironment{Sinput}{Verbatim}{formatcom = {\color[rgb]{0, 0, 0.56}}}
+\DefineVerbatimEnvironment{Soutput}{Verbatim}{formatcom = {\color[rgb]{0.56, 0, 0}}}
+
+\setkeys{Gin}{width=1\textwidth}
+
+
+\maketitle
+
+\tableofcontents
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\newpage
+
+\part{Licensing}
+
+\verb@MotIV@ is a free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation; either version 2 of the License, or (at your option) any later version.
+\verb@Motiv@ is based on the C++ functions of the STAMP algorithm \cite{STAMP} and it also use a modified version of the SeqLogo package \cite{SeqLogo}. Please cite the following paper if you use \verb@MotIV@ for publication :
+\begin{center}
+S. Mahony, P.V. Benos "STAMP: a web tool for exploring DNA-binding motif similarities." Nucl Acids Res, (2007) 35:W253-258
+\end{center}
+
+\part{Introduction}
+
+One of the most challenging part of the molecular biology is to understand the genetic regulation mechanisms. That's why is it important to work on the identification of the regulatory sequences such as transcription factors. It's in general short sequences located upstream the transcription initiation factor and recruiting proteic complex. Furthermore, this factors are themselves regulate by other proteic complex forming 'module' and adding a new level of complexity to the understanding of the genetic regulation system \cite{Banerjee}. This modules still are hard to detect because of the complexity of the current identification algorithms.
+\newline
+
+\verb@MotIV@ have been developed to facilitate the identification and the validation of transcription factors. The \verb@MotIV@ package contains a motifs matches algorithm which is the primary tool of the software as well as visualizing results functions. The \verb@MotIV@ package is fully compatible to exploit the \verb@rGADEM@ package results.
+\newline
+
+Therefore, \verb@MotIV@ can take different input as well as object of type \verb@gadem@ (provided by \verb@rGADEM@) or a file containing PWMs in standard GADEM output or in Transfac format. We strongly recommend to use \verb@rGADEM@ object because it offers more information needed by some functions.
+
+\part{Quick View}
+
+<<options,echo=F>>=
+options(prompt = " ", continue = " ", width = 85)
+@
+
+\subsection{Load MotIV package}
+<<loading MotIV>>=
+library(MotIV)
+path <- system.file("extdata/",package="MotIV")
+@
+
+\subsection{Load the database}
+<<Load the database>>=
+jaspar <- readPWMfile(paste(path,"jasparDB2009.txt",sep=""))
+@
+
+\subsection{Load database scores}
+<<Load database scores>>=
+jaspar.scores <- readDBScores(paste(path,"jaspar2009_PCC_SWU.scores",sep=""))
+@
+
+\subsection{Read input PWM}
+<<Read input PWM>>=
+sample.motifs <- readPWMfile(paste(path,"sample.motifs",sep=""))
+@
+
+\subsection{Analysis}
+<<start the analysis, eval=T>>=
+example.jaspar <- motifMatch(inputPWM=sample.motifs,align="SWU",cc="PCC",database=jaspar,DBscores=jaspar.scores,top=5)
+@
+
+\subsection{View results}
+<<Viewresults, fig=F, eval=T>>=
+summary(example.jaspar)
+viewAlignments(example.jaspar)[[1]]
+plot(example.jaspar,ncol=2,top=5)
+@
+
+\subsection{Apply filters}
+<<Viewresults, fig=F, eval=T>>=
+EL.filter <- setFilter(name="EL")
+SP.filter <- setFilter(name="SP")
+EL.SP.filter <- EL.filter | SP.filter
+example.filter <- filter(example.jaspar,EL.SP.filter, exact=F)
+summary(example.filter)
+plot(example.filter,ncol=2,top=5)
+@
+
+
+\part{Step-by-step Guide}
+
+\section{MotIV package}
+To load the \verb@MotIV@ package, you should use this command line:
+<<loading MotIV package, eval=F>>=
+library(MotIV) 
+@
+
+
+\section{Database}
+First step is to load the database that you will use into the R environment. It could be a general database (JASPAR, TRANSFAC,...) \cite{JASPAR} \cite{TRANSFAC} or you can create your own one. Only Transfac file format are supported currently but other formats will be available soon.
+
+To load the database, use the \verb@readPWMfile@ function :
+<<load DB>>=
+ jaspar <- readPWMfile(paste(path,"jasparDB2009.txt",sep=""))
+@
+
+It returns a list of matrix corresponding to the database PWMs.
+For more information about the Transfac file format, please refer to \href{http://www.benoslab.pitt.edu/stamp/help.html}{http://www.benoslab.pitt.edu/stamp/help.html}.
+
+\section{Database Scores}
+A database scores file is needed to compute E-value. Scores depend of the metric name and the alignment type given. Scores reflect the bias of the database used. 
+To create a new database scores file, you should use the \verb@generateDBScores@ function. This function need a PWMs list as input, a metric, an alignment type and the number of random PWM to generate (see \verb@?generateDBScores@ for details). You have to use the same parameters for the entire analysis.
+
+<<generate scores, eval=F>>=
+jaspar.scores <- generateDBScores(inputDB=jaspar,cc="PCC",align="SWU",nRand=1000)
+@
+
+WARNING : Because of each matrix is compared to each other, computing time is exponential. You should be aware of this fact before provided a high nRand. 5000 is a good time/accurate rate choice. ($\sim$30min)
+
+To avoid wasted time, you can save the database score calculated for next similar analysis by typing :
+
+<<write scores, eval=F>>=
+writeDBScores(jaspar.scores,paste(path,"jaspar_PCC_SWU.scores",sep=""))
+@
+ 
+For the following analysis, you will need to load the scores file by typing :
+<<read scores, eval=T>>=
+jaspar.scores <- readDBScores(paste(path,"jaspar2009_PCC_SWU.scores",sep=""))
+@
+Remember that scores are associated to a specific database, metric and alignment type.
+
+\section{Input Motifs}
+Now that you have construct the database and the database scores, you have to load the PWM motifs you want to analyze. There are different ways to do it depending of the kind of data you have.
+
+\subsection{From a gadem object}
+\verb@MotIV@ software is designed to extend the features of the \verb@rGADEM@ package. Thus, you can use the object returned by a previous analysis with the \verb@rGADEM@ package. You need to load the \verb@gadem@ object load in your current R session. Load the motifs PWMs contained in an object called "gadem" by typing :
+<<load gadem object, eval=T>>=
+load(paste(system.file("data/",package="MotIV"),"gadem_STAT1_MACS.rda",sep=""))
+motifs <- getGademPWM(gadem)
+@
+
+\subsection{From a PWM file}
+If you don't have a \verb@gadem@ object, you probably have a file containing PWM. \verb@MotIV@ currently supports two PWMs formats.
+
+\subsubsection{GADEM type}
+A file containing PWMs as provide by the standard output of the GADEM software. Usually named 'observedPWMs.txt'. In this case, you should use the \verb@readGademPWMFile@ on the file containing the motifs PWMs.
+
+<<load gadem file, eval=T>>=
+motifs.gadem <- readGademPWMFile(paste(path,"observedPWMs.txt",sep=""))
+@
+
+\subsubsection{TRANSFAC type}
+\verb@MotIV@ also supported Transfac format file to load PWMs. For more information about the Transfac file format, please refer to \href{http://www.benoslab.pitt.edu/stamp/help.html}{http://www.benoslab.pitt.edu/stamp/help.html}. If your data are in this format, proceed like in \verb@IV.2@ :
+
+<<load transfac file, eval=T>>=
+motifs.sample <- readPWMfile(paste(path,"sample.motifs",sep=""))
+@
+
+\subsection{Trim Input}
+You can trim the edges of the input PWMs to improve \href{http://en.wikipedia.org/wiki/Position-specific_scoring_matrix#Information_content_of_a_PWM}{the information content of your PWM}. It could improve the results by removing the noise and generating better alignments. The default threshold is an information content of 1.
+
+<<trim input,eval=T>>=
+motifs.trimed <- trimPWMedge(motifs, threshold=1)
+@
+
+\section{MotIV Analysis}
+At this step, you should have all what you need to start the motifs matches analysis : input motifs, a database and the associated database scores file. To use the \verb@motifMatch@ function, be sure to provided the same alignment method and metric name used to the calculation of the database scores. The argument \verb@top@ indicates the number of motifs matches to find. To run the analysis, type : 
+
+<<motiv analysis>>=
+stat1.analysis.jaspar <- motifMatch(inputPWM=motifs,align="SWU",cc="PCC",database=jaspar,DBscores=jaspar.scores,top=5)
+@
+
+This function will return an object of type \verb@motiv@ needed for next functions.
+Let's have a look to the content :
+
+
+\subsection{Summary}
+You can have a quick view to the content of your results. By typing :
+
+<<motiv summary, eval=T>>=
+summary(stat1.analysis.jaspar )
+@
+
+you obtain the number of input motifs, their names, the number of matches per motif, the metric name and the alignment type used. The \verb@summary@ also offers the counting of identified transcription factors.
+
+\section{Filters}
+
+This functions are used to apply filters on a \verb@motiv@ object.
+
+\subsection{SetFilter}
+
+\verb@setFilter@ is used to define a filter. You can indicate the name(s) of the motifs to select, the TF name contained in the alignment, a maximum e-value, length and number of gap associated. The \verb@top@ argument defined the depth of the filter (i.e. the \verb@top@ first motif on witch the conditions should be applied). You should provided at least one argument.
+
+<<setFilter, eval=T>>=
+f.statx<- setFilter(name="", tfname="[Ss][Tt][Aa][Tt]", top=3, evalueMax=10^-5)
+f.ap1 <- setFilter (tfname="AP1", top=3)
+@
+
+You will obtain an object of type \verb@filter@ used in the next described functions.
+. Use the \verb@summary@ function to have a view on the content.
+
+\subsection{Operators \& and $|$}
+
+You can decide to combine different filters in order to define more complex filters. The \& operator indicates that all filters conditions should be validated. To the opposite, with the $|$ operator, one filter satisfied is enough to select the motif.
+
+<<operators, eval=TRUE>>=
+f.statx.ap1 <- f.statx | f.ap1 
+@ 
+
+You also can combine more than two filters.
+
+\subsection{Filter}
+
+The \verb@filter@ function selects motifs that correspond to the set of filters. If \verb@exact=TRUE@, search only for perfect name match.
+
+<<filter,eval=T>>=
+stat1.filter <- filter(stat1.analysis.jaspar, f.statx.ap1, exact=FALSE, verbose=TRUE)
+@
+
+It returns a \verb@motiv@ object with the selected motifs only. 
+
+\subsection{Split}
+
+\verb@split@ is almost equivalent to the \verb@filter@ function. \verb@split@ is an easy way to select motifs according a list of \verb@filters@.
+It will select all motifs that satisfy each \verb@filter@ and returns a list of \verb@motiv@ objects. If \verb@drop=FALSE@, the non-selected motifs will also be returned.
+
+<<split,eval=T>>=
+stat1.split <- split(stat1.analysis.jaspar, c(f.statx, f.ap1) , drop=FALSE, exact=FALSE, verbose=TRUE)
+@
+
+\subsection{Combine}
+
+The \verb@combine@ function is quite a bit different than the two previous functions. \verb@combine@ is used to consider many motifs as a single motif.
+For each \verb@filter@ of the list passed in argument, the \verb@combine@ function 'virtually' regroups motifs that satisfied the \verb@filters@ conditions.
+
+<<combine, eval=T>>=
+stat1.filter.combine <- combine(stat1.filter, c(f.statx, f.ap1), exact=FALSE, name=c("STATx", "AP1"), verbose=TRUE)
+@
+
+You should be careful that a same motif is not combined many times.
+Changes are not visible until \verb@group@ is not set on \verb@TRUE@.
+
+\section{Results}
+
+\subsection{Logo}
+\verb@Plot@ is the main function to visualize the results. This function provides a summary of each identified transcription factors associated to the input motifs, the sequence logo, the name of the motif match and the p-value of the alignment. The \verb@top@ argument allow you to choose the number of motif matches to print. The \verb@rev@ argument indicates if the logo should be plot according the motif strand or only print original TF logo.
+
+\begin{center}
+<<motiv_plotMotiv, fig=T, eval=T, width=10, height=9>>=
+plot(stat1.filter.combine ,ncol=2,top=5, rev=FALSE, main="Logo", bysim=TRUE)
+@
+\end{center}
+
+
+\subsection{Alignment}
+An other way to visualize the quality of the results is to look the alignments. E-value give an estimation of the match. You can explore further with :
+
+<<motiv alignment, eval=T>>=
+stat1.alignment <- viewAlignments(stat1.filter.combine )
+print(stat1.alignment[[1]] )
+@
+
+\subsection{Distribution}
+As this function need an object of type \verb@gadem@, you can use it only with a \verb@rGADEM@ analysis. The \verb@plot@ function  offers to visualize the repartition of TF found. You should provided a \verb@MotIV@ and a \verb@gadem@ object and a valid layout. If you don't specify a sufficient layout, some motifs may be not plot (ie. specify a 2,2 layout will not plot the 5th motifs and more of the result).
+
+\begin{center}
+<<motiv_plotDistribution, fig=T, eval=T, width=10, height=9>>=
+plot(stat1.filter.combine ,gadem,ncol=2, type="distribution", correction=TRUE, group=FALSE, bysim=TRUE, strand=FALSE, sort=TRUE, main="Distribution of STAT1")
+@
+\end{center}
+
+This function could help to distinguish between real motifs and background noise. Because of in theory peaks are center around motifs, distribution should be a gaussian. To the opposite, random motifs have a relative uniform distribution.
+
+\subsection{Distance}
+As this function need an object of type \verb@gadem@, you can use it only with a \verb@rGADEM@ object. Use the \verb@plot@ function with type='distance' to visualized the distance between motifs. It also provides a vern diagram showing the number of single motifs as well as the number of motif present on the same peak. This function take a \verb@MotIV@ and a \verb@gadem@ object as arguments.
+
+\begin{center}
+<<motiv_plotDistance, fig=T, eval=T, width=10, height=7>>=
+plot(stat1.filter.combine ,gadem,type="distance", correction=TRUE, group=TRUE, bysim=TRUE, main="Distance between STAT1 and AP-1", strand=FALSE, method=3, xlim=c(-100,100), bw=8)
+@
+\end{center}
+
+This function is an useful way to discover motifs co-occurrences. Studies showed that distance between two co-occurent motifs are relatively constant. Thus, a bimodal curve around the peak center could indicate a potential co-occurrence.
+
+
+\section{RangedData}
+
+\subsection{Ranged Data}
+
+A \verb@rangedData@ is an object created by the \verb@IRanges@ library \cite{IRanges}. It's a really flexible object.
+To create a \verb@rangedData@ object, use the \verb@exportAsRangedData@ function on a \verb@motiv@ and \verb@rGADEM@ object.
+
+<<rangedData, eval=T>>=
+stat1.rd <- exportAsRangedData(stat1.filter.combine["STATx"], gadem)
+ap1.rd <- exportAsRangedData(stat1.filter.combine["STATx"], gadem)
+@
+
+\subsection{Modules}
+
+If you are interesting by modules discovery, you should use the \verb@calculateModules@ function. This function use two \verb@RangedData@ objects containing the motifs coordinates and computes the distances between them. Then, it returns the modules composed of two close motifs.
+
+<<rangedData, eval=T>>=
+	modules.stat1.ap1 <- calculateModules(stat1.rd, ap1.rd, range=250, merge=TRUE)
+@
+
+
+\section{Saving and Exporting Results}
+
+\subsection{motiv object}
+The best way to save your results is to use the \verb@save@ function. You should type :
+
+<<motiv save, eval=T>>=
+save(stat1.filter.combine, file="stat1_analysis.rda")
+@
+
+It will save the \verb@MotIV@ object into a file at your working directory.
+To load previous saved analysis, use the \verb@load@ function on the corresponding file.
+
+\subsection{Into Transfac Type Files}
+If you prefer export your results in a more readable format, use the \verb@exportAsTransfacFile@ function. It will write two files. The first file contains alignments for each input motifs. The second one references the entire PWMs corresponding to every identified transcription factors in Transfac format.
+
+<<motiv exportAsTransfacFile, eval=F>>=
+exportAsTransfacFile(stat1.filter.combine, file="stat1_analysis")
+@
+
+\subsection{Into a BED File}
+
+Once you created a \verb@rangedData@ object, you might want to write a BED file to save your data.
+To do it, simply use the \verb@rtracklayer@ export function.
+
+<<bedfile, eval=F>>=
+library(rtracklayer)
+export(stat1.rd, file="STAT1.bed")
+@
+
+\section{Miscellaneous}
+
+\subsection{viewMotifs}
+
+The \verb@viewMotifs@ function returns the list of all TF in a \verb@motiv@ object.
+
+<<viewMotifs, eval=T>>=
+viewMotifs(stat1.filter.combine, n=5)
+@
+
+\subsection{names}
+
+\verb@names@ returns the names of the motifs contained in a \verb@motiv@ object.
+
+<<names, eval=T>>=
+names(stat1.filter.combine)
+@
+
+\subsection{similar}
+
+The \verb@similar@ function shows the names of the similar motifs in a \verb@motiv@ object.
+
+<<similar, eval=T>>=
+similar(stat1.filter.combine)
+@
+
+\subsection{select}
+
+Use \verb@[@ to select a specific motif of a \verb@motiv@ object. By default, it will select the exact name of similar motifs. Choose \verb@bysim=FALSE@ to select the original name of the motifs. If \verb@drop=FALSE@, the corresponding motifs will be drop of the object.
+
+<<select, eval=T>>=
+stat1.selected <- stat1.filter.combine["STATx"]
+other.selected <- stat1.filter.combine["STATx", drop=T]
+@
+
+Combine with other functions, it can be really useful. To know how many motifs STATx you got, try by instance :
+
+<<select number, eval=T>>=
+stat1.names <- names(stat1.filter.combine["STATx"])
+sum(length(gadem[stat1.names]))
+@
+
+\part{Appendix}
+
+\section{GSL Installation}
+
+You need the GNU Scientific Library (GSL) for the \verb@MotIV@ package. Make sure it is installed on your machine if you want to use \verb@MotIV@. GSL is free and can be downloaded at \url{http://www.gnu.org/software/gsl/} for Unix distributions and at \url{http://gnuwin32.sourceforge.net/packages/gsl.htm} for Windows. 
+\\
+
+\underline{Windows users}
+\\
+
+To install a pre-built binary of \verb@MotIV@  and to load the package successfully you need to tell R where to link GSL. You can do that by adding $/path/to/libgsl.dll$ to the Path environment variable. To add this you may right click on "My Computer", choose "Properties", select the "Advanced" tab, and click the button "Environment Variables". In the dialog box that opens, click "Path" in the variable list, and then click "Edit". Add $/path/to/libgsl.dll$ to the Variable value field. It is important that the file path does not contain any space characters; to avoid this you may simply use the short forms (8.3 DOS file names) found by typing "dir /x" at the Windows command line. For example, I added the following on my Windows machine:
+C:/PROGRAM/GNUWIN32/bin
+and used ";" to separate it from existing paths.
+\\
+
+To build the \verb@MotIV@  package from source (using Rtools), in addition to adding $/path/to/libgsl.dll$ to Path, you need to tell \verb@MotIV@ where your GSL library and header files are. You can do that by setting up two environment variables $GSL\_LIB$ and $GSL\_INC$ with the correct path to the library files and header files respectively. You can do this by going to the "Environment Variables" dialog box as instructed above and then clicking the "New" button. Enter $GSL\_LIB$ in the Variable name field, and $/path/to/your/gsl/lib/directory$ in the Variable value field. Likewise, do this for $GSL\_INC$ and $/path/to/your/gsl/include/directory$. Remember to use / instead of \textbackslash  as the directory delimiter.
+\\
+
+
+You can download Rtools at \url{http://www.murdoch-sutherland.com/Rtools/} which provides the resources for building \verb@R@ and \verb@R@ packages. You should add to the Path variable the paths to the various components of Rtools. Please read the "Windows Toolset" appendix at \url{http://cran.r-project.org/doc/manuals/R-admin.html#The-Windows-toolset} for more details.
+\\
+
+\underline{Unix/Linux/Mac users}
+\\
+
+When building the package, it will look for a BLAS library on your system. By default it will use gslcblas, which is not optimized for your system. To use an optimized BLAS library, you can use the $--with-blas$ argument which will be passed to the configure.ac file. For example, on a Mac with vecLib pre-installed the package may be installed via: 
+$R CMD INSTALL MotIV_x.y.z.tar.gz --configure-args="--with-blas='-framework vecLib'"$
+
+
+\part{References}
+
+\begin{thebibliography}{100} 
+
+\bibitem{STAMP} S. Mahony, P.V. Benos. \emph{STAMP: a web tool for exploring DNA-binding motif similarities}. Nucl Acids Res. 2007. 35:W253-258
+
+\bibitem{SeqLogo} Oliver Bembom. SeqLogo package available on \url{www.bioconductor.org}
+
+\bibitem{Banerjee} Banerjee, N. \& Zhang, M. Q. \emph{Identifying cooperativity among transcription factors controlling the cell cycle in yeast}. Nucleic Acids Res. 2003.  31, 7024-31. 
+
+\bibitem{JASPAR} Portales-Casamar E. \emph{et al. JASPAR 2010: the greatly expanded open-access database of transcription factor binding profiles}. Nucleic Acids Res. 2010 Jan;38(Database issue):D105-10. Epub 2009 Nov 11.
+
+\bibitem{TRANSFAC} Matys V. \emph{et al. TRANSFAC: transcriptional regulation, from patterns to profiles}. Nucleic Acids Res. 2003 Jan 1;31(1):374-8
+
+\bibitem{IRanges} H. Pages, P. Aboyoun and M. Lawrence, available at \url{http://www.bioconductor.org/packages/bioc/html/IRanges.html}.
+\end{thebibliography}
+
+\end{document}
+
+
+ 

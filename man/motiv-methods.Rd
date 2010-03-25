@@ -1,0 +1,46 @@
+\name{motiv-methods}
+\Rdversion{1.1}
+\docType{methods}
+\alias{motiv}
+\alias{summary,motiv-method}
+\alias{summary,list-method}
+\alias{show,motiv-method}
+\alias{names,motiv-method}
+\alias{names<-,motiv-method}
+\alias{length,motiv-method}
+\alias{[,motiv-method}
+\alias{similar}
+\alias{similar,motiv-method}
+\alias{similar,list-method}
+
+\title{Motiv methods}
+\description{Methods for motiv objects.}
+
+\usage{
+	 \S4method{summary}{motiv}(object) 
+	 \S4method{names}{motiv}(x)
+	 \S4method{length}{motiv}(x)
+	 \S4method{similar}{motiv}(x)
+	 \S4method{[}{motiv}(x,i,j=ANY, bysim=TRUE, ...,exact=TRUE, drop=FALSE)
+}
+
+\arguments{
+	\item{object}{An object of class \code{motiv}.}
+	\item{x}{An object of class \code{motiv}.}
+	\item{i}{A string reprsenting a motif name.}
+	\item{j}{NOT USED.}
+	\item{bysim}{If \code{TRUE}, select similarity name.}
+	\item{...}{Further potential arguments passed to methods.}
+	\item{exact}{If \code{TRUE}, search only for perfect name match.}
+	\item{drop}{If \code{TRUE}, no match motifs will be dropped.}
+}
+
+\author{Eloi Mercier <\email{eloi.mercier@ircm.qc.ca}>}
+
+\seealso{
+	 \code{matches} , \code{alignments}, \code{tf}
+}
+\examples{
+showClass("motiv")
+}
+\keyword{classes}
