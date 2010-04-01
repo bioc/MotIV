@@ -73,7 +73,7 @@ void PlatformSupport::ReadBackground(char* fn)
 	if(fn!=NULL){
 		FILE* modelp = fopen(fn, "r");
 		if(modelp==NULL){perror("Cannot open background file");exit(1);}
-	
+		
 		while(fscanf(modelp,"%d %s %lf\n",&i,xmer,&px) != EOF)
 		{
 			j=strlen(xmer);
@@ -81,7 +81,7 @@ void PlatformSupport::ReadBackground(char* fn)
 			markov[j][i]=px;
 		}
 		backgroundOrder=j;
-
+		
 		fclose(modelp);
 	}else{
 		//Set background to neutral bias
@@ -89,7 +89,7 @@ void PlatformSupport::ReadBackground(char* fn)
 		markov[1][0]=.25; markov[1][1]=.25; markov[1][2]=.25; markov[1][3]=.25;
 		strcpy(charMap[1][0], "A"); strcpy(charMap[1][1], "C"); strcpy(charMap[1][2], "G"); strcpy(charMap[1][3], "T");
 	}
-
+	
 	backgroundSet=true;
 	free(xmer);
 }
@@ -98,15 +98,11 @@ void PlatformSupport::ReadBackground(char* fn)
 int PlatformSupport::ReadTransfacFile( SEXP inputPWM, SEXP inputDB)
 {
 	int i, j, p;
-	FILE* inp;
-	char line[LONG_STR];
-	char tag[STR_LEN];
-	int curr_cnt=0;
 	double curr_ttl;
 	Motif** currMotifs; int currCnt;	
 	SEXP inputName, input;
 	PROTECT(inputName=NEW_CHARACTER(50));
-
+	
 	if(inputPWM!=0)
 	{
 		currMotifs=inputMotifs;
@@ -121,7 +117,7 @@ int PlatformSupport::ReadTransfacFile( SEXP inputPWM, SEXP inputDB)
 	}
 	else
 	{Rprintf("\tERROR.\n");exit(1);}
-		
+	
 	if(!backgroundSet)
 	{	Rprintf("\tReadBackground not called; exiting");
 		exit(1);
@@ -129,32 +125,32 @@ int PlatformSupport::ReadTransfacFile( SEXP inputPWM, SEXP inputDB)
 	
 	currCnt=0;
 	inputName=GET_NAMES(input);
-		for (currCnt=0; currCnt< length(input) ;currCnt++)
-		{			
-			currMotifs[currCnt] = new Motif(length(VECTOR_ELT(input,currCnt))/4);
-			strcpy(currMotifs[currCnt]->name,CHAR(STRING_ELT(AS_CHARACTER(inputName),currCnt)) );
-			currMotifs[currCnt]->weighting=1;
-			p=0;
-			for (i=0; i<length(VECTOR_ELT(input,currCnt))/4; i++)
-			{				
-				if(NULL!=input)
+	for (currCnt=0; currCnt< length(input) ;currCnt++)
+	{			
+		currMotifs[currCnt] = new Motif(length(VECTOR_ELT(input,currCnt))/4);
+		strcpy(currMotifs[currCnt]->name,CHAR(STRING_ELT(AS_CHARACTER(inputName),currCnt)) );
+		currMotifs[currCnt]->weighting=1;
+		p=0;
+		for (i=0; i<length(VECTOR_ELT(input,currCnt))/4; i++)
+		{				
+			if(NULL!=input)
+			{
+				curr_ttl=0;
+				for(j=0; j<B; j++)
+				{							
+					currMotifs[currCnt]->n[i][j] = NUMERIC_DATA(VECTOR_ELT(input,currCnt))[p]; 
+					curr_ttl+=currMotifs[currCnt]->n[i][j];
+					p++;
+				}
+				
+				for (j=0; j<B; j++)
 				{
-					curr_ttl=0;
-					for(j=0; j<B; j++)
-					{							
-						currMotifs[currCnt]->n[i][j] = NUMERIC_DATA(VECTOR_ELT(input,currCnt))[p]; 
-						curr_ttl+=currMotifs[currCnt]->n[i][j];
-						p++;
-					}
-					
-					for (j=0; j<B; j++)
-					{
 					currMotifs[currCnt]->f[i][j] = (currMotifs[currCnt]->n[i][j] + (SCALE_FACTOR*markov[1][j]))/(curr_ttl+SCALE_FACTOR);
 					currMotifs[currCnt]->pwm[i][j] = log_2(currMotifs[currCnt]->f[i][j]/markov[1][j]);						
-					}
 				}
 			}
 		}
+	}
 	
 	if(inputPWM!=0)
 	{
@@ -162,8 +158,8 @@ int PlatformSupport::ReadTransfacFile( SEXP inputPWM, SEXP inputDB)
 		matCount=currCnt;
 	}
 	else
-		{matchDBSize=currCnt;}
-
+	{matchDBSize=currCnt;}
+	
 	UNPROTECT(1);
 	return (currCnt);
 }
@@ -180,7 +176,7 @@ SEXP PlatformSupport::GetRandDistrib( Alignment* A_man)
 	int compt=0;
 	SEXP score;	
 	PROTECT (score =allocMatrix(REALSXP, len,7));
-
+	
 	//Set up the mean and std_dev arrays
 	double** sum = (double**)malloc(sizeof(double*)*maxLen);
 	double** max = (double**)malloc(sizeof(double*)*maxLen);
@@ -204,7 +200,7 @@ SEXP PlatformSupport::GetRandDistrib( Alignment* A_man)
 			sampSq[i][j]=0;
 		}
 	}
-
+	
 	//Compare each matrix to every other matrix
 	Rprintf( "\tGenerate scores :\n");
 	for(i=0; i<matCount; i++){
@@ -213,7 +209,7 @@ SEXP PlatformSupport::GetRandDistrib( Alignment* A_man)
 			if(i!=j)
 			{
 				bestScore = A_man->AlignMotifs2D(inputMotifs[i], inputMotifs[j], align1, align2, aLen, forward1, forward2);
-			               
+				
 				//Add bestScore to the proper mean and std_dev array
 				x=inputMotifs[i]->len;
 				if(x<minLen){x=minLen;}
@@ -238,9 +234,9 @@ SEXP PlatformSupport::GetRandDistrib( Alignment* A_man)
 			}
 		}
 		if (((i+1)%250)==0)
-			{	Rprintf("\t\t%d scores generated\n",i+1);}
+		{	Rprintf("\t\t%d scores generated\n",i+1);}
 	}
-
+	
 	for(x=minLen; x<maxLen; x++)
 		for(y=minLen; y<maxLen; y++)
 		{	
@@ -249,12 +245,12 @@ SEXP PlatformSupport::GetRandDistrib( Alignment* A_man)
 			if(std_dev[x][y]!=0)
 				std_dev[x][y] = sqrt(std_dev[x][y]);
 		}
-
-		
+	
+	
 	for(x=minLen; x<maxLen; x++)
 		for(y=minLen; y<maxLen; y++)
 		{	if(count[x][y]>0)
-			{
+		{
 			DOUBLE_DATA(score)[compt]=x;
 			DOUBLE_DATA(score)[compt+len]=y;
 			DOUBLE_DATA(score)[compt+2*len]=sum[x][y]/count[x][y];
@@ -263,9 +259,9 @@ SEXP PlatformSupport::GetRandDistrib( Alignment* A_man)
 			DOUBLE_DATA(score)[compt+5*len]= min[x][y];
 			DOUBLE_DATA(score)[compt+6*len]=max[x][y];
 			compt++;			
-			}
-			else		
-			{
+		}
+		else		
+		{
 			DOUBLE_DATA(score)[compt]=x;
 			DOUBLE_DATA(score)[compt+len]=y;
 			DOUBLE_DATA(score)[compt+2*len]=0;
@@ -274,7 +270,7 @@ SEXP PlatformSupport::GetRandDistrib( Alignment* A_man)
 			DOUBLE_DATA(score)[compt+5*len]=0;
 			DOUBLE_DATA(score)[compt+6*len]=0;
 			compt++;
-			}
+		}
 		}	
 	for(i=0; i<maxLen; i++) {
 		free(sum[i]);
@@ -293,12 +289,9 @@ SEXP PlatformSupport::GetRandDistrib( Alignment* A_man)
 //Read in the score distance distributions
 void PlatformSupport::ReadScoreDists( SEXP inputScores)
 {
-	FILE* inp;
-	char line[STR_LEN];
 	int i,j,k;
 	int x, y;
-	double mean, std_dev, count, max, min;
-
+	
 	//set up the matrices
 	scoreDistMean = (double**)malloc(sizeof(double*)*maxLen);
 	scoreDistMax = (double**)malloc(sizeof(double*)*maxLen);
@@ -319,8 +312,8 @@ void PlatformSupport::ReadScoreDists( SEXP inputScores)
 	
 	for (k=0; k<400 ; k++ )
 	{
-	x=REAL(inputScores)[k] ;
-	y=REAL(inputScores)[k+400] ;
+		x=REAL(inputScores)[k] ;
+		y=REAL(inputScores)[k+400] ;
 		scoreDistMean[x][y] =REAL(inputScores)[k+2*400] ;
 		scoreDistStdDev[x][y]=REAL(inputScores)[k+3*400] ;
 		scoreDistMax[x][y] =REAL(inputScores)[k+6*400] ;
@@ -333,7 +326,7 @@ double PlatformSupport::Score2ZScore(int len1, int len2, double score)
 {
 	int l1=len1, l2=len2;
 	double mean, std_dev;
-
+	
 	if(len1<minLen)
 		l1=minLen;
 	else if(len1>maxLen-1)
@@ -342,7 +335,7 @@ double PlatformSupport::Score2ZScore(int len1, int len2, double score)
 		l2=minLen;
 	else if(len2>maxLen-1)
 		l2=maxLen-1;
-
+	
 	mean = scoreDistMean[l1][l2];
 	std_dev=scoreDistStdDev[l1][l2];
 	if(std_dev<=0)
@@ -357,10 +350,9 @@ double PlatformSupport::Score2PVal(int len1, int len2, double score)
 {
 	int l1=len1, l2=len2;
 	double mean, std_dev;
-	double start, stop, x, y, w;
+	double start;
 	double p_val=0;
-	bool minus;
-
+	
 	if(len1<minLen)
 		l1=minLen;
 	else if(len1>maxLen-1)
@@ -369,12 +361,12 @@ double PlatformSupport::Score2PVal(int len1, int len2, double score)
 		l2=minLen;
 	else if(len2>maxLen-1)
 		l2=maxLen-1;
-
+	
 	mean = scoreDistMean[l1][l2];
 	std_dev=scoreDistStdDev[l1][l2];
 	if(std_dev<=0)
 		std_dev=1;
-
+	
 	start = score - mean;
 	p_val=pnorm(start,0,std_dev,TRUE,FALSE);
 	return(p_val);
@@ -385,7 +377,7 @@ double PlatformSupport::Score2Dist(int len1, int len2, double score, double maxS
 {
 	int l1=len1, l2=len2;
 	double S_eff=0, S_rand;
-
+	
 	if(len1<minLen)
 		l1=minLen;
 	else if(len1>maxLen-1)
@@ -394,19 +386,19 @@ double PlatformSupport::Score2Dist(int len1, int len2, double score, double maxS
 		l2=minLen;
 	else if(len2>maxLen-1)
 		l2=maxLen-1;
-
+	
 	double std_dev=scoreDistStdDev[l1][l2];
 	if(std_dev<=0)
 		std_dev=1;
 	S_rand = scoreDistMean[l1][l2] - 4*std_dev;
 	S_rand = scoreDistMin[l1][l2];
 	S_eff = (score - S_rand)/(maxScore - S_rand);
-
+	
 	if(S_eff <= 0)
 		S_eff=-1*(log(0.001));
 	else
 		S_eff = -1*(log(S_eff));
-
+	
 	return((S_eff));
 }
 
@@ -417,7 +409,7 @@ void PlatformSupport::PrintPairwise()
 	for(j=0; j<matCount; j++){
 		Rprintf("\t\t%s",inputMotifs[j]->GetName());
 	}Rprintf("\t\n\n");
-
+	
 	for(i=0; i<matCount; i++){
 		Rprintf("\t%s\t",inputMotifs[i]->name);
 		for(j=0; j<matCount; j++){
@@ -445,8 +437,6 @@ SEXP PlatformSupport::SimilarityMatching(Alignment* A_man, const int matchTopX)
 	int i1, i2, aL;
 	bool forward1, forward2;
 	char currName[STR_LEN];
-	char outPairsName[STR_LEN];
-	char outMatchedName[STR_LEN];
 	char*** topAligns;
 	int topX = matchTopX;	
 	SEXP tf, eval, seq, match, strand, pwm, name, vec;
@@ -477,7 +467,7 @@ SEXP PlatformSupport::SimilarityMatching(Alignment* A_man, const int matchTopX)
 		topAligns[x][1]=new char[STR_LEN];
 		strcpy(topAligns[x][0], "");strcpy(topAligns[x][1], "");
 	}
-
+	
 	if(printAll){
 		Rprintf("\t\t");
 		for(j=0; j<GetMatchDBSize(); j++){
@@ -485,7 +475,7 @@ SEXP PlatformSupport::SimilarityMatching(Alignment* A_man, const int matchTopX)
 		}
 		Rprintf("\t\n");
 	}
-		
+	
 	for(i=0; i<GetMatCount(); i++){
 		
 		if(printAll)
@@ -495,7 +485,7 @@ SEXP PlatformSupport::SimilarityMatching(Alignment* A_man, const int matchTopX)
 			topScores[x]=0; topIndices[x]=0; 
 			strcpy(topAligns[x][0], "");strcpy(topAligns[x][1], "");
 		}
-
+		
 		for(j=0; j<GetMatchDBSize(); j++)
 		{			
 			currScore = A_man->AlignMotifs2D(inputMotifs[i], matchMotifs[j], i1, i2, aL, forward1, forward2);
@@ -523,7 +513,7 @@ SEXP PlatformSupport::SimilarityMatching(Alignment* A_man, const int matchTopX)
 					}
 					if(forward2){
 						two = matchMotifs[j];
-					tmp_strand[x]="+";
+						tmp_strand[x]="+";
 					}else{
 						two = new Motif(matchMotifs[j]->GetLen());
 						matchMotifs[j]->RevCompMotif(two);
@@ -532,7 +522,7 @@ SEXP PlatformSupport::SimilarityMatching(Alignment* A_man, const int matchTopX)
 					A_man->CopyAlignmentConsensus(one, two,topAligns[x][0], topAligns[x][1]);
 					if(!forward1){
 						delete one;
-
+						
 					}if(!forward2){
 						delete two;
 					}
@@ -543,19 +533,19 @@ SEXP PlatformSupport::SimilarityMatching(Alignment* A_man, const int matchTopX)
 		if(printAll){Rprintf("\t\n");}
 		
 		SET_STRING_ELT(name, i, mkChar( inputMotifs[i]->GetName()));
-	
+		
 		for(x=0; x<topX; x++)
 		{
-				sprintf(currName, "%s", matchMotifs[topIndices[x]]->GetName());
-				
-		double Eval =1-topScores[x];
-		SET_STRING_ELT(tf, compt, mkChar(currName));
-		DOUBLE_DATA(eval)[compt]=Eval;
-		SET_STRING_ELT(seq, compt, mkChar( topAligns[x][0]));
-		SET_STRING_ELT(match, compt, mkChar( topAligns[x][1]));
-		SET_STRING_ELT(strand, compt, mkChar(tmp_strand[x]));
-		SET_VECTOR_ELT(pwm,compt,matchMotifs[topIndices[x]]->PrintMotif(NULL));
-		compt++;
+			sprintf(currName, "%s", matchMotifs[topIndices[x]]->GetName());
+			
+			double Eval =1-topScores[x];
+			SET_STRING_ELT(tf, compt, mkChar(currName));
+			DOUBLE_DATA(eval)[compt]=Eval;
+			SET_STRING_ELT(seq, compt, mkChar( topAligns[x][0]));
+			SET_STRING_ELT(match, compt, mkChar( topAligns[x][1]));
+			SET_STRING_ELT(strand, compt, mkChar(tmp_strand[x]));
+			SET_VECTOR_ELT(pwm,compt,matchMotifs[topIndices[x]]->PrintMotif(NULL));
+			compt++;
 		}
 	}
 	delete [] topScores;
@@ -575,7 +565,7 @@ SEXP PlatformSupport::SimilarityMatching(Alignment* A_man, const int matchTopX)
 	SET_VECTOR_ELT(vec,4,seq);
 	SET_VECTOR_ELT(vec,5,match);
 	SET_VECTOR_ELT(vec,6,strand);
-
+	
 	UNPROTECT(8);
 	return vec;	
 }
@@ -631,7 +621,7 @@ double PlatformSupport::log_2(double x)
 PlatformSupport::~PlatformSupport()
 {
 	int i, j;
-
+	
 	if(markov!=NULL && charMap!=NULL){
 		for(i=1; i<=MAX_MARKOV; i++){
 			for(j=0;j<pow(B,i);j++) 

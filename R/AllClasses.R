@@ -27,7 +27,7 @@ strand="character"
 setClass("matches", representation(
 name="character",
 aligns="list",
-similar="character",
+similarity="character",
 valid="numeric"
 ))
 
@@ -66,7 +66,7 @@ setClass("position", representation(
 motifName="character",
 positionVector="data.frame",
 pwm="list",
-similarMotif="character",
+similarity="character",
 length="numeric"
 ))
 

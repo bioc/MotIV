@@ -6,7 +6,7 @@ importFrom(grid, dataViewport, gpar, grid.circle, grid.layout, grid.newpage, gri
 
 importFrom(IRanges, IRanges, RangedData)
 
-importFrom(lattice, panel.lines, panel.segments, panel.text)
+importFrom(lattice, panel.lines, panel.segments, panel.text, panel.rect)
 
 importFrom(methods, "@<-", new)
 
@@ -22,7 +22,7 @@ importClassesFrom(methods, ANY, character, data.frame, list, matrix, numeric)
 
 importClassesFrom(rGADEM, gadem)
 
-export(motifMatch, exportAsTransfacFile, generateDBScores, readDBScores, writeDBScores, getGademPWM, readGademPWMFile, readPWMfile, viewAlignments, summary, plot, split, filter, combine, makePWM, setFilter,  combine, trimPWMedge, exportAsRangedData, similar, viewMotifs, calculateModules)
+export(motifMatch, exportAsTransfacFile, generateDBScores, readDBScores, writeDBScores, getGademPWM, readGademPWMFile, readPWMfile, viewAlignments, summary, plot, split, filter, combine, makePWM, setFilter,  combine, trimPWMedge, exportAsRangedData, similarity, viewMotifs, occurences, cooccurences)
 
 exportClasses(motiv, matches, alignments, transcriptionFactor, filter)
 exportMethods(show,summary, combine, filter, split)

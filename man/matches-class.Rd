@@ -6,13 +6,13 @@
 \title{Class "matches"}
 \description{This object contains the name of the input motif and all the matches found.}
 \section{Objects from the Class}{
-Objects can be created by calls of the form \code{new("matches", name, aligns, similar, valid)}.
+Objects can be created by calls of the form \code{new("matches", name, aligns, similarity, valid)}.
 }
 \section{Slots}{
 \describe{
     \item{name}{Motif name.}
 	\item{aligns}{Alignments found by \code{motifMatch}.}
-	\item{similar}{The optional name given to the motif.}
+	\item{similarity}{The optional name given to the motif.}
 	\item{valid}{The alignment that should be considered as valid.}
 	}
 }

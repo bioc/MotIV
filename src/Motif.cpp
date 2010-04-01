@@ -43,7 +43,7 @@ Motif::Motif(int l)
 	int i,j;
 	len=l;
 	strcpy(famName, "None");
-
+	
 	//Motif
 	f = new double* [l];
 	for(i=0; i<l; i++)
@@ -85,7 +85,7 @@ void Motif::Reset()
 	for(i=0; i<len; i++)
 		for(j=0; j<B; j++)
 			pwm[i][j]=0;
-		
+	
 	for(i=0; i<len; i++)
 		gaps[i]=0;
 	members=1;
@@ -94,7 +94,7 @@ void Motif::Reset()
 //Reverse complement a motif
 void Motif::RevCompMotif(Motif* out)
 {
-//	out->len = len;
+	//	out->len = len;
 	if(len == out->len){
 		strcpy(out->name, name);
 		strcpy(out->famName, famName);
@@ -143,7 +143,6 @@ void Motif::CopyMotif(Motif* nMot)
 //Returns the consensus letter for this motif
 char Motif::ColConsensus(int i)
 {
-	char val;
 	char curr;
 	char two_base_l[6]; //two base consensus
 	double two_base_c[6];
@@ -151,7 +150,7 @@ char Motif::ColConsensus(int i)
 	double three_base_c[4];
 	double sum, p_max;
 	int j, k;
-
+	
 	//Hard-coded consensus alphabet rules
 	two_base_l[0]='Y';	two_base_l[1]='R';
 	two_base_l[2]='W';	two_base_l[3]='S';
@@ -166,12 +165,12 @@ char Motif::ColConsensus(int i)
 	three_base_c[1]=f[i][0]+f[i][1]+f[i][3];
 	three_base_c[2]=f[i][0]+f[i][2]+f[i][3];
 	three_base_c[3]=f[i][1]+f[i][2]+f[i][3];
-
+	
 	sum=0;
 	for(j=0; j<4; j++)
 		sum+=f[i][j];
-
-		
+	
+	
 	if(f[i][0]/sum>=CONS1) {curr='A';}
 	else if(f[i][1]/sum>=CONS1) {curr='C';}
 	else if(f[i][2]/sum>=CONS1) {curr='G';}
@@ -188,7 +187,7 @@ char Motif::ColConsensus(int i)
 	}
 	if(gaps[i]!=0)
 		curr = tolower(curr);
-
+	
 	return(curr);
 }
 
@@ -206,34 +205,32 @@ double Motif::Info(int i)
 		sum=sum*(-1);
 	else
 		sum=2;
-
-return(2-sum);
+	
+	return(2-sum);
 }
 
 
 //Print the motif in TRANSFAC format
 SEXP Motif::PrintMotif(FILE* out, double *PWMs, int* PWMsize, int* max)
 {
-SEXP pwm;
-PROTECT (pwm =allocMatrix(REALSXP, 4,len));
+	SEXP pwm;
+	PROTECT (pwm =allocMatrix(REALSXP, 4,len));
 	int compt=0;
 	int i, j;
-	double w0, w1, w2, w3, wt;
-
-		for(i=0; i<len; i++)
+	for(i=0; i<len; i++)
+	{
+		for(j=0; j<B; j++)
 		{
-			for(j=0; j<B; j++)
-			{
-				DOUBLE_DATA(pwm)[compt]=f[i][j];
-				compt++;		
-			}
+			DOUBLE_DATA(pwm)[compt]=f[i][j];
+			compt++;		
 		}
-
+	}
 	
-
+	
+	
 	UNPROTECT(1);
 	
-return pwm;
+	return pwm;
 }
 
 //Print the motif's consensus pattern

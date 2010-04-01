@@ -9,9 +9,9 @@
 \alias{names<-,motiv-method}
 \alias{length,motiv-method}
 \alias{[,motiv-method}
-\alias{similar}
-\alias{similar,motiv-method}
-\alias{similar,list-method}
+\alias{similarity}
+\alias{similarity,motiv-method}
+\alias{similarity,list-method}
 
 \title{Motiv methods}
 \description{Methods for motiv objects.}
@@ -20,7 +20,7 @@
 	 \S4method{summary}{motiv}(object) 
 	 \S4method{names}{motiv}(x)
 	 \S4method{length}{motiv}(x)
-	 \S4method{similar}{motiv}(x)
+	 \S4method{similarity}{motiv}(x)
 	 \S4method{[}{motiv}(x,i,j=ANY, bysim=TRUE, ...,exact=TRUE, drop=FALSE)
 }
 
@@ -29,7 +29,7 @@
 	\item{x}{An object of class \code{motiv}.}
 	\item{i}{A string reprsenting a motif name.}
 	\item{j}{NOT USED.}
-	\item{bysim}{If \code{TRUE}, select similarity name.}
+	\item{bysim}{If \code{TRUE}, select similarityity name.}
 	\item{...}{Further potential arguments passed to methods.}
 	\item{exact}{If \code{TRUE}, search only for perfect name match.}
 	\item{drop}{If \code{TRUE}, no match motifs will be dropped.}

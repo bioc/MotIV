@@ -68,10 +68,10 @@ SEXP RandPSSMGen::RunGenerator()
 	bool edge;
 	double known_zeros=0, known_total=0;
 	double new_zeros=0, new_total=0;
-
+	
 	//How many random matrices?
 	Rprintf("\t%d Matrices Will Be Generated\n", numRandomMats);
-
+	
 	//Read in the matrices
 	Rprintf("\t%d Matrices Read In :\n", numMatrices);
 	
@@ -102,7 +102,7 @@ SEXP RandPSSMGen::RunGenerator()
 	}
 	depth_pdf = gsl_histogram_pdf_alloc(7);
 	gsl_histogram_pdf_init(depth_pdf, depth_hist);
-
+	
 	//2) The second step is to find the probability of invariance given the position of the column
 	//Also find the probability of an absolute zero (not including the invariant columns)
 	for(i=0; i<6; i++) {
@@ -121,7 +121,7 @@ SEXP RandPSSMGen::RunGenerator()
 			z = WhatColumn(j, curr_len);
 			total_cols[z]++;
 			invariant_cols[z]+=inv;
-
+			
 			//Find zeros in a variable column
 			if(!inv) {
 				total_cells[z]+=4;
@@ -135,7 +135,7 @@ SEXP RandPSSMGen::RunGenerator()
 		abszero_prob[i]=abszero_cells[i]/total_cells[i];
 	}
 	Rprintf("\t\tKnown Zeros: %lf\n", known_zeros/known_total);
-		
+	
 	//3) Fill the First, Second, and Third Draw Histograms.
 	first_edge_hist = gsl_histogram_alloc(5);
 	gsl_histogram_set_ranges_uniform (first_edge_hist, 0.0001, 0.99999);
@@ -173,7 +173,7 @@ SEXP RandPSSMGen::RunGenerator()
 						else
 							gsl_histogram_increment(first_inner_hist, firstDraw/col_sum);
 					}
-
+					
 					//Update second draw distribution
 					for(l=0; l<B; l++){
 						if(l!=k) {
@@ -220,7 +220,7 @@ SEXP RandPSSMGen::RunGenerator()
 		third_inner_pdf[i]= gsl_histogram_pdf_alloc(5);
 		gsl_histogram_pdf_init(third_inner_pdf[i], third_inner_hist[i]);
 	}
-
+	
 	////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	//////// All information gathered... generating random samples from here on in /////////////////////////////
 	////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -231,27 +231,26 @@ SEXP RandPSSMGen::RunGenerator()
 	PROTECT(listRandPWM=allocVector(VECSXP,numRandomMats));
 	PROTECT(names=NEW_CHARACTER(numRandomMats));
 	
-	int bla=0;
 	for(z=0; z<numRandomMats; z++) {
 		double r;
 		int base;
 		int first, second, third, fourth;
-
+		
 		//first step: pick a length
 		r=((double)rand())/RAND_MAX;
 		curr_len = (int)gsl_histogram_pdf_sample(width_pdf, r);
-
+		
 		PROTECT (randPWM =allocMatrix(REALSXP, 4,curr_len));
-
+		
 		if(curr_len>30){curr_len=30;}
-
+		
 		for(i=0; i<curr_len; i++) { //Generate one column at a time
 			//Reset the column
 			
-				
+			
 			for(j=0; j<B; j++)
 				newPSSM->f[i][j]=0;
-
+			
 			if(WhatColumn(i, curr_len)==0)
 				edge=true;
 			else
@@ -266,7 +265,7 @@ SEXP RandPSSMGen::RunGenerator()
 				else if(r<0.57){base=3;}
 				else if(r<0.785){base=1;}
 				else{base=2;}
-
+				
 				newPSSM->f[i][base]=1;
 				for(j=0; j<B; j++) {
 					if(j!=base)
@@ -293,7 +292,7 @@ SEXP RandPSSMGen::RunGenerator()
 				second=rand()%B;
 				while(second==first)
 				{	second=rand()%B;}
-
+				
 				r=((double)rand())/RAND_MAX;
 				if(r<abszero_prob[WhatColumn(i, curr_len)]){//the cell is zero
 					newPSSM->f[i][second]=0;
@@ -316,7 +315,7 @@ SEXP RandPSSMGen::RunGenerator()
 					third=rand()%B;
 					while(third==first || third==second)
 					{	third=rand()%B;}
-
+					
 					r=((double)rand())/RAND_MAX;
 					if(r<abszero_prob[WhatColumn(i, curr_len)]){//the cell is zero
 						newPSSM->f[i][third]=0;
@@ -348,7 +347,7 @@ SEXP RandPSSMGen::RunGenerator()
 			new_total+=4; new_zeros+=zeros;
 		}
 		//PSSM Generated!
-
+		
 		//Convert to n's
 		r=((double)rand())/RAND_MAX;
 		curr_depth = gsl_histogram_pdf_sample(depth_pdf, r);
@@ -390,7 +389,7 @@ SEXP RandPSSMGen::RunGenerator()
 		gsl_histogram_free(third_inner_hist[i]);
 		gsl_histogram_pdf_free(third_inner_pdf[i]);
 	}
-
+	
 	UNPROTECT(1);
 	return listRandPWM;
 }
@@ -400,7 +399,7 @@ bool RandPSSMGen::Invariant(double* col, int& zeros)
 	int zero_cnt=0;
 	for(int i=0; i<B; i++)
 	{	if(col[i]==0)
-			zero_cnt++;
+		zero_cnt++;
 	}
 	zeros = zero_cnt;
 	if(zero_cnt==3)

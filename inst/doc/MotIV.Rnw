@@ -65,22 +65,22 @@ options(prompt = " ", continue = " ", width = 85)
 \subsection{Load MotIV package}
 <<loading MotIV>>=
 library(MotIV)
-path <- system.file("extdata/",package="MotIV")
+path <- system.file(package="MotIV")
 @
 
 \subsection{Load the database}
 <<Load the database>>=
-jaspar <- readPWMfile(paste(path,"jasparDB2009.txt",sep=""))
+jaspar <- readPWMfile(paste(path,"/extdata/jasparDB2009.txt",sep=""))
 @
 
 \subsection{Load database scores}
 <<Load database scores>>=
-jaspar.scores <- readDBScores(paste(path,"jaspar2009_PCC_SWU.scores",sep=""))
+jaspar.scores <- readDBScores(paste(path,"/extdata/jaspar2009_PCC_SWU.scores",sep=""))
 @
 
 \subsection{Read input PWM}
 <<Read input PWM>>=
-sample.motifs <- readPWMfile(paste(path,"sample.motifs",sep=""))
+sample.motifs <- readPWMfile(paste(path,"/extdata/sample.motifs",sep=""))
 @
 
 \subsection{Analysis}
@@ -120,7 +120,7 @@ First step is to load the database that you will use into the R environment. It 
 
 To load the database, use the \verb@readPWMfile@ function :
 <<load DB>>=
- jaspar <- readPWMfile(paste(path,"jasparDB2009.txt",sep=""))
+ jaspar <- readPWMfile(paste(path,"/extdata/jasparDB2009.txt",sep=""))
 @
 
 It returns a list of matrix corresponding to the database PWMs.
@@ -139,12 +139,12 @@ WARNING : Because of each matrix is compared to each other, computing time is ex
 To avoid wasted time, you can save the database score calculated for next similar analysis by typing :
 
 <<write scores, eval=F>>=
-writeDBScores(jaspar.scores,paste(path,"jaspar_PCC_SWU.scores",sep=""))
+writeDBScores(jaspar.scores,paste(path,"/extdata/jaspar_PCC_SWU.scores",sep=""))
 @
  
 For the following analysis, you will need to load the scores file by typing :
 <<read scores, eval=T>>=
-jaspar.scores <- readDBScores(paste(path,"jaspar2009_PCC_SWU.scores",sep=""))
+jaspar.scores <- readDBScores(paste(path,"/extdata/jaspar2009_PCC_SWU.scores",sep=""))
 @
 Remember that scores are associated to a specific database, metric and alignment type.
 
@@ -154,7 +154,7 @@ Now that you have construct the database and the database scores, you have to lo
 \subsection{From a gadem object}
 \verb@MotIV@ software is designed to extend the features of the \verb@rGADEM@ package. Thus, you can use the object returned by a previous analysis with the \verb@rGADEM@ package. You need to load the \verb@gadem@ object load in your current R session. Load the motifs PWMs contained in an object called "gadem" by typing :
 <<load gadem object, eval=T>>=
-load(paste(system.file("data/",package="MotIV"),"gadem_STAT1_MACS.rda",sep=""))
+load(paste(path,"/data/gadem_STAT1_MACS.rda",sep=""))
 motifs <- getGademPWM(gadem)
 @
 
@@ -165,14 +165,14 @@ If you don't have a \verb@gadem@ object, you probably have a file containing PWM
 A file containing PWMs as provide by the standard output of the GADEM software. Usually named 'observedPWMs.txt'. In this case, you should use the \verb@readGademPWMFile@ on the file containing the motifs PWMs.
 
 <<load gadem file, eval=T>>=
-motifs.gadem <- readGademPWMFile(paste(path,"observedPWMs.txt",sep=""))
+motifs.gadem <- readGademPWMFile(paste(path,"/extdata/observedPWMs.txt",sep=""))
 @
 
 \subsubsection{TRANSFAC type}
 \verb@MotIV@ also supported Transfac format file to load PWMs. For more information about the Transfac file format, please refer to \href{http://www.benoslab.pitt.edu/stamp/help.html}{http://www.benoslab.pitt.edu/stamp/help.html}. If your data are in this format, proceed like in \verb@IV.2@ :
 
 <<load transfac file, eval=T>>=
-motifs.sample <- readPWMfile(paste(path,"sample.motifs",sep=""))
+motifs.sample <- readPWMfile(paste(path,"/extdata/sample.motifs",sep=""))
 @
 
 \subsection{Trim Input}
@@ -295,7 +295,7 @@ As this function need an object of type \verb@gadem@, you can use it only with a
 
 \begin{center}
 <<motiv_plotDistance, fig=T, eval=T, width=10, height=7>>=
-plot(stat1.filter.combine ,gadem,type="distance", correction=TRUE, group=TRUE, bysim=TRUE, main="Distance between STAT1 and AP-1", strand=FALSE, method=3, xlim=c(-100,100), bw=8)
+plot(stat1.filter.combine ,gadem,type="distance", correction=TRUE, group=TRUE, bysim=TRUE, main="Distance between STAT1 and AP-1", strand=FALSE, xlim=c(-100,100), darg=list(bw=8))
 @
 \end{center}
 
@@ -313,15 +313,6 @@ To create a \verb@rangedData@ object, use the \verb@exportAsRangedData@ function
 stat1.rd <- exportAsRangedData(stat1.filter.combine["STATx"], gadem)
 ap1.rd <- exportAsRangedData(stat1.filter.combine["STATx"], gadem)
 @
-
-\subsection{Modules}
-
-If you are interesting by modules discovery, you should use the \verb@calculateModules@ function. This function use two \verb@RangedData@ objects containing the motifs coordinates and computes the distances between them. Then, it returns the modules composed of two close motifs.
-
-<<rangedData, eval=T>>=
-	modules.stat1.ap1 <- calculateModules(stat1.rd, ap1.rd, range=250, merge=TRUE)
-@
-
 
 \section{Saving and Exporting Results}
 
@@ -370,12 +361,12 @@ viewMotifs(stat1.filter.combine, n=5)
 names(stat1.filter.combine)
 @
 
-\subsection{similar}
+\subsection{similarity}
 
-The \verb@similar@ function shows the names of the similar motifs in a \verb@motiv@ object.
+The \verb@similarity@ function shows the names of the similar motifs in a \verb@motiv@ object.
 
 <<similar, eval=T>>=
-similar(stat1.filter.combine)
+similarity(stat1.filter.combine)
 @
 
 \subsection{select}

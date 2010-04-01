@@ -37,11 +37,11 @@ writeDBScores(x, file)
 }
 \examples{
 #####Database and Scores#####
-path <- system.file("extdata/",package="MotIV")
-jaspar <- readPWMfile(paste(path,"jasparDB2009.txt",sep=""))
+path <- system.file(package="MotIV")
+jaspar <- readPWMfile(paste(path,"/extdata/jasparDB2009.txt",sep=""))
 #jaspar.scores <- generateDBScores(inputDB=jaspar,cc="PCC",align="SWU",nRand=1000)
-#writeDBScores(jaspar.scores,paste(path,"jaspar_PCC_SWU.scores",sep=""))
-jaspar.scores <- readDBScores(paste(path,"jaspar2009_PCC_SWU.scores",sep=""))
+#writeDBScores(jaspar.scores,paste(path,"/extdata/jaspar_PCC_SWU.scores",sep=""))
+jaspar.scores <- readDBScores(paste(path,"/extdata/jaspar2009_PCC_SWU.scores",sep=""))
 }
 \keyword{misc}
  

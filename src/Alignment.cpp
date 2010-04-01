@@ -77,7 +77,7 @@ void AlignRec::CopyAlignSec(int** AS, int aL, int nA)
 //MultiAlignRec Constructor
 MultiAlignRec::MultiAlignRec(int nA, int aL)
 {
-	int i, j, k;
+	int i;
 	numAligned=nA;
 	alignL=aL;
 	alignedNames = new char*[numAligned];
@@ -103,17 +103,17 @@ Alignment::Alignment(ColumnComp* c, double gO, double gE, bool overlap, bool ext
 	alignSectionTmp = new int*[2];
 	for(int i=0; i<2; i++)
 	{alignSection[i]=new int [MAX_MOTIF_LEN*2];
-	 alignSectionTmp[i]=new int [MAX_MOTIF_LEN*2];}
+		alignSectionTmp[i]=new int [MAX_MOTIF_LEN*2];}
 }
 //***Warning*** This method only works when the correct motif directions are provided
 //Copy the current alignment to the given strings
 void Alignment::CopyAlignmentConsensus(Motif* one, Motif* two, char* str_one, char* str_two)
 {
 	int z, c;
-	int last, last2;
+	int last;
 	Motif* currMotif;
 	char* currStr;
-
+	
 	if(alignLen>0){
 		for(int q=0; q<2; q++){
 			if(q==0){currMotif=one;currStr=str_one;}
@@ -122,7 +122,7 @@ void Alignment::CopyAlignmentConsensus(Motif* one, Motif* two, char* str_one, ch
 			c=0;
 			last=-50;
 			for(z=alignLen-1; z>=0; z--){
-
+				
 				if(alignSection[q][z]==last || alignSection[q][z]==-1)
 					currStr[c]='-';
 				else
@@ -143,22 +143,22 @@ void Alignment::CopyAlignmentConsensus(Motif* one, Motif* two, char* str_one, ch
 void Alignment::PrintAlignmentConsensus(Motif* one, Motif* two)
 {
 	int z; 
-	int last, last2;
+	int last;
 	Motif* currMotif;
-
+	
 	if(alignLen>0){
 		Rprintf("\n\n%d, %lf\n", alignLen, alignScore);
 		//if(alignForward){Rprintf("F\n");}
 		for(int q=0; q<2; q++){
 			if(q==0){currMotif=one;}
 			else{currMotif=two;}
-
-
+			
+			
 			Rprintf("\t%s:\t", currMotif->name);
-	//		last = alignSection[q][alignLen-1];
+			//		last = alignSection[q][alignLen-1];
 			last=-50;
 			for(z=alignLen-1; z>=0; z--){
-
+				
 				if(alignSection[q][z]==last || alignSection[q][z]==-1)
 					Rprintf("-");
 				else
@@ -222,7 +222,7 @@ double Alignment::AlignMotifs2D(Motif* one, Motif* two, int &i1, int &i2, int& a
 		currTwo=revTwo;
 		bestScore = score2;
 	}	
-//	PrintAlignmentConsensus(currOne,currTwo);
+	//	PrintAlignmentConsensus(currOne,currTwo);
 	
 	delete revOne;
 	delete revTwo;
@@ -245,8 +245,8 @@ double SmithWaterman::AlignMotifs(Motif* one, Motif* two, int &i1, int &i2, int&
 	alignLen=0;	
 	AlignMatCell** forAlignMat;
 	AlignMatCell** revAlignMat;
-
-
+	
+	
 	int x=one->len+1;
 	int y = two->len+1;
 	//Make SW array
@@ -264,7 +264,7 @@ double SmithWaterman::AlignMotifs(Motif* one, Motif* two, int &i1, int &i2, int&
 			revAlignMat[i][j].point_j=0;
 		}
 	}
-
+	
 	//do in the forward and reverse directions
 	for(int q=0; q<2; q++)
 	{
@@ -274,17 +274,17 @@ double SmithWaterman::AlignMotifs(Motif* one, Motif* two, int &i1, int &i2, int&
 		//Traverse the array, filling in the values
 		for(i=1; i<x; i++) {
 			for(j=1; j<y; j++) {
-
+				
 				//M calculation
 				currAlignMat[i][j].M = currAlignMat[i-1][j-1].M + Metric->Compare(currMotif, i-1, two, j-1); 
 				currAlignMat[i][j].point_i = i-1;
 				currAlignMat[i][j].point_j = j-1;
-								
+				
 				//Gap open calculation 1
 				tmp = currAlignMat[i-1][j].M - gapOpen;
 				if((currMotif->gaps[i-1]!=0 || two->gaps[i-1]!=0) && gapOpen!=1000) //Special case for a partial gap
                     tmp = currAlignMat[i-1][j].M - (gapOpen*(0.5));
-					tmp = currAlignMat[i-1][j].M - (gapOpen*(1/(currMotif->gaps[i-1]+two->gaps[j-1]+1)));
+				tmp = currAlignMat[i-1][j].M - (gapOpen*(1/(currMotif->gaps[i-1]+two->gaps[j-1]+1)));
 				if(currAlignMat[i][j].M<tmp){
 					currAlignMat[i][j].M=tmp;
 					currAlignMat[i][j].point_i = i-1;
@@ -295,13 +295,13 @@ double SmithWaterman::AlignMotifs(Motif* one, Motif* two, int &i1, int &i2, int&
 				tmp = currAlignMat[i][j-1].M - gapOpen;
 				if((currMotif->gaps[i-1]!=0 || two->gaps[i-1]!=0) && gapOpen!=1000) //Special case for a partial gap
                     tmp = currAlignMat[i][j-1].M - (gapOpen*(0.5));
-					tmp = currAlignMat[i][j-1].M - (gapOpen*(1/(currMotif->gaps[i-1]+two->gaps[j-1]+1)));
+				tmp = currAlignMat[i][j-1].M - (gapOpen*(1/(currMotif->gaps[i-1]+two->gaps[j-1]+1)));
 				if(currAlignMat[i][j].M<tmp){
 					currAlignMat[i][j].M=tmp;
 					currAlignMat[i][j].point_i = i;
 					currAlignMat[i][j].point_j = j-1;
 				}
-
+				
 				if(!overlapOnly && currAlignMat[i][j].M<0){
 					currAlignMat[i][j].M=0;
 					currAlignMat[i][j].point_i = i-1;
@@ -316,7 +316,7 @@ double SmithWaterman::AlignMotifs(Motif* one, Motif* two, int &i1, int &i2, int&
 			}
 		}
 	}
-
+	
 	if(forScore>revScore){
 		forward=true; alignForward=true; maxScore=forScore;
 		start_i = forMaxI; start_j=forMaxJ;
@@ -326,8 +326,8 @@ double SmithWaterman::AlignMotifs(Motif* one, Motif* two, int &i1, int &i2, int&
 		start_i = revMaxI; start_j=revMaxJ;
 		currAlignMat = revAlignMat; currMotif = revOne;
 	}
-
-
+	
+	
 	//This part aims to include the right side region into the alignment
 	if(overlapOnly && extendOverlap){
 		//right tail here
@@ -352,7 +352,7 @@ double SmithWaterman::AlignMotifs(Motif* one, Motif* two, int &i1, int &i2, int&
 			start_i=x-1; start_j=y-1;
 		}
 	}
-
+	
 	//Traceback
 	tmp=maxScore;
 	int tmp_si, tmp_sj;
@@ -360,7 +360,7 @@ double SmithWaterman::AlignMotifs(Motif* one, Motif* two, int &i1, int &i2, int&
 	{	
 		alignSection[0][z]=start_i-1;
 		alignSection[1][z]=start_j-1;
-
+		
 		//This part aims to put the left tail into the alignment
 		if(overlapOnly && extendOverlap && (start_i==0 || start_j==0)){
 			if(start_i==0){
@@ -373,7 +373,7 @@ double SmithWaterman::AlignMotifs(Motif* one, Motif* two, int &i1, int &i2, int&
 			start_i=currAlignMat[tmp_si][tmp_sj].point_i; 		
 			start_j=currAlignMat[tmp_si][tmp_sj].point_j;
 		}
-
+		
 		tmp=currAlignMat[start_i][start_j].max;
 		z++;
 	}
@@ -382,10 +382,10 @@ double SmithWaterman::AlignMotifs(Motif* one, Motif* two, int &i1, int &i2, int&
 	i2=start_j;
 	alignL=z;
 	alignLen=z;
-
+	
 	alignScore = maxScore;
-//	PrintAlignmentConsensus(currMotif,two);
-
+	//	PrintAlignmentConsensus(currMotif,two);
+	
 	for(i=0; i<x; i++)
 	{
 		delete [] forAlignMat[i];
@@ -394,7 +394,7 @@ double SmithWaterman::AlignMotifs(Motif* one, Motif* two, int &i1, int &i2, int&
 	delete [] forAlignMat;
 	delete [] revAlignMat;
 	delete revOne;
-
+	
 	return(maxScore);
 }
 
@@ -420,14 +420,14 @@ double SmithWatermanUngappedExtended::AlignMotifs(Motif* one, Motif* two, int &i
 	AlignMatCell** currAlignMat;
 	int i, j, z=0;
 	double forScore, revScore;
-	double maxScore=0, currMax=0;
+	double maxScore=0;
 	double tmp;
 	int forMaxI, forMaxJ, revMaxI, revMaxJ;
 	int max_i=0, max_j=0, start_i=0, start_j=0;
 	alignLen=0;	
 	AlignMatCell** forAlignMat;
 	AlignMatCell** revAlignMat;
-
+	
 	int x=one->len+1;
 	int y = two->len+1;
 	//Make SW array
@@ -458,8 +458,8 @@ double SmithWatermanUngappedExtended::AlignMotifs(Motif* one, Motif* two, int &i
 			revAlignMat[i][j].point_j=j-1;
 		}
 	}
-		
-
+	
+	
 	//do in the forward and reverse directions
 	for(int q=0; q<2; q++)
 	{
@@ -469,7 +469,7 @@ double SmithWatermanUngappedExtended::AlignMotifs(Motif* one, Motif* two, int &i
 		//Traverse the array, filling in the values
 		for(i=1+start_offset; i<x-stop_offset; i++) {
 			for(j=1+c2_start_offset; j<y-c2_stop_offset; j++) {
-
+				
 				//M update
 				currAlignMat[i][j].M = currAlignMat[i-1][j-1].M + Metric->Compare(currMotif, (i-start_offset)-1, core_two, (j-c2_start_offset)-1); 
 				currAlignMat[i][j].point_i = i-1; currAlignMat[i][j].point_j = j-1;
@@ -479,7 +479,7 @@ double SmithWatermanUngappedExtended::AlignMotifs(Motif* one, Motif* two, int &i
 					currAlignMat[i][j].point_i = i-1;
 					currAlignMat[i][j].point_j = j-1;
 				}
-
+				
 				currAlignMat[i][j].max = currAlignMat[i][j].M;		
 				if(currAlignMat[i][j].max>maxScore )// && ((i==x-1 && j>=MIN_OVERLAP) || (j==y-1 && i>=MIN_OVERLAP)))
 				{	maxScore = currAlignMat[i][j].max; max_i=i; max_j=j;}
@@ -488,7 +488,7 @@ double SmithWatermanUngappedExtended::AlignMotifs(Motif* one, Motif* two, int &i
 		if(q==0){ forScore=maxScore; forMaxI=max_i; forMaxJ=max_j;}
 		else{	revScore=maxScore; revMaxI=max_i; revMaxJ=max_j;}
 	}
-
+	
 	if(forScore>revScore){
 		forward=true; alignForward=true; maxScore=forScore;
 		start_i = forMaxI; start_j=forMaxJ;
@@ -498,7 +498,7 @@ double SmithWatermanUngappedExtended::AlignMotifs(Motif* one, Motif* two, int &i
 		start_i = revMaxI; start_j=revMaxJ;
 		currAlignMat = revAlignMat; currMotif = revOne;
 	}
-
+	
 	//right hand side addition
 	while(start_i!=x-1 && start_j!=y-1){
 		start_i++;
@@ -529,7 +529,7 @@ double SmithWatermanUngappedExtended::AlignMotifs(Motif* one, Motif* two, int &i
 		start_i=x-1; start_j=y-1;
 	}
 	
-
+	
 	//Traceback
 	tmp = maxScore;
 	int tmp_si, tmp_sj;
@@ -550,18 +550,18 @@ double SmithWatermanUngappedExtended::AlignMotifs(Motif* one, Motif* two, int &i
 			start_i=currAlignMat[tmp_si][tmp_sj].point_i; 		
 			start_j=currAlignMat[tmp_si][tmp_sj].point_j;
 		}
-
+		
 		tmp=currAlignMat[start_i][start_j].max;
 		z++;
 	}
-
+	
 	i1=start_i;
 	i2=start_j;
 	alignL=z;
 	alignLen=z;
-
+	
 	alignScore = maxScore;
-
+	
 	for(i=0; i<x; i++)
 	{
 		delete [] forAlignMat[i];
@@ -573,7 +573,7 @@ double SmithWatermanUngappedExtended::AlignMotifs(Motif* one, Motif* two, int &i
 	delete core_two;
 	delete revOne;
 	delete revCoreOne;
-
+	
 	return(maxScore);
 }
 
@@ -593,7 +593,7 @@ double NeedlemanWunsch::AlignMotifs(Motif* one, Motif* two, int &i1, int &i2, in
 	alignLen=0;	
 	AlignMatCell** forAlignMat;
 	AlignMatCell** revAlignMat;
-
+	
 	int x=one->len+1;
 	int y = two->len+1;
 	//Make SW array
@@ -645,7 +645,7 @@ double NeedlemanWunsch::AlignMotifs(Motif* one, Motif* two, int &i1, int &i2, in
 		for(j=0; j<y; j++)
 		{	forAlignMat[i][j].max = forAlignMat[i][j].M; revAlignMat[i][j].max = revAlignMat[i][j].M; }
 	//End of initialisation
-
+	
 	//do in the forward and reverse directions
 	for(int q=0; q<2; q++)
 	{
@@ -655,7 +655,7 @@ double NeedlemanWunsch::AlignMotifs(Motif* one, Motif* two, int &i1, int &i2, in
 		//Traverse the array, filling in the values
 		for(i=1; i<x; i++) {
 			for(j=1; j<y; j++) {
-
+				
 				//M update
 				currAlignMat[i][j].M = currAlignMat[i-1][j-1].M + Metric->Compare(currMotif, i-1, two, j-1); 
 				currAlignMat[i][j].point_i = i-1; currAlignMat[i][j].point_j = j-1;
@@ -664,7 +664,7 @@ double NeedlemanWunsch::AlignMotifs(Motif* one, Motif* two, int &i1, int &i2, in
 				tmp = currAlignMat[i-1][j-1].Iy + Metric->Compare(currMotif, i-1, two, j-1); 
 				if(currAlignMat[i][j].M<tmp){currAlignMat[i][j].M=tmp;}
 				currMax = currAlignMat[i][j].M;
-
+				
 				//Ix update
 				if((currMotif->gaps[i-1]!=0 || two->gaps[i-1]!=0) && gapOpen != 1000){
 					currAlignMat[i][j].Ix = currAlignMat[i-1][j].M - (gapOpen *0.5);//Special case for partial gaps incorporated
@@ -699,7 +699,7 @@ double NeedlemanWunsch::AlignMotifs(Motif* one, Motif* two, int &i1, int &i2, in
 				//Minimum overlap length enforced here!
 				if(currMax>maxScore && (gapOpen==1000 &&((i==x-1 && j>=MIN_OVERLAP) || (j==y-1 && i>=MIN_OVERLAP))))
 				{	maxScore = currMax; max_i=i; max_j=j;}
-								
+				
 			}
 		}
 		if(gapOpen!=1000)
@@ -708,9 +708,9 @@ double NeedlemanWunsch::AlignMotifs(Motif* one, Motif* two, int &i1, int &i2, in
 		}
 		if(q==0){ forScore=maxScore; forMaxI=max_i; forMaxJ=max_j;}
 		else{	revScore=maxScore; revMaxI=max_i; revMaxJ=max_j;}
-
+		
 	}
-
+	
 	if(forScore>revScore){
 		forward=true; alignForward=true; maxScore=forScore;
 		start_i = forMaxI; start_j=forMaxJ;
@@ -720,7 +720,7 @@ double NeedlemanWunsch::AlignMotifs(Motif* one, Motif* two, int &i1, int &i2, in
 		start_i = revMaxI; start_j=revMaxJ;
 		currAlignMat = revAlignMat; currMotif = revOne;
 	}
-
+	
 	//right hand side addition (special case for no gaps)
 	if(gapOpen==1000 && !(start_i==x-1 && start_j==y-1)){
 		if(start_i==x-1){
@@ -742,7 +742,7 @@ double NeedlemanWunsch::AlignMotifs(Motif* one, Motif* two, int &i1, int &i2, in
 		}
 		start_i=x-1; start_j=y-1;
 	}
-
+	
 	//Traceback
 	tmp = maxScore;
 	int tmp_si, tmp_sj;
@@ -750,22 +750,22 @@ double NeedlemanWunsch::AlignMotifs(Motif* one, Motif* two, int &i1, int &i2, in
 	{	
 		alignSection[0][z]=start_i-1;
 		alignSection[1][z]=start_j-1;
-
+		
 		tmp_si=start_i; tmp_sj=start_j;
 		start_i=currAlignMat[tmp_si][tmp_sj].point_i; 
 		start_j=currAlignMat[tmp_si][tmp_sj].point_j;
-
+		
 		tmp=currAlignMat[start_i][start_j].max;
 		z++;
 	}
-
+	
 	i1=start_i;
 	i2=start_j;
 	alignL=z;
 	alignLen=z;
-
+	
 	alignScore = maxScore;
-
+	
 	for(i=0; i<x; i++)
 	{
 		delete [] forAlignMat[i];
@@ -774,7 +774,7 @@ double NeedlemanWunsch::AlignMotifs(Motif* one, Motif* two, int &i1, int &i2, in
 	delete [] forAlignMat;
 	delete [] revAlignMat;
 	delete revOne;
-
+	
 	return(maxScore);
 }
 
@@ -794,8 +794,8 @@ double SmithWatermanAffine::AlignMotifs(Motif* one, Motif* two, int &i1, int &i2
 	alignLen=0;	
 	AlignMatCell** forAlignMat;
 	AlignMatCell** revAlignMat;
-
-
+	
+	
 	int x=one->len+1;
 	int y = two->len+1;
 	//Make SW array
@@ -815,7 +815,7 @@ double SmithWatermanAffine::AlignMotifs(Motif* one, Motif* two, int &i1, int &i2
 			revAlignMat[i][j].point_j=0;
 		}
 	}
-
+	
 	//do in the forward and reverse directions
 	for(int q=0; q<2; q++)
 	{
@@ -825,7 +825,7 @@ double SmithWatermanAffine::AlignMotifs(Motif* one, Motif* two, int &i1, int &i2
 		//Traverse the array, filling in the values
 		for(i=1; i<x; i++) {
 			for(j=1; j<y; j++) {
-
+				
 				currMax=0;
 				//M update
 				currAlignMat[i][j].M = currAlignMat[i-1][j-1].M + Metric->Compare(currMotif, i-1, two, j-1); 
@@ -835,7 +835,7 @@ double SmithWatermanAffine::AlignMotifs(Motif* one, Motif* two, int &i1, int &i2
 				tmp = currAlignMat[i-1][j-1].Iy + Metric->Compare(currMotif, i-1, two, j-1); 
 				if(currAlignMat[i][j].M<tmp){currAlignMat[i][j].M=tmp;}
 				currMax = currAlignMat[i][j].M;
-
+				
 				//Ix update
 				if((currMotif->gaps[i-1]!=0 || two->gaps[i-1]!=0) && gapOpen != 1000){
 					currAlignMat[i][j].Ix = currAlignMat[i-1][j].M - (gapOpen *0.5);//Special case for partial gaps incorporated
@@ -875,13 +875,13 @@ double SmithWatermanAffine::AlignMotifs(Motif* one, Motif* two, int &i1, int &i2
 				//Minimum overlap length enforced here!
 				if(currMax>maxScore && (!overlapOnly ||((i==x-1 && j>=MIN_OVERLAP) || (j==y-1 && i>=MIN_OVERLAP))))
 				{	maxScore = currMax; max_i=i; max_j=j;}
-								
+				
 			}
 		}
 		if(q==0){ forScore=maxScore; forMaxI=max_i; forMaxJ=max_j;}
 		else{	revScore=maxScore; revMaxI=max_i; revMaxJ=max_j;}
 	}
-
+	
 	if(forScore>revScore){
 		forward=true; alignForward=true; maxScore=forScore;
 		start_i = forMaxI; start_j=forMaxJ;
@@ -891,7 +891,7 @@ double SmithWatermanAffine::AlignMotifs(Motif* one, Motif* two, int &i1, int &i2
 		start_i = revMaxI; start_j=revMaxJ;
 		currAlignMat = revAlignMat; currMotif = revOne;
 	}
-
+	
 	//This part aims to include the right side region into the alignment
 	if(overlapOnly && extendOverlap){
 		//right tail here
@@ -916,7 +916,7 @@ double SmithWatermanAffine::AlignMotifs(Motif* one, Motif* two, int &i1, int &i2
 			start_i=x-1; start_j=y-1;
 		}
 	}
-
+	
 	//Traceback
 	tmp = maxScore;
 	int tmp_si, tmp_sj;
@@ -924,7 +924,7 @@ double SmithWatermanAffine::AlignMotifs(Motif* one, Motif* two, int &i1, int &i2
 	{	
 		alignSection[0][z]=start_i-1;
 		alignSection[1][z]=start_j-1;
-
+		
 		//This part aims to put the left tail into the alignment
 		if(overlapOnly && extendOverlap && (start_i==0 || start_j==0)){
 			if(start_i==0){
@@ -937,19 +937,19 @@ double SmithWatermanAffine::AlignMotifs(Motif* one, Motif* two, int &i1, int &i2
 			start_i=currAlignMat[tmp_si][tmp_sj].point_i; 		
 			start_j=currAlignMat[tmp_si][tmp_sj].point_j;
 		}
-
+		
 		tmp=currAlignMat[start_i][start_j].max;
 		z++;
 	}
-
+	
 	i1=start_i;
 	i2=start_j;
 	alignL=z;
 	alignLen=z;
-
-
+	
+	
 	alignScore = maxScore;
-
+	
 	for(i=0; i<x; i++)
 	{
 		delete [] forAlignMat[i];
@@ -958,7 +958,7 @@ double SmithWatermanAffine::AlignMotifs(Motif* one, Motif* two, int &i1, int &i2
 	delete [] forAlignMat;
 	delete [] revAlignMat;
 	delete revOne;
-
+	
 	return(maxScore);
 }
 
@@ -1033,7 +1033,7 @@ Motif* Alignment::TrimEdges(Motif* in, int &start_offset, int &stop_offset, int 
 	}
 	start_offset = mStart;
 	stop_offset = in->len - mStop-1;
-
+	
 	return(newProfile);
 }
 

@@ -39,7 +39,7 @@
 double PearsonCorrelation::Compare(Motif* M_A, int colA, Motif* M_B, int colB)
 {
 	int i;
-	double num=0, denom=0;
+	double num=0;
 	double diff1, diff2;
 	double sum_diff1_sq=0, sum_diff2_sq=0;
 	double score=0;
@@ -52,17 +52,17 @@ double PearsonCorrelation::Compare(Motif* M_A, int colA, Motif* M_B, int colB)
 	}
 	mean1=mean1/(double)B;
 	mean2=mean2/(double)B;
-
+	
 	//Error check
 	if(mean1==0 || mean2==0)
 		return(min);
 	else{
-
+		
 		//Calc the num and denom
 		for(i=0; i<B; i++) {
 			diff1 = M_A->f[colA][i]-mean1;
 			diff2 = M_B->f[colB][i]-mean2;
-
+			
 			num += diff1*diff2;
 			
 			sum_diff1_sq += (diff1*diff1);
@@ -80,8 +80,8 @@ double PearsonCorrelation::Compare(Motif* M_A, int colA, Motif* M_B, int colB)
 double ALLR::Compare(Motif* M_A, int colA, Motif* M_B, int colB)
 {
 	int i;
-	double LLR1=0, LLR2=0, denom=0, res;
-
+	double LLR1=0, LLR2=0, denom=0;
+	
 	for(i=0; i<B; i++){
 		denom += (M_A->n[colA][i]+M_B->n[colB][i]);
 		LLR1 += (M_B->n[colB][i] * M_A->pwm[colA][i]);
@@ -99,7 +99,7 @@ double ALLR_LL::Compare(Motif* M_A, int colA, Motif* M_B, int colB)
 {
 	int i;
 	double LLR1=0, LLR2=0, denom=0, res;
-
+	
 	for(i=0; i<B; i++){
 		denom += (M_A->n[colA][i]+M_B->n[colB][i]);
 		LLR1 += (M_B->n[colB][i] * M_A->pwm[colA][i]);
@@ -122,7 +122,7 @@ double ChiSq::Compare(Motif* M_A, int colA, Motif* M_B, int colB)
 {
 	int i;
 	double CS1=0, CS2=0;
-	double x,f_x;
+	double x;
 	double exp1, exp2;
 	double N1=0, N2=0;
 	for(i=0; i<B; i++){
@@ -144,7 +144,7 @@ double SumSqDiff::Compare(Motif* M_A, int colA, Motif* M_B, int colB)
 {
 	int i;
 	double roll_sum=0;
-
+	
 	for(i=0; i<B; i++){
 		roll_sum += (M_A->f[colA][i]-M_B->f[colB][i])*(M_A->f[colA][i]-M_B->f[colB][i]);
 	}
