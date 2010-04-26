@@ -18,8 +18,8 @@ This function is use to read standard Transfac type file.}
 \examples{
 #####Database and Scores#####
 path <- system.file(package="MotIV")
-jaspar <- readPWMfile(paste(path,"/extdata/jasparDB2009.txt",sep=""))
-jaspar.scores <- readDBScores(paste(path,"/extdata/jaspar2009_PCC_SWU.scores",sep=""))
+jaspar <- readPWMfile(paste(path,"/extdata/jaspar2010.txt",sep=""))
+jaspar.scores <- readDBScores(paste(path,"/extdata/jaspar2010_PCC_SWU.scores",sep=""))
 }
 \keyword{misc}
  

@@ -24,7 +24,7 @@ filterMotiv <- function (x, f, exact, verbose)
 			for (i in 1:length.motif)
 			{
 				name <- FALSE
-				tfname <- FALSE
+				TFname <- FALSE
 				eval <- FALSE
 				topX <- FALSE
 				len <- TRUE
@@ -32,13 +32,13 @@ filterMotiv <- function (x, f, exact, verbose)
 #check motif name
 				if (exact && f[[filterNumber]]@name[[h]]!="")
 				{
-					isname <- any(unlist(lapply(f[[filterNumber]]@name[[h]], function(z){z==x@bestMatch[[i]]@name})))
+					isInNames <- any(unlist(lapply(f[[filterNumber]]@name[[h]], function(z){z==x@bestMatch[[i]]@name})))
 				} 
 				else 
 				{
-					isname <- any(unlist(lapply(f[[filterNumber]]@name[[h]], function(z){grepl(z, x@bestMatch[[i]]@name)})))
+					isInNames <- any(unlist(lapply(f[[filterNumber]]@name[[h]], function(z){grepl(z, x@bestMatch[[i]]@name)})))
 				}
-				if (isname)
+				if (isInNames)
 				{
 					name <- TRUE	
 				}
@@ -49,16 +49,16 @@ filterMotiv <- function (x, f, exact, verbose)
 #check TF names
 					if (exact && f[[filterNumber]]@tfname[[h]]!="")
 					{
-						istfname <- any(unlist(lapply(f[[filterNumber]]@tfname[[h]], function(z){z==x@bestMatch[[i]]@aligns[[j]]@TF@name})))
+						isInTFNames <- any(unlist(lapply(f[[filterNumber]]@tfname[[h]], function(z){z==x@bestMatch[[i]]@aligns[[j]]@TF@name})))
 					} 
 					else
 					{
-						istfname <- any(unlist(lapply(f[[filterNumber]]@tfname[[h]], function(z){grepl(z, x@bestMatch[[i]]@aligns[[j]]@TF@name)})))
+						isInTFNames <- any(unlist(lapply(f[[filterNumber]]@tfname[[h]], function(z){grepl(z, x@bestMatch[[i]]@aligns[[j]]@TF@name)})))
 					}
 					
-					if (istfname)
+					if (isInTFNames)
 					{
-						tfname <- TRUE
+						TFname <- TRUE
 #check TF position
 						if (j<=as.integer(f[[filterNumber]]@top[[h]]) )
 						{
@@ -73,12 +73,12 @@ filterMotiv <- function (x, f, exact, verbose)
 							{
 								len <- FALSE
 							}
-							if(tfname && eval && topX && len && name)
+							if(TFname && eval && topX && len && name)
 							{validMotifs.tmp=c(validMotifs.tmp, j)}
 						}
 					}
 				}
-				if (tfname && eval && topX && len && name)
+				if (TFname && eval && topX && len && name)
 				{
 					select[[h]] <- c(select[[h]], i)
 					if (is.null(f[[filterNumber]]@valid[[h]]))
@@ -156,20 +156,20 @@ combineMotiv <- function (x, filt, name, verbose, exact)
 				for (i in 1:length.motif)
 				{
 					mname <- FALSE
-					tfname <- FALSE
+					TFname <- FALSE
 					eval <- FALSE
 					topX <- FALSE
 					len <- TRUE
 #check motif name
 					if (exact && filter[[k]]@name[[h]]!="")
 					{
-						isname <- any(unlist(lapply(filter[[k]]@name[[h]], function(z){z==x@bestMatch[[i]]@name})))
+						isInNames <- any(unlist(lapply(filter[[k]]@name[[h]], function(z){z==x@bestMatch[[i]]@name})))
 					} 
 					else 
 					{
-						isname <- any(unlist(lapply(filter[[k]]@name[[h]], function(z){grepl(z, x@bestMatch[[i]]@name)})))
+						isInNames <- any(unlist(lapply(filter[[k]]@name[[h]], function(z){grepl(z, x@bestMatch[[i]]@name)})))
 					}
-					if (isname)
+					if (isInNames)
 					{
 						mname <- TRUE
 					}
@@ -179,16 +179,16 @@ combineMotiv <- function (x, filt, name, verbose, exact)
 #check TF names
 						if (exact && filter[[k]]@tfname[[h]]!="")
 						{
-							istfname <- any(unlist(lapply(filter[[k]]@tfname[[h]], function(z){z==x@bestMatch[[i]]@aligns[[j]]@TF@name})))
+							isInTFNames <- any(unlist(lapply(filter[[k]]@tfname[[h]], function(z){z==x@bestMatch[[i]]@aligns[[j]]@TF@name})))
 						} 
 						else 
 						{
-							istfname <- any(unlist(lapply(filter[[k]]@tfname[[h]], function(z){grepl(z, x@bestMatch[[i]]@aligns[[j]]@TF@name)})))
+							isInTFNames <- any(unlist(lapply(filter[[k]]@tfname[[h]], function(z){grepl(z, x@bestMatch[[i]]@aligns[[j]]@TF@name)})))
 						}
 						
-						if (istfname)
+						if (isInTFNames)
 						{
-							tfname <- TRUE	
+							TFname <- TRUE	
 #check TF position
 							if (j<=as.integer(filter[[k]]@top[[h]]) )
 							{
@@ -206,7 +206,7 @@ combineMotiv <- function (x, filt, name, verbose, exact)
 							}
 						}
 					}
-					if (tfname && eval && topX && len && mname)
+					if (TFname && eval && topX && len && mname)
 					{
 						select[[h]] <- c(select[[h]], i)
 					}

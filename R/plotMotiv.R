@@ -73,6 +73,7 @@ plotMotiv <- function (motiv, ncol, nrow, top, bysim, rev, main, sub)
 	pushViewport(vp)	
 	grid.segments(c(1:(layout[2]-1)/layout[2], rep(0, layout[1]-1)), c(rep(0, layout[2]-1), 1:(layout[1]-1)/layout[1]), c(1:(layout[2]-1)/layout[2], rep(1, layout[1]-1)), c(rep(1, layout[2]-1), 1:(layout[1]-1)/layout[1]), gp = gpar(col = "grey90", lwd=2))
 #plot Logo	
+
 	p=1
 	for (j in 1:layout[1])
 	{

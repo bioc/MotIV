@@ -66,7 +66,7 @@ PlatformSupport::PlatformSupport()
 void PlatformSupport::ReadBackground(char* fn)
 {
 	char *xmer;
-	int i,j;
+	int i,j=0;
 	double px;
 	
 	xmer=(char*)malloc((MAX_MARKOV+1)*sizeof(char));	

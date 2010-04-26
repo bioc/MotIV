@@ -47,8 +47,7 @@ SEXP generateScoresDB(SEXP cc, SEXP align,SEXP go, SEXP ge, SEXP nRand,   SEXP i
 	PROTECT(listRandPWM=allocVector(VECSXP,1));
 	PlatformSupport* Plat = new PlatformSupport();
     ColumnComp* CC;
-	Alignment* ALIGN;
-	int i;
+	Alignment* ALIGN=NULL;
 	// int argc=length(argv);
 	// int nRand;
 	
@@ -135,6 +134,6 @@ SEXP generateScoresDB(SEXP cc, SEXP align,SEXP go, SEXP ge, SEXP nRand,   SEXP i
 
 //R code
 extern "C" {
-	SEXP RgenerateScoresDB (SEXP cc, SEXP align,SEXP go, SEXP ge, SEXP nRand, SEXP inputPWM)
-	{	generateScoresDB( cc, align, go, ge, nRand, inputPWM );}
+	void RgenerateScoresDB (SEXP cc, SEXP align,SEXP go, SEXP ge, SEXP nRand, SEXP inputPWM)
+	{	generateScoresDB( cc, align, go, ge, nRand, inputPWM );	}
 } //extern "C"

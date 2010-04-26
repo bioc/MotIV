@@ -6,7 +6,7 @@
 Search for motifs matches corresponding to PWM. 
 } 
 \usage{
-  motifMatch(inputPWM, database, DBscores, cc="PCC", align="SWU", top=5, go=1, ge=0.5)
+  motifMatch(inputPWM, database=jaspar, DBscores=jaspar.scores, cc="PCC", align="SWU", top=5, go=1, ge=0.5)
 }
 \arguments{
 	\item{inputPWM}{A list of PWM.}
@@ -20,6 +20,8 @@ Search for motifs matches corresponding to PWM.
 }
 \details{
 	For a set of PWMs given by \code{inputPWM}, this function realizes alignments with each motif of the \code{database} and returns the \code{top} best motifs.
+	If no \code{database} is provided, the function will use jaspar by loading data(jaspar2010).
+	If no \code{DBscores} is given, jaspar.scores from data(jaspar2010_scores) will be used.
 	
 	The e-value is computed according the matric name \code{cc} and is corrected by the \code{DBscores}. 
 }
@@ -30,16 +32,16 @@ Search for motifs matches corresponding to PWM.
 \examples{
 #####Database and Scores#####
 path <- system.file(package="MotIV")
-jaspar <- readPWMfile(paste(path,"/extdata/jasparDB2009.txt",sep=""))
-jaspar.scores <- readDBScores(paste(path,"/extdata/jaspar2009_PCC_SWU.scores",sep=""))
+jaspar <- readPWMfile(paste(path,"/extdata/jaspar2010.txt",sep=""))
+jaspar.scores <- readDBScores(paste(path,"/extdata/jaspar2010_PCC_SWU.scores",sep=""))
 
 #####Input#####
-load(paste(path,"/data/gadem_STAT1_MACS.rda",sep=""))
+data(FOXA1_rGADEM)
 motifs <- getGademPWM(gadem)
 motifs.trimed <- trimPWMedge(motifs, threshold=1)
 
 #####Analysis#####
-stat1.analysis.jaspar <- motifMatch(inputPWM=motifs,align="SWU",cc="PCC",database=jaspar,DBscores=jaspar.scores,top=5)
-summary(stat1.analysis.jaspar )
+foxa1.analysis.jaspar <- motifMatch(inputPWM=motifs,align="SWU",cc="PCC",database=jaspar,DBscores=jaspar.scores,top=5)
+summary(foxa1.analysis.jaspar )
 }
 \keyword{misc}

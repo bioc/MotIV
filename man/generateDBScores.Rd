@@ -23,14 +23,16 @@ writeDBScores(x, file)
 	\item{x}{A numeric matrix corresponding to a score.}
 }
 \details{
-		\code{generateDBScores} : Based on database property (suchs as length, zero rate, invariant colums ), nRand matrix are generated. Second step is to calculated a score for each matrix length with the specified alignment method and metric.
+The score reflects the biais of the database. It is used to compute more precisely e-value alignments.
+
+		\code{generateDBScores} : Based on database properties (suchs as length, zero rate, invariant colums ), nRand matrix are generated. A score is calculated for each matrix length with the specified alignment method and metric.
 		
-		The \code{score} is associated to a database and a alignment method and metric so I don't have to generate it each time you use the same database. Use the \code{writeDBScores} and \code{readDBScores} instead.
+		The \code{score} is associated to a database and a alignment method and metric so you don't have to generate it each time you use the same database. Use the \code{writeDBScores} and \code{readDBScores} instead.
 	\code{readDBScores} : Read a score file.
 	\code{writeDBScores} : Write a score file.
 }
 \value{A numeric matrix. Columns correspond respectively to the first matrix length, second matrix length, variance, mean, matrix number, distance min and max.}
-\section{Warning }{ Because of each matrix is compare to each other, computing time is exponential. You should be aware of this fact before provided a high nRand. 5000 is a good time/accurate rate choice.}
+\section{Warning }{ Because of each matrix is compare to each other, computing time is exponential. You should be aware of this fact before provided a high nRand. 5000 is a good time/accuracy rate choice.}
 \author{Shaun Mahony, modified by Eloi Mercier <\email{eloi.mercier@ircm.qc.ca}>}
 \seealso{'readDBScores', 'writeDBScores'}
 \references{Sandelin,A. and Wasserman,W.W. (2004) \code{Constrained binding site diversity within families of transcription factors enhances pattern discovery bioinformatics}. J. Mol. Biol., 338, 207/215.
@@ -38,10 +40,10 @@ writeDBScores(x, file)
 \examples{
 #####Database and Scores#####
 path <- system.file(package="MotIV")
-jaspar <- readPWMfile(paste(path,"/extdata/jasparDB2009.txt",sep=""))
+jaspar <- readPWMfile(paste(path,"/extdata/jaspar2010.txt",sep=""))
 #jaspar.scores <- generateDBScores(inputDB=jaspar,cc="PCC",align="SWU",nRand=1000)
 #writeDBScores(jaspar.scores,paste(path,"/extdata/jaspar_PCC_SWU.scores",sep=""))
-jaspar.scores <- readDBScores(paste(path,"/extdata/jaspar2009_PCC_SWU.scores",sep=""))
+jaspar.scores <- readDBScores(paste(path,"/extdata/jaspar2010_PCC_SWU.scores",sep=""))
 }
 \keyword{misc}
  
