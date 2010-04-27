@@ -48,7 +48,7 @@ calculatePositionVector <- function (motiv, gadem, seq.length, group, correction
 
 			#alignments <- data.frame(sequence=seq.motif, match=match.motif, strand1=gadem.strand, strand2=motiv.strand)
 			
-			chr <- gsub("chr","", sapply(gadem@motifList[[current.motiv]]@alignList, function(x){x@chr}) )
+			chr <- sapply(gadem@motifList[[current.motiv]]@alignList, function(x){x@chr})  #gsub("chr","", sapply(gadem@motifList[[current.motiv]]@alignList, function(x){x@chr}) )
 			position <- sapply(gadem@motifList[[current.motiv]]@alignList, function(x){x@pos + x@start })
 			peakPos <- sapply(gadem@motifList[[current.motiv]]@alignList, function(x){x@pos })
 			seqID <- sapply(gadem@motifList[[current.motiv]]@alignList, function(x){x@seqID})
