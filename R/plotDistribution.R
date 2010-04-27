@@ -79,7 +79,7 @@ plotDistribution <- function (pos, group, main, sort, ncol, nrow, strand, bysim,
 	positionVector <- list()
 	for (i in 1:length(pos))
 	{
-		positionVector[[i]]=(end(pos[[i]]@positionVector)+ start(pos[[i]]@positionVector))/2
+		positionVector[[i]]=pos[[i]]@positionVector[["peakPos"]] #(end(pos[[i]]@positionVector)+ start(pos[[i]]@positionVector))/2
 	}
 	
 	var <- sapply(positionVector, function(x){var(as.integer(x))})
