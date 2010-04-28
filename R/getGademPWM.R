@@ -1,6 +1,7 @@
 
 getGademPWM <- function (y)
 {
+ .Deprecated("getPWM", package="rGADEM")
 	PWM <- sapply(y@motifList, 
 	function(x){
 		pwm=x@pwm
@@ -11,6 +12,7 @@ getGademPWM <- function (y)
 	names(PWM)<- names(y)
 	return(PWM)
 }
+
 
 
 

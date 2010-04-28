@@ -28,7 +28,7 @@ data(jaspar2010_scores)
 
 #####Input#####
 data(FOXA1_rGADEM)
-motifs <- getGademPWM(gadem)
+motifs <- getPWM(gadem)
 motifs.trimed <- trimPWMedge(motifs, threshold=1)
 
 #####Analysis#####

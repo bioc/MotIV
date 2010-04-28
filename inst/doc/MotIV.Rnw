@@ -123,6 +123,8 @@ To load the database, use the \verb@readPWMfile@ function :
  jaspar <- readPWMfile(paste(path,"/extdata/jaspar2010.txt",sep=""))
 @
 
+Note that the JASPAR is load by default when loading \verb@MotIV@. 
+
 It returns a list of matrix corresponding to the database PWMs.
 For more information about the Transfac file format, please refer to \href{http://www.benoslab.pitt.edu/stamp/help.html}{http://www.benoslab.pitt.edu/stamp/help.html}.
 
@@ -147,6 +149,7 @@ For the following analysis, you will need to load the scores file by typing :
 jaspar.scores <- readDBScores(paste(path,"/extdata/jaspar2010_PCC_SWU.scores",sep=""))
 @
 Remember that scores are associated to a specific database, metric and alignment type.
+By default, \verb@jaspar.scores@ is load with \verb@MotIV@.
 
 \section{Input Motifs}
 Now that you have construct the database and the database scores, you have to load the PWM motifs you want to analyze. There are different ways to do it depending of the kind of data you have.
@@ -154,8 +157,8 @@ Now that you have construct the database and the database scores, you have to lo
 \subsection{From a gadem object}
 \verb@MotIV@ software is designed to extend the features of the \verb@rGADEM@ package. Thus, you can use the object returned by a previous analysis with the \verb@rGADEM@ package. You need to load the \verb@gadem@ object load in your current R session. Load the motifs PWMs contained in an object called "gadem" by typing :
 <<load gadem object, eval=T>>=
-load(paste(system.file("data/", package = "MotIV"), "FOXA1_rGADEM.rda", sep = ""))
-motifs <- getGademPWM(gadem)
+load(paste(path, "/data/FOXA1_rGADEM.rda", sep = ""))
+motifs <- getPWM(gadem)
 @
 
 \subsection{From a PWM file}
@@ -188,6 +191,14 @@ At this step, you should have all what you need to start the motifs matches anal
 <<motiv analysis>>=
 foxa1.analysis.jaspar <- motifMatch(inputPWM=motifs,align="SWU",cc="PCC",database=jaspar,DBscores=jaspar.scores,top=5)
 @
+
+or simply
+
+<<motiv analysis shot>>=
+foxa1.analysis.jaspar <- motifMatch(motifs)
+@
+
+for an analysis with default parameter using the JASPAR database.
 
 This function will return an object of type \verb@motiv@ needed for next functions.
 Let's have a look to the content :

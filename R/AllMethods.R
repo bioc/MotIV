@@ -437,7 +437,7 @@ function(x, y, sort=FALSE, group=FALSE, main=NULL, sub=NULL, ncol=0, nrow=0, xli
 	}
 	else
 	{
-		for (g in 1:length(y@motifList))
+		for (g in seq(nMotifs(y)))
 		{
 			motifs <- NULL
 			if (y@motifList[[g]]@name %in% names(x@input))
