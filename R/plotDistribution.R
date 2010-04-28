@@ -123,7 +123,7 @@ plotDistribution <- function (pos, group, main, sort, ncol, nrow, strand, bysim,
 	size=max(layout[1], layout[2])	
 	
 	grid.newpage()
-	grid.text(main, gp=gpar(col="black", font=2, cex=1.5), y=unit(0.98,"npc"))
+	#grid.text(main, gp=gpar(col="black", font=2, cex=1.5), y=unit(0.98,"npc"))
 	grid.text("position", gp=gpar(col="black", font=3, cex=1), y=unit(0.01,"npc"))
 	if (strand)
 	{
@@ -166,7 +166,7 @@ plotDistribution <- function (pos, group, main, sort, ncol, nrow, strand, bysim,
 				popViewport() #end vpdistribution
 				panel.segments(0,0.13,1,0.13, col="black", lwd=1)
 				panel.segments(x0=c(0.25,0.5,0.75), y0=0.1+c(0,0,0), x1=c(0.25,0.5,0.75), y1=0.115+c(0.05,0.05,0.05), col="black", lwd=1)	
-				panel.text(x=c(0.25,0.5,0.75), y=0.045, labels=round(c(-sequencesLength/2,0, sequencesLength/2),0), cex=2/size)
+				panel.text(x=c(0.25,0.5,0.75), y=0.045, labels=round(c(-sequencesLength/4,0, sequencesLength/4),0), cex=2/size)
 				popViewport() #end  plotViewport "plot"
 				popViewport() #end vpin
 				popViewport() #end vpcase
@@ -177,4 +177,6 @@ plotDistribution <- function (pos, group, main, sort, ncol, nrow, strand, bysim,
 	}
 	popViewport() #end vp
 	popViewport() #end plotViewport "grid"
+		grid.text(main, gp=gpar(col="black", font=2, cex=1.5), y=unit(0.999,"npc"), just="top")
+
 }
