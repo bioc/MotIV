@@ -44,7 +44,7 @@ SEXP motifMatch (SEXP  cc, SEXP align, SEXP top, SEXP go, SEXP ge, SEXP inputPWM
 	SEXP  returnData;
 	PlatformSupport* Plat = new PlatformSupport();
     ColumnComp* CC;
-	Alignment* ALIGN;
+	Alignment* ALIGN=NULL;
     bool colChosen=false, alignChosen=false;
 	int matchTopX = TOP_MATCH;
 	//int argc=length(argv);
@@ -137,6 +137,6 @@ SEXP motifMatch (SEXP  cc, SEXP align, SEXP top, SEXP go, SEXP ge, SEXP inputPWM
 
 //R code
 extern "C" {
-	SEXP RmotifMatch (SEXP  cc, SEXP align, SEXP top, SEXP go, SEXP ge,  SEXP inputPWM, SEXP inputDB, SEXP inputScores)
+	void RmotifMatch (SEXP  cc, SEXP align, SEXP top, SEXP go, SEXP ge,  SEXP inputPWM, SEXP inputDB, SEXP inputScores)
 	{	motifMatch(cc, align, top, go, ge, inputPWM, inputDB, inputScores );	}
 } 

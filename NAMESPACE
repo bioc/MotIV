@@ -4,7 +4,7 @@ importFrom(graphics, par, plot)
 
 importFrom(grid, dataViewport, gpar, grid.circle, grid.layout, grid.newpage, grid.polygon, grid.rect, grid.segments, grid.text, grid.xaxis, grid.yaxis, plotViewport, popViewport, pushViewport, unit, viewport)
 
-importFrom(IRanges, IRanges, RangedData)
+importFrom(IRanges, IRanges, RangedData, start, end, as.data.frame)
 
 importFrom(lattice, panel.lines, panel.segments, panel.text, panel.rect)
 
@@ -12,9 +12,11 @@ importFrom(methods, "@<-", new)
 
 importFrom(stats, density)
 
-importFrom(utils, read.csv, read.table, write.table)
+importFrom(utils, read.csv, read.table, write.table, data)
 
 importMethodsFrom(IRanges,as.list, as.matrix, as.vector, cbind, "colnames<-", duplicated, lapply, mean, ncol, nrow, order, ranges, rbind, rev, "rownames<-", sapply, sd, sort, split, summary, unique, unlist, var, which)
+
+importMethodsFrom(rGADEM, nMotifs, getPWM)
 
 importMethodsFrom(methods, show)
 
@@ -22,7 +24,7 @@ importClassesFrom(methods, ANY, character, data.frame, list, matrix, numeric)
 
 importClassesFrom(rGADEM, gadem)
 
-export(motifMatch, exportAsTransfacFile, generateDBScores, readDBScores, writeDBScores, getGademPWM, readGademPWMFile, readPWMfile, viewAlignments, summary, plot, split, filter, combine, makePWM, setFilter,  combine, trimPWMedge, exportAsRangedData, similarity, viewMotifs, occurences, cooccurences)
+export(motifMatch, exportAsTransfacFile, generateDBScores, readDBScores, writeDBScores, getGademPWM, readGademPWMFile, readPWMfile, viewAlignments, summary, plot, split, filter, combine, makePWM, setFilter,  combine, trimPWMedge, exportAsRangedData, similarity, viewMotifs, occurences, cooccurences, getPWM, nMotifs)
 
 exportClasses(motiv, matches, alignments, transcriptionFactor, filter)
 exportMethods(show,summary, combine, filter, split)

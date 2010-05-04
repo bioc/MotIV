@@ -12,7 +12,7 @@ plotMotif <- function( object, current, column,  top, layout, bysim, group)
 	}
 	
 	
-	do.call("grid.text", list(c(plotname[current],"forward","RC"), x=unit(c(0.5,0.25,0.75),"npc"), y=unit(0.96,"npc"), gp=gpar(cex=c(3/size, rep(max(2/size,0.6),2)), font=c(2,3,3))))
+	#do.call("grid.text", list(c(plotname[current],"forward","RC"), x=unit(c(0.5,0.25,0.75),"npc"), y=unit(0.96,"npc"), gp=gpar(cex=c(3/size, rep(max(2/size,0.6),2)), font=c(2,3,3))))
 	
 # grid.text(c(plotname,"forward","RC"), x=unit(c(0.5,0.25,0.75),"npc"), y=unit(0.96,"npc"), gp=gpar(cex=c(3/size, rep(max(2/size,0.6),2)), font=c(2,3,3)))	
 	pushViewport(plotViewport(c(0, 0,2/layout[1],0)))
@@ -36,6 +36,12 @@ plotMotif <- function( object, current, column,  top, layout, bysim, group)
 	vpmotifrev <- viewport(layout.pos.col=3:4, layout.pos.row=1) #seqLogo
 	pushViewport(vpmotifrev)	
 	seqLogo(revmat, yaxis=F, xaxis=F, size=1, yfontsize=0, xfontsize=0, vmargins=0.1, hmargins=0.1)
+	
+	
+	
+		do.call("grid.text", list(c(plotname[current],"forward","RC"), x=unit(c(0,-0.5,0.5),"npc"), y=unit(0.99,"npc"), gp=gpar(cex=c(max(3/size,0.7), rep(max(2/size,0.6),2)), font=c(2,3,3))))
+
+	
 }
 
 #####MOTIV#####
@@ -64,7 +70,7 @@ plotMotiv <- function (motiv, ncol, nrow, top, bysim, rev, main, sub)
 	
 #plot grid and title
 	grid.newpage()
-	grid.text(main, gp=gpar(col="black", font=2, cex=1.5), y=unit(0.98,"npc"))
+	#grid.text(main, gp=gpar(col="black", font=2, cex=1.5), y=unit(0.98,"npc"))
 	grid.text(sub, gp=gpar(col="black", font=3, cex=1.3), y=unit(0.03,"npc"), just="top")
 	grid.text("RC : Reverse Complement", gp=gpar(col="black", font=3, cex=0.7), y=unit(0.015,"npc"), x=unit(0.99,"npc"), just="right")
 	
@@ -73,6 +79,7 @@ plotMotiv <- function (motiv, ncol, nrow, top, bysim, rev, main, sub)
 	pushViewport(vp)	
 	grid.segments(c(1:(layout[2]-1)/layout[2], rep(0, layout[1]-1)), c(rep(0, layout[2]-1), 1:(layout[1]-1)/layout[1]), c(1:(layout[2]-1)/layout[2], rep(1, layout[1]-1)), c(rep(1, layout[2]-1), 1:(layout[1]-1)/layout[1]), gp = gpar(col = "grey90", lwd=2))
 #plot Logo	
+
 	p=1
 	for (j in 1:layout[1])
 	{
@@ -124,4 +131,6 @@ plotMotiv <- function (motiv, ncol, nrow, top, bysim, rev, main, sub)
 	}
 	popViewport() #end vp
 	popViewport() #end plotViewport "grid"
+		grid.text(main, gp=gpar(col="black", font=2, cex=1.5), y=unit(0.999,"npc"), just="top")
+
 }

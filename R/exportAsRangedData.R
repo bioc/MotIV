@@ -14,9 +14,7 @@ exportAsRangedData <- function (x, y, bysim=TRUE, correction=TRUE)
 	p=1
 	for (i in curr)
 	{
-		data.ir=IRanges(start=sapply(y@motifList[[i]]@alignList, function(x){x@start})+vector.pos[[p]]@positionVector$start, end=sapply(y@motifList[[i]]@alignList, function(x){x@start})+vector.pos[[p]]@positionVector$end)
-		chr <- sapply(y@motifList[[i]]@alignList, function(x){x@chr})
-		data = rbind(data,RangedData(data.ir, space=gsub("chr", "", chr), strand=sapply(y@motifList[[i]]@alignList, function(x){x@strand})))
+		data <- rbind(data, vector.pos[[p]]@positionVector[,"strand"])	
 		p=p+1
 	}	
 	return(data)

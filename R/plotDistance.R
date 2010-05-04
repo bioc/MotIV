@@ -1,15 +1,17 @@
 
 #####DISTANCE#####
-motivDistance <- function (positionVector1, positionVector2, commonSequences,  name1, name2, strand, sequencesLength)
+motivDistance <- function (positionVector1, positionVector2, commonSequences, name1, name2, strands, sequencesLength)
 {
-	distance <- NULL
+positions1=as.data.frame(positionVector1)
+positions2=as.data.frame(positionVector2)
+distance <- NULL
 #Apply the method depending of the lowest standard deviation
-    if(var(positionVector1$start) <= var(positionVector2$start) )
+ if(var(positions1$peakPos) <= var(positions2$peakPos) )
     {
-		for (seq in commonSequences)
+		for (seqID in commonSequences)
 		{
-			pos1=unique(positionVector1$start[  positionVector1$seq==seq & positionVector1$gadem.strand%in%strand ])
-			pos2=unique(positionVector2$start[ positionVector2$seq==seq & positionVector2$gadem.strand%in%strand ])
+			pos1=unique(positions1$peakPos[  positions1$seqID==seqID & positions1$strand%in%strands ])
+			pos2=unique(positions2$peakPos[ positions2$seqID==seqID & positions2$strand%in%strands ])
 			if (length(pos1)>=1& length(pos2)>=1)
 			{
 				pos1.center=pos1[which(abs(pos1-sequencesLength)==min(abs(pos1-sequencesLength)))] #select center motif
@@ -17,13 +19,12 @@ motivDistance <- function (positionVector1, positionVector2, commonSequences,  n
 			}
 		}
 		names <- c(name1, name2)
-    }
-    else
+	}	 else
     {
-		for (seq in commonSequences)
+		for (seqID in commonSequences)
 		{
-			pos1=unique(positionVector2$start[ positionVector2$seq==seq & positionVector2$gadem.strand%in%strand ])
-			pos2=unique(positionVector1$start[  positionVector1$seq==seq & positionVector1$gadem.strand%in%strand ])
+			pos1=unique(positions2$peakPos[ positions2$seqID==seqID & positions2$strand%in%strands ])
+			pos2=unique(positions1$peakPos[  positions1$seqID==seqID & positions1$strand%in%strands ])
 			if (length(pos1)>=1& length(pos2)>=1)
 			{
 				pos1.center=pos1[which(abs(pos1-sequencesLength)==min(abs(pos1-sequencesLength)))] #select center motif
@@ -35,80 +36,80 @@ motivDistance <- function (positionVector1, positionVector2, commonSequences,  n
 	return (list(distance, names))
 }
 
+
 #########
 
-plotDistanceHistogram<- function (harg, xlim, strand, pos, column, row, commonSequences,  motifName1, motifName2, strands, sequencesLength)
+plotDistanceHistogram<- function (harg, xlim, strand, pos, distance, column, row, names,  motifName1, motifName2, strands, sequencesLength)
 {
-	xlength=xlim[2]-xlim[1]
+	xlength=xlim[2]
 	nint = harg[["nint"]]
 	pushViewport(plotViewport(c(7/length(pos), 0.5,7/length(pos),0.5), name="plot"))
-	if (!strand)
-	{
-		distance <- motivDistance(pos[[column]]@positionVector, pos[[row]]@positionVector, commonSequences,  motifName1, motifName2, strands, sequencesLength)
-		distance.xlim <- (distance[[1]][distance[[1]]>xlim[1] & distance[[1]]<xlim[2]])/xlength +0.5	
+		
+	# if (!strand)
+	# {
+	#	distance <- motivDistance(pos[[column]]@positionVector, pos[[row]]@positionVector, commonSequences,  motifName1, motifName2, strands, sequencesLength)
+		distance.xlim <- (distance[distance>xlim[1] & distance<xlim[2]])/(2*xlength) +0.5	
 		distance.hist=hist(distance.xlim, breaks=seq(0,1,length=nint+1), plot=F)$count
 		do.call("panel.rect", c(list(xright=seq(0,1-1/nint,length=nint), ybottom=rep(0,nint), xleft=seq(1/nint,1,length=nint),ytop=distance.hist/(max(distance.hist)+max(distance.hist)/5)), harg))
-	} else {
-		distance<- list()
-		distance.hist <- list()
-		for (i in 1:2)	
-		{
-			distance <- motivDistance(pos[[column]]@positionVector, pos[[row]]@positionVector, commonSequences,  motifName1, motifName2, strands[i], sequencesLength)
-			distance.xlim <- (distance[[1]][distance[[1]]>xlim[1] & distance[[1]]<xlim[2]])/xlength
-			distance.hist[[i]]=hist(distance.xlim+0.5, breaks=seq(0,1,length=nint+1), plot=F)$count
-		}		
-		arg <- harg[names(harg)!="border"] 
-		hist.max <- max(distance.hist[[1]], distance.hist[[2]])
-		do.call("panel.rect", c(list(xright=seq(0,1-1/nint,length=nint), ybottom=rep(0,nint), xleft=seq(1/nint,1,length=nint),ytop=distance.hist[[1]]/(hist.max+hist.max/5), border=2), arg))
-		do.call("panel.rect", c(list(xright=seq(0,1-1/nint,length=nint), ybottom=rep(0,nint), xleft=seq(1/nint,1,length=nint),ytop=distance.hist[[2]]/(hist.max+hist.max/5), border=4), arg))
-	}
+	# } else {
+		# distance<- list()
+		# distance.hist <- list()
+		# for (i in 1:2)	
+		# {
+			# distance <- motivDistance(pos[[column]]@positionVector, pos[[row]]@positionVector, commonSequences,  motifName1, motifName2, strands[i], sequencesLength)
+			# distance.xlim <- (distance[[1]][distance[[1]]>xlim[1] & distance[[1]]<xlim[2]])/xlength
+			# distance.hist[[i]]=hist(distance.xlim+0.5, breaks=seq(0,1,length=nint+1), plot=F)$count
+		# }		
+		# arg <- harg[names(harg)!="border"] 
+		# hist.max <- max(distance.hist[[1]], distance.hist[[2]])
+		# do.call("panel.rect", c(list(xright=seq(0,1-1/nint,length=nint), ybottom=rep(0,nint), xleft=seq(1/nint,1,length=nint),ytop=distance.hist[[1]]/(hist.max+hist.max/5), border=2), arg))
+		# do.call("panel.rect", c(list(xright=seq(0,1-1/nint,length=nint), ybottom=rep(0,nint), xleft=seq(1/nint,1,length=nint),ytop=distance.hist[[2]]/(hist.max+hist.max/5), border=4), arg))
+	# }
 	popViewport() #end plotViewport "plot"
-	distance.names <- distance[[2]]
-	grid.text(x=unit(0.5,"npc"), y=unit(0.92,"npc"), paste("d(", distance.names[1],"-", distance.names[2],")"))
+	grid.text(x=unit(0.5,"npc"), y=unit(0.92,"npc"), paste("d(", names[1],"-", names[2],")"))
 }
 
 ##############
 
-plotDistanceDensity <- function (darg, carg, xlim, strand, pos, column, row, commonSequences, motifName1, motifName2, strands, sequencesLength)
+plotDistanceDensity <- function (darg, carg, xlim, strand, pos, distance,  column, row,  names, motifName1, motifName2, strands, sequencesLength)
 {
-	xlength=xlim[2]-xlim[1]
+	xlength=xlim[2]
 	pushViewport(plotViewport(c(7/length(pos), 0.5,7/length(pos),0.5), name="plot"))
-	if(!strand)
-	{		
-		distance <- motivDistance(pos[[column]]@positionVector, pos[[row]]@positionVector, commonSequences, motifName1, motifName2, c("+","-"), sequencesLength)
-		distance.xlim <- distance[[1]][distance[[1]]>xlim[1] & distance[[1]]<xlim[2]]
+	# if(!strand)
+	# {		
+		#distance <- motivDistance(pos[[column]]@positionVector, pos[[row]]@positionVector, commonSequences, motifName1, motifName2, c("+","-"), sequencesLength)
+		distance.xlim <- distance[distance>xlim[1] & distance<xlim[2]]
 		density <- do.call ("density", c(list(x=distance.xlim),darg))
-		density.x <- (density$x[density$x>xlim[1] & density$x<xlim[2]] - xlim[1])/xlength
+		density.x <- (density$x[density$x>xlim[1] & density$x<xlim[2]] - xlim[1])/(2*xlength)
 		density.y <- density$y[density$x>xlim[1] & density$x<xlim[2]]
 		do.call("panel.lines", c( list(x=density.x, y=density.y/max(density.y)), carg)) 
-	} else {
-		density.x <- list(NULL, NULL)
-		density.y <- list(NULL, NULL)
-		for (i in 1:2)
-		{
-			distance <- motivDistance(pos[[column]]@positionVector, pos[[row]]@positionVector, commonSequences, motifName1, motifName2, strands[i], sequencesLength)
-			distance.xlim <- distance[[1]][distance[[1]]>xlim[1] & distance[[1]]<xlim[2]]
-			if (length(distance)>1)
-			{
-				density <- do.call ("density", c(list(x=distance.xlim),darg))
-				density.x[[i]] <- (density$x[density$x>xlim[1] & density$x<xlim[2]] -xlim[1])/xlength
-				density.y[[i]] <- density$y[density$x>xlim[1] & density$x<xlim[2]]
-			}
-		}
-		if (length(density.y[[1]])>1 )
-		{
-			carg[["col"]] <- "red"
-			do.call("panel.lines", c( list(x=density.x[[1]], y=density.y[[1]]/max(density.y[[1]], density.y[[2]])), carg)) 
-		}
-		if (length(density.y[[2]])>1 )
-		{
-			carg[["col"]] <- "blue"
-			do.call("panel.lines", c( list(x=density.x[[2]], y=density.y[[2]]/max(density.y[[1]], density.y[[2]])), carg)) 
-		}		
-	}
+	# } else {
+		# density.x <- list(NULL, NULL)
+		# density.y <- list(NULL, NULL)
+		# for (i in 1:2)
+		# {
+			# distance <- motivDistance(pos[[column]]@positionVector, pos[[row]]@positionVector, commonSequences, motifName1, motifName2, strands[i], sequencesLength)
+			# distance.xlim <- distance[[1]][distance[[1]]>xlim[1] & distance[[1]]<xlim[2]]
+			# if (length(distance)>1)
+			# {
+				# density <- do.call ("density", c(list(x=distance.xlim),darg))
+				# density.x[[i]] <- (density$x[density$x>xlim[1] & density$x<xlim[2]] -xlim[1])/xlength
+				# density.y[[i]] <- density$y[density$x>xlim[1] & density$x<xlim[2]]
+			# }
+		# }
+		# if (length(density.y[[1]])>1 )
+		# {
+			# carg[["col"]] <- "red"
+			# do.call("panel.lines", c( list(x=density.x[[1]], y=density.y[[1]]/max(density.y[[1]], density.y[[2]])), carg)) 
+		# }
+		# if (length(density.y[[2]])>1 )
+		# {
+			# carg[["col"]] <- "blue"
+			# do.call("panel.lines", c( list(x=density.x[[2]], y=density.y[[2]]/max(density.y[[1]], density.y[[2]])), carg)) 
+		# }		
+	# }
 	popViewport() #end plotViewport "plot"
-	distance.names <- distance[[2]]
-	grid.text(x=unit(0.5,"npc"), y=unit(0.92,"npc"), paste("d(", distance.names[1],"-", distance.names[2],")"))
+	grid.text(x=unit(0.5,"npc"), y=unit(0.92,"npc"), paste("d(", names[1],"-", names[2],")"))
 }
 #########
 
@@ -156,8 +157,8 @@ plotDistance <- function (pos, table, strand, main, group, bysim, xlim, sequence
 	pushViewport(vp)
 	par(mar=c(2,1,1,1))
 	if (is.null(xlim))
-	{xlim <- c(-sequencesLength/2, sequencesLength/2)}
-	xlength=xlim[2]-xlim[1]
+	{xlim <- c(-sequencesLength, sequencesLength)}
+	xlength=xlim[2]
 	for (row in 1:nmotifs)
 	{
 #plot distance
@@ -168,22 +169,22 @@ plotDistance <- function (pos, table, strand, main, group, bysim, xlim, sequence
 				vpdistance <- viewport(layout.pos.col=distance.col, layout.pos.row=row) #seqLogo
 				pushViewport(vpdistance)	
 				dist.commonSeq <- which(table[,distance.col]!=0 & table[,row]!=0)
+
 				
+				distance <- motivDistance(pos[[distance.col]]@positionVector, pos[[row]]@positionVector, dist.commonSeq, motifNames[distance.col], motifNames[row],  c("+","-"), sequencesLength)
+
 				if(is.null(carg[["plot"]]) || carg[["plot"]])
-				{ plotDistanceDensity( darg, carg, xlim, strand, pos, distance.col, row, dist.commonSeq, motifNames[distance.col], motifNames[row], c("+","-"), sequencesLength)}
+				{ plotDistanceDensity( darg, carg, xlim, strand, pos, distance[[1]], distance.col, row, distance[[2]], motifNames[distance.col], motifNames[row], c("+","-"), sequencesLength)}
 				if (is.null(harg[["plot"]]) || harg[["plot"]])
-				{plotDistanceHistogram(harg, xlim, strand, pos, distance.col, row, dist.commonSeq, motifNames[distance.col], motifNames[row], c("+","-"), sequencesLength)}
+				{plotDistanceHistogram(harg, xlim, strand, pos, distance[[1]], distance.col, row,  distance[[2]], motifNames[distance.col], motifNames[row], c("+","-"), sequencesLength)}
 				
 				pushViewport(plotViewport(c(0, 0.5,0,0.5), name="axis"))
 				panel.segments(0,0.13,1,0.13, col="black", lwd=1)
-				
-				x.zero=(0-xlim[1])/xlength
-				x.firstQuarter=x.zero*1/2
-				x.thirdQuarter=(1-x.zero)/2+x.zero
-				panel.segments(x0=c(x.zero, x.firstQuarter, x.thirdQuarter), y0=c(0.1, 0.1, 0.1), x1=c(x.zero, x.firstQuarter, x.thirdQuarter), y1=c(0.155, 0.155, 0.155), col="black", lwd=1)	
-				panel.text(x=x.zero, y=0.045, labels="0", cex=2.5/nmotifs)
-				panel.text(x=x.firstQuarter, y=0.045, labels=round(x.firstQuarter*xlength+xlim[1]), cex=2.5/nmotifs)
-				panel.text(x=x.thirdQuarter, y=0.045, labels=round(x.thirdQuarter*xlength+xlim[1]), cex=2.5/nmotifs)
+				panel.segments(x0=c(0.5, 0.25, 0.75), y0=c(0.1, 0.1, 0.1), x1=c(0.5, 0.25, 0.75), y1=c(0.155, 0.155, 0.155), col="black", lwd=1)
+				panel.text(x=c(0.25,0.5,0.75), y=0.045, labels=round(c(-xlength/2,0, xlength/2),0), cex=2.5/nmotifs)				
+				# panel.text(x=0.5, y=0.045, labels="0", cex=2.5/nmotifs)
+				# panel.text(x=0.25, y=0.045, labels=round(*xlength/2), cex=2.5/nmotifs)
+				# panel.text(x=0.75, y=0.045, labels=round(xlength/2), cex=2.5/nmotifs)
 				popViewport() #end plotViewport "axis"
 				popViewport() #end vpdistance
 			}

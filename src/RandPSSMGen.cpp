@@ -39,7 +39,6 @@ SEXP RandPSSMGen::RunGenerator()
 {
 	int c, i, j, k,l,m,q,w,z, curr_len;
 	double curr_depth;
-	double x, r;
 	int zeros=0;
 	double col_sum=0;
 	double firstDraw, secondDraw, thirdDraw, sum;

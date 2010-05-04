@@ -64,9 +64,8 @@ filters="list"
 
 setClass("position", representation(
 motifName="character",
-positionVector="data.frame",
+positionVector="RangedData",
 pwm="list",
-similarity="character",
-length="numeric"
+similarity="character"
 ))
 

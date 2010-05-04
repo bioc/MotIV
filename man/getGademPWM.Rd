@@ -16,12 +16,13 @@ This function selects the PWMs contained in an object of type \code{gadem}.}
 \examples{
 #####Database and Scores#####
 path <- system.file(package="MotIV")
-jaspar <- readPWMfile(paste(path,"/extdata/jasparDB2009.txt",sep=""))
-jaspar.scores <- readDBScores(paste(path,"/extdata/jaspar2009_PCC_SWU.scores",sep=""))
+jaspar <- readPWMfile(paste(path,"/extdata/jaspar2010.txt",sep=""))
+jaspar.scores <- readDBScores(paste(path,"/extdata/jaspar2010_PCC_SWU.scores",sep=""))
 
 #####Input#####
-load(paste(path,"/data/gadem_STAT1_MACS.rda",sep=""))
-motifs <- getGademPWM(gadem)
+data(FOXA1_rGADEM)
+# motifs <- getGademPWM(gadem) #depreciated
+motifs <- getPWM(gadem) 
 motifs.trimed <- trimPWMedge(motifs, threshold=1)
 }
 \keyword{misc}

@@ -1,6 +1,7 @@
 
 #####CORRECTION#####
-alignmentCorrection <- function (sequence, match, gadem.strand, motiv.strand)
+
+alignmentCorrection <- function (sequence, match)
 {	
 	seq1 <- strsplit(sequence,"")[[1]]
 	seq2 <- strsplit(match,"")[[1]]	
@@ -13,85 +14,65 @@ alignmentCorrection <- function (sequence, match, gadem.strand, motiv.strand)
 		seq1 <- rev(seq1)
 		seq2 <- rev(seq2)
 	}
-	if (gadem.strand=="+" && motiv.strand=="+") 
-	{
-		start=n[1]-1
-		end=length(seq1[seq1!="-"])-n[2]-2
-	}  else if (gadem.strand=="+" && motiv.strand=="-")   { 
-		start=n[1]-1
-		end=length(seq1[seq1!="-"])-n[2]-2
-	}   else if (gadem.strand=="-" && motiv.strand=="+")   { 
-		start=-length(seq1[seq1!="-"])+n[2]+1
-		end=-n[1]
-	}   else if (gadem.strand=="-" && motiv.strand=="-")   { 
-		start=-length(seq1[seq1!="-"])+n[2]
-		end=-n[1]-1
-	} else {
-		start=0
-		end=0}
-	return(c(start, end))
+	correction.table=matrix(ncol=5, nrow=2)
+	correction.table[,1]=c(start=n[1]-1, end=length(seq1[seq1!="-"])-n[2]-2)
+	correction.table[,2]=c(start=n[1]-1, end=length(seq1[seq1!="-"])-n[2]-2)
+	correction.table[,3]=c(start=-length(seq1[seq1!="-"])+n[2]+1, end=-n[1])
+	correction.table[,4]=c(start=-length(seq1[seq1!="-"])+n[2], end=-n[1]-1) #correction of -1bp to match with getSeq
+	correction.table[,5]=c(0,0)
+	return(correction.table)
 }
 
+
+
 ######POSITION######
-calculatePositionVector <- function (motiv, gadem, group, correction)
+calculatePositionVector <- function (motiv, gadem, seq.length, group, correction)
 {	
-	seq.length <- gadem@motifList[[1]]@alignList[[1]]@end-gadem@motifList[[1]]@alignList[[1]]@start
 	motiv.count=1;pos.count=1
 	pos <- list()
-	motivnames <- names(motiv@input)
 	
-	for (j in 1:length(gadem@motifList))
+	for (j in seq(1,length(motiv)))
 	{
-		sim.pos <- NULL
-		start <- NULL
-		end <- NULL
-		gadem.strand <- NULL
-		motiv.strand <- NULL
-		seq <- NULL
-		chr <- NULL
 		
-		
-		if (gadem@motifList[[j]]@name %in% motivnames)
-		{
-			current.motiv=which(names(motiv)==gadem@motifList[[j]]@name)
-			valid.motiv <- motiv@bestMatch[[current.motiv]]@valid
-			if (correction)
-			{
-				seq.motif <- motiv@bestMatch[[current.motiv]]@aligns[[valid.motiv]]@sequence
-				match.motif <- motiv@bestMatch[[current.motiv]]@aligns[[valid.motiv]]@match
-				motiv.strand.tmp <- motiv@bestMatch[[current.motiv]]@aligns[[valid.motiv]]@strand
-			}
-			list.pwm <- list(gadem@motifList[[j]]@pwm)
-			names(list.pwm) <- gadem@motifList[[j]]@name
-			for (i in 1:length(gadem@motifList[[j]]@alignList))
-			{
-				position <- gadem@motifList[[j]]@alignList[[i]]@pos
-				gadem.strand.tmp <- gadem@motifList[[j]]@alignList[[i]]@strand
-				if (correction)
-				{
-					correctionFactor=alignmentCorrection(seq.motif, match.motif, gadem.strand.tmp, motiv.strand.tmp)
-				}  else  {
-					correctionFactor=c(0,0)
-				}
-				start <- c(start, position + correctionFactor[1])	
-				end <- c(end,  position + correctionFactor[2])
-				
-				gadem.strand <- c(gadem.strand, gadem.strand.tmp)
-				motiv.strand <- c(motiv.strand, motiv@bestMatch[[current.motiv]]@aligns[[valid.motiv]]@strand )
-				seq <- c(seq, gadem@motifList[[j]]@alignList[[i]]@seqID)
-				chr <- c(chr, gadem@motifList[[j]]@alignList[[i]]@chr)
-			}
-			vector.pos <- data.frame(chr=chr,  start=start, end=end, gadem.strand=gadem.strand, motiv.strand=motiv.strand, seq=seq)
+			current.motiv=which( names(gadem)==names(motiv)[j])
+
+			#current.motiv=which(names(motiv)==gadem@motifList[[j]]@name)
+			valid.motiv <- motiv@bestMatch[[j]]@valid
+			PWMs<- list(gadem@motifList[[current.motiv]]@pwm)
+			names(PWMs) <- gadem@motifList[[current.motiv]]@name
+							
+			seq.motif <- motiv@bestMatch[[j]]@aligns[[valid.motiv]]@sequence
+			match.motif <- motiv@bestMatch[[j]]@aligns[[valid.motiv]]@match
+			gadem.strand <-  sapply(gadem@motifList[[current.motiv]]@alignList, function(x){x@strand}) 
+			motiv.strand <- motiv@bestMatch[[j]]@aligns[[valid.motiv]]@strand
+
+			#alignments <- data.frame(sequence=seq.motif, match=match.motif, strand1=gadem.strand, strand2=motiv.strand)
 			
-			if (j>1 && any(similarity(pos) %in% motiv@bestMatch[[current.motiv]]@similarity) && group)
+			chr <- sapply(gadem@motifList[[current.motiv]]@alignList, function(x){x@chr})  #gsub("chr","", sapply(gadem@motifList[[current.motiv]]@alignList, function(x){x@chr}) )
+			position <- sapply(gadem@motifList[[current.motiv]]@alignList, function(x){x@pos + x@start })
+			peakPos <- sapply(gadem@motifList[[current.motiv]]@alignList, function(x){x@pos })
+			seqID <- sapply(gadem@motifList[[current.motiv]]@alignList, function(x){x@seqID})
+
+			if(correction)
 			{
-				whichsimilarity=which(similarity(pos)%in% motiv@bestMatch[[current.motiv]]@similarity)
-				pos[[whichsimilarity]] <- new("position", motifName=c(pos[[whichsimilarity]]@motifName, gadem@motifList[[j]]@name), positionVector=rbind(pos[[whichsimilarity]]@positionVector, vector.pos), pwm=c(pos[[whichsimilarity]]@pwm, list.pwm), similarity=pos[[whichsimilarity]]@similarity )
+				correction.table <- alignmentCorrection(as.character(seq.motif), as.character(match.motif))
+				correctionFactor=correction.table[,unlist(sapply(paste(gadem.strand,motiv.strand, sep=""), function(x){switch(x, "++"=1, "+-"=2, "-+"=3, "--"=4, 5)}))] 
+				
+				data.ir <- IRanges(start=position + correctionFactor[1,], end=position + correctionFactor[2,])
+				data.rd <- RangedData(data.ir, space=chr, strand=gadem.strand, seqID=seqID, peakPos=  (2*peakPos+ correctionFactor[1,] + correctionFactor[2,] )/2) 
+			} else {
+				data.ir <- IRanges(start=position + sapply(gadem@motifList[[current.motiv]]@alignList, function(x){x@start}), end=position + sapply(gadem@motifList[[current.motiv]]@alignList, function(x){x@start}))
+				data.rd <- RangedData(data.ir, space=chr, strand=gadem.strand,  seqID=seqID, peakPos=peakPos)
+			}
+
+			if (pos.count>1 && any(similarity(pos) %in% motiv@bestMatch[[j]]@similarity) && group)
+			{
+				whichsimilarity=which(similarity(pos)%in% motiv@bestMatch[[j]]@similarity)
+				pos[[whichsimilarity]] <- new("position", motifName=c(pos[[whichsimilarity]]@motifName, gadem@motifList[[current.motiv]]@name), positionVector=rbind(pos[[whichsimilarity]]@positionVector, data.rd), pwm=c(pos[[whichsimilarity]]@pwm, PWMs), similarity=pos[[whichsimilarity]]@similarity )
 			} else   {
-				pos[[pos.count]] <- new("position", motifName=gadem@motifList[[j]]@name, positionVector=vector.pos, pwm=list.pwm, similarity=motiv@bestMatch[[current.motiv]]@similarity )
+				pos[[pos.count]] <- new("position", motifName=gadem@motifList[[current.motiv]]@name, positionVector=data.rd, pwm=PWMs, similarity=motiv@bestMatch[[j]]@similarity )
 				pos.count=pos.count+1
 			}
-		}
 	}
 	return(pos)
 }

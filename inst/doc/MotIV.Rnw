@@ -44,6 +44,8 @@
 \verb@Motiv@ is based on the C++ functions of the STAMP algorithm \cite{STAMP} and it also use a modified version of the SeqLogo package \cite{SeqLogo}. Please cite the following paper if you use \verb@MotIV@ for publication :
 \begin{center}
 S. Mahony, P.V. Benos "STAMP: a web tool for exploring DNA-binding motif similarities." Nucl Acids Res, (2007) 35:W253-258
+\\
+S Mahony, PE Auron, PV Benos, "DNA familial binding profiles made easy: comparison of various motif alignment and clustering strategies", PLoS Computational Biology (2007) 3(3):e61 
 \end{center}
 
 \part{Introduction}
@@ -70,22 +72,22 @@ path <- system.file(package="MotIV")
 
 \subsection{Load the database}
 <<Load the database>>=
-jaspar <- readPWMfile(paste(path,"/extdata/jasparDB2009.txt",sep=""))
+jaspar <- readPWMfile(paste(path,"/extdata/jaspar2010.txt",sep=""))
 @
 
 \subsection{Load database scores}
 <<Load database scores>>=
-jaspar.scores <- readDBScores(paste(path,"/extdata/jaspar2009_PCC_SWU.scores",sep=""))
+jaspar.scores <- readDBScores(paste(path,"/extdata/jaspar2010_PCC_SWU.scores",sep=""))
 @
 
 \subsection{Read input PWM}
 <<Read input PWM>>=
-sample.motifs <- readPWMfile(paste(path,"/extdata/sample.motifs",sep=""))
+example.motifs <- readPWMfile(paste(path,"/extdata/example_motifs.txt",sep=""))
 @
 
 \subsection{Analysis}
 <<start the analysis, eval=T>>=
-example.jaspar <- motifMatch(inputPWM=sample.motifs,align="SWU",cc="PCC",database=jaspar,DBscores=jaspar.scores,top=5)
+example.jaspar <- motifMatch(inputPWM=example.motifs,align="SWU",cc="PCC",database=jaspar,DBscores=jaspar.scores,top=5)
 @
 
 \subsection{View results}
@@ -97,10 +99,10 @@ plot(example.jaspar,ncol=2,top=5)
 
 \subsection{Apply filters}
 <<Viewresults, fig=F, eval=T>>=
-EL.filter <- setFilter(name="EL")
-SP.filter <- setFilter(name="SP")
-EL.SP.filter <- EL.filter | SP.filter
-example.filter <- filter(example.jaspar,EL.SP.filter, exact=F)
+foxa1.filter <- setFilter(tfname="FOXA")
+ap1.filter <- setFilter(tfname="AP1")
+foxa1.ap1.filter <- foxa1.filter | ap1.filter
+example.filter <- filter(example.jaspar,foxa1.ap1.filter, exact=F)
 summary(example.filter)
 plot(example.filter,ncol=2,top=5)
 @
@@ -120,8 +122,10 @@ First step is to load the database that you will use into the R environment. It 
 
 To load the database, use the \verb@readPWMfile@ function :
 <<load DB>>=
- jaspar <- readPWMfile(paste(path,"/extdata/jasparDB2009.txt",sep=""))
+ jaspar <- readPWMfile(paste(path,"/extdata/jaspar2010.txt",sep=""))
 @
+
+Note that the JASPAR is load by default when loading \verb@MotIV@. 
 
 It returns a list of matrix corresponding to the database PWMs.
 For more information about the Transfac file format, please refer to \href{http://www.benoslab.pitt.edu/stamp/help.html}{http://www.benoslab.pitt.edu/stamp/help.html}.
@@ -144,9 +148,10 @@ writeDBScores(jaspar.scores,paste(path,"/extdata/jaspar_PCC_SWU.scores",sep=""))
  
 For the following analysis, you will need to load the scores file by typing :
 <<read scores, eval=T>>=
-jaspar.scores <- readDBScores(paste(path,"/extdata/jaspar2009_PCC_SWU.scores",sep=""))
+jaspar.scores <- readDBScores(paste(path,"/extdata/jaspar2010_PCC_SWU.scores",sep=""))
 @
 Remember that scores are associated to a specific database, metric and alignment type.
+By default, \verb@jaspar.scores@ is load with \verb@MotIV@.
 
 \section{Input Motifs}
 Now that you have construct the database and the database scores, you have to load the PWM motifs you want to analyze. There are different ways to do it depending of the kind of data you have.
@@ -154,8 +159,8 @@ Now that you have construct the database and the database scores, you have to lo
 \subsection{From a gadem object}
 \verb@MotIV@ software is designed to extend the features of the \verb@rGADEM@ package. Thus, you can use the object returned by a previous analysis with the \verb@rGADEM@ package. You need to load the \verb@gadem@ object load in your current R session. Load the motifs PWMs contained in an object called "gadem" by typing :
 <<load gadem object, eval=T>>=
-load(paste(path,"/data/gadem_STAT1_MACS.rda",sep=""))
-motifs <- getGademPWM(gadem)
+load(paste(path, "/data/FOXA1_rGADEM.rda", sep = ""))
+motifs <- getPWM(gadem)
 @
 
 \subsection{From a PWM file}
@@ -172,7 +177,7 @@ motifs.gadem <- readGademPWMFile(paste(path,"/extdata/observedPWMs.txt",sep=""))
 \verb@MotIV@ also supported Transfac format file to load PWMs. For more information about the Transfac file format, please refer to \href{http://www.benoslab.pitt.edu/stamp/help.html}{http://www.benoslab.pitt.edu/stamp/help.html}. If your data are in this format, proceed like in \verb@IV.2@ :
 
 <<load transfac file, eval=T>>=
-motifs.sample <- readPWMfile(paste(path,"/extdata/sample.motifs",sep=""))
+motifs.example <- readPWMfile(paste(path,"/extdata/example_motifs.txt",sep=""))
 @
 
 \subsection{Trim Input}
@@ -186,8 +191,16 @@ motifs.trimed <- trimPWMedge(motifs, threshold=1)
 At this step, you should have all what you need to start the motifs matches analysis : input motifs, a database and the associated database scores file. To use the \verb@motifMatch@ function, be sure to provided the same alignment method and metric name used to the calculation of the database scores. The argument \verb@top@ indicates the number of motifs matches to find. To run the analysis, type : 
 
 <<motiv analysis>>=
-stat1.analysis.jaspar <- motifMatch(inputPWM=motifs,align="SWU",cc="PCC",database=jaspar,DBscores=jaspar.scores,top=5)
+foxa1.analysis.jaspar <- motifMatch(inputPWM=motifs,align="SWU",cc="PCC",database=jaspar,DBscores=jaspar.scores,top=5)
 @
+
+or simply
+
+<<motiv analysis shot>>=
+foxa1.analysis.jaspar <- motifMatch(motifs)
+@
+
+for an analysis with default parameter using the JASPAR database.
 
 This function will return an object of type \verb@motiv@ needed for next functions.
 Let's have a look to the content :
@@ -197,7 +210,7 @@ Let's have a look to the content :
 You can have a quick view to the content of your results. By typing :
 
 <<motiv summary, eval=T>>=
-summary(stat1.analysis.jaspar )
+summary(foxa1.analysis.jaspar )
 @
 
 you obtain the number of input motifs, their names, the number of matches per motif, the metric name and the alignment type used. The \verb@summary@ also offers the counting of identified transcription factors.
@@ -211,7 +224,7 @@ This functions are used to apply filters on a \verb@motiv@ object.
 \verb@setFilter@ is used to define a filter. You can indicate the name(s) of the motifs to select, the TF name contained in the alignment, a maximum e-value, length and number of gap associated. The \verb@top@ argument defined the depth of the filter (i.e. the \verb@top@ first motif on witch the conditions should be applied). You should provided at least one argument.
 
 <<setFilter, eval=T>>=
-f.statx<- setFilter(name="", tfname="[Ss][Tt][Aa][Tt]", top=3, evalueMax=10^-5)
+f.foxa1<- setFilter( tfname="FOXA1", top=3, evalueMax=10^-5)
 f.ap1 <- setFilter (tfname="AP1", top=3)
 @
 
@@ -223,7 +236,7 @@ You will obtain an object of type \verb@filter@ used in the next described funct
 You can decide to combine different filters in order to define more complex filters. The \& operator indicates that all filters conditions should be validated. To the opposite, with the $|$ operator, one filter satisfied is enough to select the motif.
 
 <<operators, eval=TRUE>>=
-f.statx.ap1 <- f.statx | f.ap1 
+f.foxa1.ap1 <- f.foxa1 | f.ap1 
 @ 
 
 You also can combine more than two filters.
@@ -233,7 +246,7 @@ You also can combine more than two filters.
 The \verb@filter@ function selects motifs that correspond to the set of filters. If \verb@exact=TRUE@, search only for perfect name match.
 
 <<filter,eval=T>>=
-stat1.filter <- filter(stat1.analysis.jaspar, f.statx.ap1, exact=FALSE, verbose=TRUE)
+foxa1.filter <- filter(foxa1.analysis.jaspar, f.foxa1.ap1, exact=FALSE, verbose=TRUE)
 @
 
 It returns a \verb@motiv@ object with the selected motifs only. 
@@ -244,7 +257,7 @@ It returns a \verb@motiv@ object with the selected motifs only.
 It will select all motifs that satisfy each \verb@filter@ and returns a list of \verb@motiv@ objects. If \verb@drop=FALSE@, the non-selected motifs will also be returned.
 
 <<split,eval=T>>=
-stat1.split <- split(stat1.analysis.jaspar, c(f.statx, f.ap1) , drop=FALSE, exact=FALSE, verbose=TRUE)
+foxa1.split <- split(foxa1.analysis.jaspar, c(f.foxa1, f.ap1) , drop=FALSE, exact=FALSE, verbose=TRUE)
 @
 
 \subsection{Combine}
@@ -253,7 +266,7 @@ The \verb@combine@ function is quite a bit different than the two previous funct
 For each \verb@filter@ of the list passed in argument, the \verb@combine@ function 'virtually' regroups motifs that satisfied the \verb@filters@ conditions.
 
 <<combine, eval=T>>=
-stat1.filter.combine <- combine(stat1.filter, c(f.statx, f.ap1), exact=FALSE, name=c("STATx", "AP1"), verbose=TRUE)
+foxa1.filter.combine <- combine(foxa1.filter, c(f.foxa1, f.ap1), exact=FALSE, name=c("FOXA1", "AP1"), verbose=TRUE)
 @
 
 You should be careful that a same motif is not combined many times.
@@ -266,7 +279,7 @@ Changes are not visible until \verb@group@ is not set on \verb@TRUE@.
 
 \begin{center}
 <<motiv_plotMotiv, fig=T, eval=T, width=10, height=9>>=
-plot(stat1.filter.combine ,ncol=2,top=5, rev=FALSE, main="Logo", bysim=TRUE)
+plot(foxa1.filter.combine ,ncol=2,top=5, rev=FALSE, main="Logo", bysim=TRUE)
 @
 \end{center}
 
@@ -275,8 +288,8 @@ plot(stat1.filter.combine ,ncol=2,top=5, rev=FALSE, main="Logo", bysim=TRUE)
 An other way to visualize the quality of the results is to look the alignments. E-value give an estimation of the match. You can explore further with :
 
 <<motiv alignment, eval=T>>=
-stat1.alignment <- viewAlignments(stat1.filter.combine )
-print(stat1.alignment[[1]] )
+foxa1.alignment <- viewAlignments(foxa1.filter.combine )
+print(foxa1.alignment[[1]] )
 @
 
 \subsection{Distribution}
@@ -284,7 +297,7 @@ As this function need an object of type \verb@gadem@, you can use it only with a
 
 \begin{center}
 <<motiv_plotDistribution, fig=T, eval=T, width=10, height=9>>=
-plot(stat1.filter.combine ,gadem,ncol=2, type="distribution", correction=TRUE, group=FALSE, bysim=TRUE, strand=FALSE, sort=TRUE, main="Distribution of STAT1")
+plot(foxa1.filter.combine ,gadem,ncol=2, type="distribution", correction=TRUE, group=FALSE, bysim=TRUE, strand=FALSE, sort=TRUE, main="Distribution of FOXA")
 @
 \end{center}
 
@@ -295,7 +308,7 @@ As this function need an object of type \verb@gadem@, you can use it only with a
 
 \begin{center}
 <<motiv_plotDistance, fig=T, eval=T, width=10, height=7>>=
-plot(stat1.filter.combine ,gadem,type="distance", correction=TRUE, group=TRUE, bysim=TRUE, main="Distance between STAT1 and AP-1", strand=FALSE, xlim=c(-100,100), darg=list(bw=8))
+plot(foxa1.filter.combine ,gadem,type="distance", correction=TRUE, group=TRUE, bysim=TRUE, main="Distance between FOXA and AP-1", strand=FALSE, xlim=c(-100,100), darg=list(bw=8))
 @
 \end{center}
 
@@ -306,12 +319,12 @@ This function is an useful way to discover motifs co-occurrences. Studies showed
 
 \subsection{Ranged Data}
 
-A \verb@rangedData@ is an object created by the \verb@IRanges@ library \cite{IRanges}. It's a really flexible object.
+A \verb@rangedData@ is an object created by the \verb@IRanges@ library \cite{IRanges}.
 To create a \verb@rangedData@ object, use the \verb@exportAsRangedData@ function on a \verb@motiv@ and \verb@rGADEM@ object.
 
 <<rangedData, eval=T>>=
-stat1.rd <- exportAsRangedData(stat1.filter.combine["STATx"], gadem)
-ap1.rd <- exportAsRangedData(stat1.filter.combine["STATx"], gadem)
+foxa1.rd <- exportAsRangedData(foxa1.filter.combine["FOXA1"], gadem)
+ap1.rd <- exportAsRangedData(foxa1.filter.combine["AP1"], gadem)
 @
 
 \section{Saving and Exporting Results}
@@ -320,7 +333,7 @@ ap1.rd <- exportAsRangedData(stat1.filter.combine["STATx"], gadem)
 The best way to save your results is to use the \verb@save@ function. You should type :
 
 <<motiv save, eval=T>>=
-save(stat1.filter.combine, file="stat1_analysis.rda")
+save(foxa1.filter.combine, file="foxa1_analysis.rda")
 @
 
 It will save the \verb@MotIV@ object into a file at your working directory.
@@ -330,7 +343,7 @@ To load previous saved analysis, use the \verb@load@ function on the correspondi
 If you prefer export your results in a more readable format, use the \verb@exportAsTransfacFile@ function. It will write two files. The first file contains alignments for each input motifs. The second one references the entire PWMs corresponding to every identified transcription factors in Transfac format.
 
 <<motiv exportAsTransfacFile, eval=F>>=
-exportAsTransfacFile(stat1.filter.combine, file="stat1_analysis")
+exportAsTransfacFile(foxa1.filter.combine, file="foxa1_analysis")
 @
 
 \subsection{Into a BED File}
@@ -340,7 +353,7 @@ To do it, simply use the \verb@rtracklayer@ export function.
 
 <<bedfile, eval=F>>=
 library(rtracklayer)
-export(stat1.rd, file="STAT1.bed")
+export(foxa1.rd, file="FOXA.bed")
 @
 
 \section{Miscellaneous}
@@ -350,7 +363,7 @@ export(stat1.rd, file="STAT1.bed")
 The \verb@viewMotifs@ function returns the list of all TF in a \verb@motiv@ object.
 
 <<viewMotifs, eval=T>>=
-viewMotifs(stat1.filter.combine, n=5)
+viewMotifs(foxa1.filter.combine, n=5)
 @
 
 \subsection{names}
@@ -358,7 +371,7 @@ viewMotifs(stat1.filter.combine, n=5)
 \verb@names@ returns the names of the motifs contained in a \verb@motiv@ object.
 
 <<names, eval=T>>=
-names(stat1.filter.combine)
+names(foxa1.filter.combine)
 @
 
 \subsection{similarity}
@@ -366,7 +379,7 @@ names(stat1.filter.combine)
 The \verb@similarity@ function shows the names of the similar motifs in a \verb@motiv@ object.
 
 <<similar, eval=T>>=
-similarity(stat1.filter.combine)
+similarity(foxa1.filter.combine)
 @
 
 \subsection{select}
@@ -374,15 +387,15 @@ similarity(stat1.filter.combine)
 Use \verb@[@ to select a specific motif of a \verb@motiv@ object. By default, it will select the exact name of similar motifs. Choose \verb@bysim=FALSE@ to select the original name of the motifs. If \verb@drop=FALSE@, the corresponding motifs will be drop of the object.
 
 <<select, eval=T>>=
-stat1.selected <- stat1.filter.combine["STATx"]
-other.selected <- stat1.filter.combine["STATx", drop=T]
+foxa1.selected <- foxa1.filter.combine["FOXA1"]
+other.selected <- foxa1.filter.combine["FOXA1", drop=T]
 @
 
-Combine with other functions, it can be really useful. To know how many motifs STATx you got, try by instance :
+Combine with other functions, it can be really useful. To know how many motifs FOXA1 you got, try by instance :
 
 <<select number, eval=T>>=
-stat1.names <- names(stat1.filter.combine["STATx"])
-sum(length(gadem[stat1.names]))
+foxa1.names <- names(foxa1.filter.combine["FOXA1"])
+sum(length(gadem[foxa1.names]))
 @
 
 \part{Appendix}

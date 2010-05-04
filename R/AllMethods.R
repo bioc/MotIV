@@ -331,8 +331,8 @@ signature(x="motiv", f="filters"),
 function(x, f, exact=FALSE, verbose=TRUE)
 {
 	filt <- f@filters
-	filterdMotiv <- filterMotiv(x, filt, exact, verbose)
-	return(filterdMotiv)
+	filteredMotiv <- filterMotiv(x, filt, exact, verbose)
+	return(filteredMotiv)
 })
 
 #####combine#####
@@ -414,27 +414,35 @@ function(x, y, sort=FALSE, group=FALSE, main=NULL, sub=NULL, ncol=0, nrow=0, xli
 	if (is.null(varg[["lwd"]]	))
 	{varg[["lwd"]] <- 2}
 	
-	pos <- calculatePositionVector(x, y, group, correction)
-	table <- occurences(y[names(x)])
-	
-	if (group)
-	{
-		names(table) <- similarity(x)
-		table <- as.data.frame(sapply(similarity(pos),function(x) {apply(table[,names(table)==x],1,sum)}))
-	}
+	pos <- calculatePositionVector(x, y, sequencesLength[[1]][1],  group, correction)
+
 	
 	if(type=="distance")
 	{
+		table <- occurences(y[names(x)])[names(x)]
+		
+		if (group)
+		{
+			names(table) <- similarity(x)
+			table <- as.data.frame(sapply(similarity(pos),function(x) {
+				similar <- which(names(table)==x)
+				if (length(similar)>1) {
+				apply(table[,similar],1,sum)
+				} else {
+				table[,similar]
+			}}))
+		}
+		
 		plotDistance( pos, table, strand, main, FALSE, bysim, xlim, sequencesLength[[1]][1], harg, darg, carg, varg)
 	}
 	else
 	{
-		for (g in 1:length(y@motifList))
+		for (g in seq(nMotifs(y)))
 		{
 			motifs <- NULL
 			if (y@motifList[[g]]@name %in% names(x@input))
 			{ motifs <- c(motifs, y@motifList[[g]])}
 		}
-		plotDistribution(pos, table, group, main, sort, ncol, nrow, strand, bysim, sequencesLength[[1]][1], harg, darg, carg)
+		plotDistribution(pos, group, main, sort, ncol, nrow, strand, bysim, sequencesLength[[1]][1], harg, darg, carg)
 	}
 })

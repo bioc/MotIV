@@ -1,5 +1,5 @@
 
-motifMatch <- function (inputPWM, database, DBscores, cc="PCC", align="SWU", top=5, go=1, ge=0.5) {
+motifMatch <- function (inputPWM, database=jaspar, DBscores=jaspar.scores, cc="PCC", align="SWU", top=5, go=1, ge=0.5) {
 	res<-.Call("RmotifMatch", cc=cc, align=align, top=top, go=go, ge=ge, inputPWM=inputPWM, inputDB=database, inputScores=DBscores)
 	topx=length(res[[7]])/length(res[[1]])
 	if (!is.null(res))
@@ -22,3 +22,5 @@ motifMatch <- function (inputPWM, database, DBscores, cc="PCC", align="SWU", top
 		return(motiv)
 	}
 }
+
+

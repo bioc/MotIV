@@ -5,8 +5,9 @@ plotDistributionHistogram <- function (pos, curr, size,  strand, harg, sequences
 	nint = harg[["nint"]]
 	if (!strand)
 	{
-		pos.mean <- (pos[[curr]]@positionVector$end + pos[[curr]]@positionVector$start)/(2*sequencesLength)
-		distance.hist=hist(pos.mean, breaks=seq(0,1,length=nint+1), plot=F)$count
+	#	pos.mean <- (end(pos[[curr]]@positionVector) + start(pos[[curr]]@positionVector))/(2*sequencesLength)
+	pos.mean <- pos[[curr]]@positionVector$peakPos/sequencesLength
+		distance.hist=hist(pos.mean[pos.mean>0 & pos.mean<1], breaks=seq(0,1,length=nint+1), plot=F)$count
 		do.call("panel.rect", c(list(xright=seq(0,1-1/nint,length=nint), ybottom=rep(0,nint), xleft=seq(1/nint,1,length=nint),ytop=distance.hist/(max(distance.hist)+max(distance.hist)/5)), harg))
 	} else {
 		strands = c("+", "-")
@@ -14,7 +15,8 @@ plotDistributionHistogram <- function (pos, curr, size,  strand, harg, sequences
 		distance.hist <- list()
 		for (i in 1:2)
 		{
-			pos.mean <- (pos[[curr]]@positionVector$end[pos[[curr]]@positionVector$gadem.strand==strands[i]] + pos[[curr]]@positionVector$start[pos[[curr]]@positionVector$gadem.strand==strands[i]])/(2*sequencesLength)
+		#	pos.mean <- (end(pos[[curr]]@positionVector)[pos[[curr]]@positionVector$gadem.strand==strands[i]] + start(pos[[curr]]@positionVector)[pos[[curr]]@positionVector$gadem.strand==strands[i]])/(2*sequencesLength)
+		pos.mean <- (pos[[curr]]@positionVector$peakPos[pos[[curr]]@positionVector$strand==strands[i]] + pos[[curr]]@positionVector$peakPos[pos[[curr]]@positionVector$strand==strands[i]])/(2*sequencesLength)
 			distance.hist[[i]]=hist(pos.mean , breaks=seq(0,1,length=nint+1), plot=F)$count
 		}		
 		arg <- harg[names(harg)!="border"]
@@ -31,8 +33,9 @@ plotDistributionDensity <- function(pos, curr, size,  strand, darg, carg, sequen
 	xlim=c(0,sequencesLength)
 	if(!strand)
 	{
-		pos.mean <- (pos[[curr]]@positionVector$end + pos[[curr]]@positionVector$start)/2
-		density <- do.call ("density", c(list(x=pos.mean),darg))
+		#pos.mean <- (end(pos[[curr]]@positionVector) + start(pos[[curr]]@positionVector))/2
+		pos.mean  <- pos[[curr]]@positionVector$peakPos
+		density <- do.call ("density", c(list(x=pos[[curr]]@positionVector$peakPos),darg))
 		density.x <- (density$x[density$x>xlim[1] & density$x<xlim[2]])/sequencesLength
 		density.y <- density$y[density$x>xlim[1] & density$x<xlim[2]]
 		do.call("panel.lines", c(list(x=density.x, y=density.y/max(density.y)), carg))
@@ -46,7 +49,7 @@ plotDistributionDensity <- function(pos, curr, size,  strand, darg, carg, sequen
 		distance.y <- list(NULL, NULL)
 		for (i in 1:2)
 		{
-			pos.mean <- (pos[[curr]]@positionVector$end[pos[[curr]]@positionVector$gadem.strand==strands[i]] + pos[[curr]]@positionVector$start[pos[[curr]]@positionVector$gadem.strand==strands[i]])/2
+			pos.mean <- (end(pos[[curr]]@positionVector)[pos[[curr]]@positionVector$strand==strands[i]] + start(pos[[curr]]@positionVector)[pos[[curr]]@positionVector$strand==strands[i]])/2
 			if (length(pos.mean)>1)
 			{
 				density <- do.call ("density", c(list(x=pos.mean),darg))
@@ -71,12 +74,12 @@ plotDistributionDensity <- function(pos, curr, size,  strand, darg, carg, sequen
 
 
 #####DISTRIBUTION#####
-plotDistribution <- function (pos, table, group, main, sort, ncol, nrow, strand, bysim, sequencesLength, harg, darg, carg)
+plotDistribution <- function (pos, group, main, sort, ncol, nrow, strand, bysim, sequencesLength, harg, darg, carg)
 {
 	positionVector <- list()
 	for (i in 1:length(pos))
 	{
-		positionVector[[i]]=(pos[[i]]@positionVector$end+ pos[[i]]@positionVector$start)/2
+		positionVector[[i]]=pos[[i]]@positionVector[["peakPos"]] #(end(pos[[i]]@positionVector)+ start(pos[[i]]@positionVector))/2
 	}
 	
 	var <- sapply(positionVector, function(x){var(as.integer(x))})
@@ -120,7 +123,7 @@ plotDistribution <- function (pos, table, group, main, sort, ncol, nrow, strand,
 	size=max(layout[1], layout[2])	
 	
 	grid.newpage()
-	grid.text(main, gp=gpar(col="black", font=2, cex=1.5), y=unit(0.98,"npc"))
+	#grid.text(main, gp=gpar(col="black", font=2, cex=1.5), y=unit(0.98,"npc"))
 	grid.text("position", gp=gpar(col="black", font=3, cex=1), y=unit(0.01,"npc"))
 	if (strand)
 	{
@@ -149,9 +152,7 @@ plotDistribution <- function (pos, table, group, main, sort, ncol, nrow, strand,
 				
 				grid.text("Distribution", x=unit(0,"npc"), y=unit(-0.15,"npc"), gp=gpar(cex=max(0.6,2.5/size), font=2))
 				popViewport() #end vpmotifrev
-				
-				
-				
+
 #plot distribution
 				vpdistribution <- viewport(layout.pos.col=2:3, layout.pos.row=2:4) #seqLogo
 				pushViewport(vpdistribution)		
@@ -176,4 +177,6 @@ plotDistribution <- function (pos, table, group, main, sort, ncol, nrow, strand,
 	}
 	popViewport() #end vp
 	popViewport() #end plotViewport "grid"
+		grid.text(main, gp=gpar(col="black", font=2, cex=1.5), y=unit(0.999,"npc"), just="top")
+
 }

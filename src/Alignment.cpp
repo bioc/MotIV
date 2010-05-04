@@ -240,7 +240,7 @@ double SmithWaterman::AlignMotifs(Motif* one, Motif* two, int &i1, int &i2, int&
 	double forScore, revScore;
 	double maxScore=0;
 	double tmp;
-	int forMaxI, forMaxJ, revMaxI, revMaxJ;
+	int forMaxI=0, forMaxJ=0, revMaxI=0, revMaxJ=0;
 	int max_i=0, max_j=0, start_i=0, start_j=0;
 	alignLen=0;	
 	AlignMatCell** forAlignMat;
@@ -422,7 +422,7 @@ double SmithWatermanUngappedExtended::AlignMotifs(Motif* one, Motif* two, int &i
 	double forScore, revScore;
 	double maxScore=0;
 	double tmp;
-	int forMaxI, forMaxJ, revMaxI, revMaxJ;
+	int forMaxI=0, forMaxJ=0, revMaxI=0, revMaxJ=0;
 	int max_i=0, max_j=0, start_i=0, start_j=0;
 	alignLen=0;	
 	AlignMatCell** forAlignMat;
@@ -588,7 +588,7 @@ double NeedlemanWunsch::AlignMotifs(Motif* one, Motif* two, int &i1, int &i2, in
 	double forScore, revScore;
 	double maxScore=0, currMax=0;
 	double tmp;
-	int forMaxI, forMaxJ, revMaxI, revMaxJ;
+	int forMaxI=0, forMaxJ=0, revMaxI=0, revMaxJ=0;
 	int max_i=0, max_j=0, start_i=0, start_j=0;
 	alignLen=0;	
 	AlignMatCell** forAlignMat;
@@ -789,13 +789,12 @@ double SmithWatermanAffine::AlignMotifs(Motif* one, Motif* two, int &i1, int &i2
 	double forScore, revScore;
 	double maxScore=0, currMax=0;
 	double tmp;
-	int forMaxI, forMaxJ, revMaxI, revMaxJ;
+	int forMaxI=0, forMaxJ=0, revMaxI=0, revMaxJ=0;
 	int max_i=0, max_j=0, start_i=0, start_j=0;
 	alignLen=0;	
 	AlignMatCell** forAlignMat;
 	AlignMatCell** revAlignMat;
-	
-	
+		
 	int x=one->len+1;
 	int y = two->len+1;
 	//Make SW array
