@@ -70,7 +70,7 @@ calculatePositionVector <- function (motiv, gadem, seq.length, group, correction
 				whichsimilarity=which(similarity(pos)%in% motiv@bestMatch[[j]]@similarity)
 				pos[[whichsimilarity]] <- new("position", motifName=c(pos[[whichsimilarity]]@motifName, gadem@motifList[[current.motiv]]@name), positionVector=rbind(pos[[whichsimilarity]]@positionVector, data.rd), pwm=c(pos[[whichsimilarity]]@pwm, PWMs), similarity=pos[[whichsimilarity]]@similarity )
 			} else   {
-				pos[[pos.count]] <- new("position", motifName=gadem@motifList[[current.motiv]]@name, positionVector=data.rd, pwm=PWMs, similarity=motiv@bestMatch[[j]]@similarity )
+				pos[[pos.count]] <- new("position", motifName=gadem@motifList[[current.motiv]]@name, positionVector=data.rd, pwm=PWMs, similarity=motiv@bestMatch[[j]]@similarity)
 				pos.count=pos.count+1
 			}
 	}

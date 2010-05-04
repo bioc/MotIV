@@ -6,7 +6,7 @@
   motif and plots the corresponding sequence logo. 
 }
 \usage{
-  seqLogo(pwm, ic.scale=TRUE, xaxis=TRUE, yaxis=TRUE, xfontsize=15, yfontsize=15,vmargins=0,hmargins=0,size=1)
+  seqLogo(pwm, ic.scale=TRUE, xaxis=TRUE, yaxis=TRUE, xfontsize=15, yfontsize=15,vmargins=0,hmargins=0,size=1, trim=0)
 }
 \arguments{
 	\item{pwm}{\code{numeric} The 4xW position weight matrix.}
@@ -18,6 +18,7 @@
 	\item{vmargins}{\code{numeric} Vertical margins.} 
 	\item{hmargins}{\code{numeric} Horizontal margins.} 
 	\item{size}{\code{numeric} Graphic size.} 
+	\item{trim}{\code{numeric} Only print letters with information content superior to a treshold given by \code{trim}}
 }
 \details{
   Within each column, the height

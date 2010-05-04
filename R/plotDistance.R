@@ -113,7 +113,7 @@ plotDistanceDensity <- function (darg, carg, xlim, strand, pos, distance,  colum
 }
 #########
 
-plotDistanceVenn <- function (cooccurences,  varg, motifName1, motifName2)
+plotDistanceVenn <- function (cooccurences,  varg, motifName1, motifName2, nSequences)
 {
 	sequences.n=cooccurences[2, 1]
 	sequences1.n=cooccurences[2, 2]
@@ -124,14 +124,17 @@ plotDistanceVenn <- function (cooccurences,  varg, motifName1, motifName2)
 	do.call("grid.circle", list(x=unit(0.6,"npc"), y=unit(0.5,"npc"), r=unit(0.3,"npc"), gp=gpar(col=varg[["col"]][2], lwd=varg[["lwd"]])))
 	do.call("grid.text", list(x=unit(0.1,"npc"), y=unit(0.9,"npc"), label=motifName1, just="left", gp=gpar(col=varg[["col"]][1], cex=varg[["cex"]])))
 	do.call("grid.text", list(x=unit(0.9,"npc"), y=unit(0.9,"npc"), label=motifName2, just="right", gp=gpar(col=varg[["col"]][2], cex=varg[["cex"]])))
-	do.call("grid.text", list(x=unit(0.5,"npc"), y=unit(0.5,"npc"), sequences.n, just="center", gp=gpar(col="black", cex=varg[["cex"]])) )
-	do.call("grid.text", list(x=unit(c(0.35,0.35),"npc"), y=unit(c(0.5,0.35),"npc"), label=c(sequences1.alone.n, paste(round(100*sequences1.alone.n/sequences1.n,1),"%", sep="")), just="center", gp=gpar(col=varg[["col"]][1], cex=c(1,0.7)*varg[["cex"]])))
-	do.call("grid.text", list(x=unit(c(0.65,0.65),"npc"), y=unit(c(0.5,0.35),"npc"), c(sequences2.alone.n, paste(round(100*sequences2.alone.n/sequences2.n,1),"%", sep="")), just="center", gp=gpar(col=varg[["col"]][2], cex=c(1,0.7)*varg[["cex"]])))   
+	do.call("grid.text", list(x=unit(c(0.5, 0.5),"npc"), y=unit(c(0.5, 0.60),"npc"), label=c(sequences.n , paste(round(100*sequences.n/nSequences,1),"%", sep="")), just="center", gp=gpar(col="black", cex=c(1,0.7)*varg[["cex"]])) )
+	do.call("grid.text", list(x=unit(c(0.35,0.20),"npc"), y=unit(c(0.5,0.75),"npc"), label=c(sequences1.alone.n, paste(round(100*sequences1.alone.n/nSequences,1),"%", sep="")), just="center", gp=gpar(col=varg[["col"]][1], cex=c(1,0.7)*varg[["cex"]])))
+	do.call("grid.text", list(x=unit(c(0.65,0.80),"npc"), y=unit(c(0.5,0.75),"npc"), c(sequences2.alone.n, paste(round(100*sequences2.alone.n/nSequences,1),"%", sep="")), just="center", gp=gpar(col=varg[["col"]][2], cex=c(1,0.7)*varg[["cex"]]))) 
+	
+	#do.call("grid.text", list(x=unit(c(0.35,0.35),"npc"), y=unit(c(0.5,0.35),"npc"), label=c(sequences1.alone.n, paste(round(100*sequences1.alone.n/sequences1.n,1),"%", sep="")), just="center", gp=gpar(col=varg[["col"]][1], cex=c(1,0.7)*varg[["cex"]])))
+	#do.call("grid.text", list(x=unit(c(0.65,0.65),"npc"), y=unit(c(0.5,0.35),"npc"), c(sequences2.alone.n, paste(round(100*sequences2.alone.n/sequences2.n,1),"%", sep="")), just="center", gp=gpar(col=varg[["col"]][2], cex=c(1,0.7)*varg[["cex"]])))   
 }
 
 #########
 
-plotDistance <- function (pos, table, strand, main, group, bysim, xlim, sequencesLength, harg, darg, carg, varg,...)
+plotDistance <- function (pos, table, strand, main, group, bysim, xlim, sequencesLength, nSequences, harg, darg, carg, varg,...)
 {
 	nmotifs=length(pos)
 	grid.newpage()
@@ -216,7 +219,7 @@ plotDistance <- function (pos, table, strand, main, group, bysim, xlim, sequence
 				pushViewport(vpseqcom)	
 				venn.commonSeq <- which(table[,venn.col]!=0 & table[,row]!=0)
 				cooccurences = cooccurences(table[,c(venn.col, row)])
-				plotDistanceVenn (cooccurences, varg, motifNames[row], motifNames[venn.col])
+				plotDistanceVenn (cooccurences, varg, motifNames[row], motifNames[venn.col], nSequences)
 				popViewport() #end vpseqcom	
 			}
 		}

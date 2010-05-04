@@ -12,8 +12,8 @@ This functions are used to vizualise and validate \code{motiv} analysis.
 } 
 
 \usage{
-	\S4method{plot}{motiv,ANY}(x, y=NULL, main=NULL, sub=NULL, ncol=0, nrow=0, top=3, bysim=TRUE, rev=FALSE,...)
-	\S4method{plot}{motiv,gadem}(x, y, sort=FALSE, group=FALSE, main=NULL, sub=NULL, ncol=0, nrow=0, xlim=NULL, correction=TRUE,  bysim=TRUE, strand=FALSE, type="distribution", harg=list(), darg=list(), carg=list(), varg=list(), ...)
+	\S4method{plot}{motiv,ANY}(x, y=NULL, main=NULL, sub=NULL, ncol=0, nrow=0, top=3, bysim=TRUE, rev=FALSE, trim=0.05, ...)
+	\S4method{plot}{motiv,gadem}(x, y, sort=FALSE, group=FALSE, main=NULL, sub=NULL, ncol=0, nrow=0, xlim=NULL, correction=TRUE,  bysim=TRUE, strand=FALSE, type="distribution", trim=0.05, harg=list(), darg=list(), carg=list(), varg=list(), ...)
 }
 
 \arguments{
@@ -33,6 +33,7 @@ This functions are used to vizualise and validate \code{motiv} analysis.
 	\item{xlim}{numeric vectors of length 2, giving the x coordinates ranges.}
 	\item{correction}{If \code{TRUE}, corrects the position according to the alignment.}
 	\item{harg, darg, carg, varg}{Parameters for histograms, densities, curves and venn diagrams.}
+	\item{trim}{\code{numeric} Only print letters with information content superior to a treshold given by \code{trim}}
 	\item{...}{Further potential arguments passed to methods.}
 }
 

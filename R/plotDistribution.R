@@ -74,7 +74,7 @@ plotDistributionDensity <- function(pos, curr, size,  strand, darg, carg, sequen
 
 
 #####DISTRIBUTION#####
-plotDistribution <- function (pos, group, main, sort, ncol, nrow, strand, bysim, sequencesLength, harg, darg, carg)
+plotDistribution <- function (pos, group, main, sort, ncol, nrow, strand, bysim, sequencesLength, trim, harg, darg, carg)
 {
 	positionVector <- list()
 	for (i in 1:length(pos))
@@ -148,7 +148,7 @@ plotDistribution <- function (pos, group, main, sort, ncol, nrow, strand, bysim,
 				vpcase <- viewport(layout.pos.col=column, layout.pos.row=row)
 				pushViewport(vpcase)
 				
-				plotMotif ( pos, curr, column,  3, layout, bysim, group)
+				plotMotif ( pos, curr, column,  3, layout, bysim, group, trim)
 				
 				grid.text("Distribution", x=unit(0,"npc"), y=unit(-0.15,"npc"), gp=gpar(cex=max(0.6,2.5/size), font=2))
 				popViewport() #end vpmotifrev

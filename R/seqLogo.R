@@ -177,7 +177,6 @@ letterG <- function(x.pos, y.pos, ht, wt, id=NULL)
 
 addLetter <- function(letters, which, x.pos, y.pos, ht, wt)
 {
-
   if (which == "A")
   {
     letter <- letterA(x.pos, y.pos, ht, wt)
@@ -267,7 +266,7 @@ pwm2cons <- function(pwm)
 
 ## plot a sequence logo
 
-seqLogo <- function(pwm, ic.scale=TRUE, xaxis=TRUE, yaxis=TRUE, xfontsize=15, yfontsize=15, vmargins=0, hmargins=0, size=1)
+seqLogo <- function(pwm, ic.scale=TRUE, xaxis=TRUE, yaxis=TRUE, xfontsize=15, yfontsize=15, vmargins=0, hmargins=0, size=1, trim=0)
 {
   if (class(pwm) == "pwm")
   {
@@ -318,8 +317,11 @@ seqLogo <- function(pwm, ic.scale=TRUE, xaxis=TRUE, yaxis=TRUE, xfontsize=15, yf
     {
       letter <- chars[letterOrder[i]]
       ht <- hts[letterOrder[i]]
-      if (ht>0) letters <- addLetter(letters, letter, x.pos, y.pos, ht, wt)
-      y.pos <- y.pos + ht + 0.01
+      if (ht>trim) 
+	 {
+	 letters <- addLetter(letters, letter, x.pos, y.pos, ht, wt)
+     y.pos <- y.pos + ht + 0.01
+	 }
     }
     x.pos <- x.pos + wt
   }

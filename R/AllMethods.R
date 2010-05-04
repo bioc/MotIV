@@ -381,9 +381,9 @@ function(x, f, exact=FALSE, drop=FALSE, verbose=TRUE, ...)
 setMethod(
 "plot",
 signature(x="motiv", y="ANY"),
-function(x, y=NULL, main=NULL, sub=NULL, ncol=0, nrow=0, top=3, bysim=TRUE, rev=FALSE,...)
+function(x, y=NULL, main=NULL, sub=NULL, ncol=0, nrow=0, top=3, bysim=TRUE, rev=FALSE, trim=0.05, ...)
 {
-	plotMotiv(x, ncol, nrow, top, bysim, rev, main, sub)
+	plotMotiv(x, ncol, nrow, top, bysim, rev, main, sub, trim)
 })
 
 #####motiv, gadem#####
@@ -391,7 +391,7 @@ function(x, y=NULL, main=NULL, sub=NULL, ncol=0, nrow=0, top=3, bysim=TRUE, rev=
 setMethod(
 "plot",
 signature(x="motiv", y="gadem"),
-function(x, y, sort=FALSE, group=FALSE, main=NULL, sub=NULL, ncol=0, nrow=0, xlim=NULL, correction=TRUE, bysim=TRUE, strand=FALSE,  type="distribution",  harg=list(), darg=list(), carg=list(), varg=list(), ...)
+function(x, y, sort=FALSE, group=FALSE, main=NULL, sub=NULL, ncol=0, nrow=0, xlim=NULL, correction=TRUE, bysim=TRUE, strand=FALSE,  type="distribution", trim=0.05, harg=list(), darg=list(), carg=list(), varg=list(), ...)
 {
 	sequencesLength=sapply(y@motifList, function(x){sapply(x@alignList, function(x){x@end})-sapply(x@alignList, function(x){x@start})})
 	if (!all(unlist(sequencesLength)==(y@motifList[[1]]@alignList[[1]]@end-y@motifList[[1]]@alignList[[1]]@start)))
@@ -432,8 +432,8 @@ function(x, y, sort=FALSE, group=FALSE, main=NULL, sub=NULL, ncol=0, nrow=0, xli
 				table[,similar]
 			}}))
 		}
-		
-		plotDistance( pos, table, strand, main, FALSE, bysim, xlim, sequencesLength[[1]][1], harg, darg, carg, varg)
+		nSequences=if(any(slotNames (gadem@parameters[[1]])=="nSequences")){gadem@parameters[[1]]@nSequences}else{NULL}
+		plotDistance( pos, table, strand, main, FALSE, bysim, xlim, sequencesLength[[1]][1], nSequences, harg, darg, carg, varg)
 	}
 	else
 	{
@@ -443,6 +443,6 @@ function(x, y, sort=FALSE, group=FALSE, main=NULL, sub=NULL, ncol=0, nrow=0, xli
 			if (y@motifList[[g]]@name %in% names(x@input))
 			{ motifs <- c(motifs, y@motifList[[g]])}
 		}
-		plotDistribution(pos, group, main, sort, ncol, nrow, strand, bysim, sequencesLength[[1]][1], harg, darg, carg)
+		plotDistribution(pos, group, main, sort, ncol, nrow, strand, bysim, sequencesLength[[1]][1], trim, harg, darg, carg)
 	}
 })

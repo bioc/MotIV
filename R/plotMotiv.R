@@ -1,6 +1,6 @@
 
 
-plotMotif <- function( object, current, column,  top, layout, bysim, group)
+plotMotif <- function( object, current, column,  top, layout, bysim, group, trim=0)
 {
 	size=max(layout[1], layout[2])		
 	
@@ -31,7 +31,7 @@ plotMotif <- function( object, current, column,  top, layout, bysim, group)
 	vpmotif <- viewport(layout.pos.col=1:2, layout.pos.row=1) #seqLogo
 	pushViewport(vpmotif)	
 	grid.rect(x=unit(1,"npc"), y=unit(0.45,"npc"), height=unit(0.95,"npc"), width=unit(1.9,"npc"), gp=gpar(col="grey95", fill="grey95"))	
-	seqLogo(matrix, yaxis=F, xaxis=F, size=1, yfontsize=0, xfontsize=0, vmargins=0.1, hmargins=0.1)
+	seqLogo(matrix, yaxis=F, xaxis=F, size=1, yfontsize=0, xfontsize=0, vmargins=0.1, hmargins=0.1, trim=trim)
 	popViewport() #end vpmotif
 	vpmotifrev <- viewport(layout.pos.col=3:4, layout.pos.row=1) #seqLogo
 	pushViewport(vpmotifrev)	
@@ -46,7 +46,7 @@ plotMotif <- function( object, current, column,  top, layout, bysim, group)
 
 #####MOTIV#####
 
-plotMotiv <- function (motiv, ncol, nrow, top, bysim, rev, main, sub)
+plotMotiv <- function (motiv, ncol, nrow, top, bysim, rev, main, sub, trim)
 {
 	if(ncol==0 && nrow==0)
 	{
@@ -90,7 +90,7 @@ plotMotiv <- function (motiv, ncol, nrow, top, bysim, rev, main, sub)
 				vpcase <- viewport(layout.pos.col=i, layout.pos.row=j)
 				pushViewport(vpcase)	
 				
-				plotMotif( motiv, p, i,  top, layout, bysim, FALSE)
+				plotMotif( motiv, p, i,  top, layout, bysim, FALSE, trim=trim)
 				
 				grid.text("Best Matches", x=unit(0.5,"npc"), y=unit(-0.15,"npc"), gp=gpar(cex=max(0.6,2.5/size), font=2))	
 				popViewport() #end vpmotifrev
@@ -114,7 +114,7 @@ plotMotiv <- function (motiv, ncol, nrow, top, bysim, rev, main, sub)
 						}
 					}
 					mat3<- makePWM(mat3)
-					seqLogo(mat3, yaxis=F, xaxis=F, size=1, yfontsize=0, xfontsize=0, vmargins=0.1, hmargins=0.2) #plot Logo
+					seqLogo(mat3, yaxis=F, xaxis=F, size=1, yfontsize=0, xfontsize=0, vmargins=0.1, hmargins=0.2, trim=trim) #plot Logo
 					popViewport() #end vptop3
 					vpeval <- viewport(layout.pos.col=3:4, layout.pos.row=k+1) 
 					pushViewport(vpeval)		
