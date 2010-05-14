@@ -432,7 +432,10 @@ function(x, y, sort=FALSE, group=FALSE, main=NULL, sub=NULL, ncol=0, nrow=0, xli
 				table[,similar]
 			}}))
 		}
-		nSequences=if(any(slotNames (gadem@parameters[[1]])=="nSequences")){gadem@parameters[[1]]@nSequences}else{NULL}
+		###!!!!!
+		nSequences=try(gadem@parameters[[1]]@nSequences, silent=T)
+		if (!is.numeric(nSequences)){nSequences<-NULL}
+		###!!!!
 		plotDistance( pos, table, strand, main, FALSE, bysim, xlim, sequencesLength[[1]][1], nSequences, harg, darg, carg, varg)
 	}
 	else

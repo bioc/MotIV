@@ -131,6 +131,6 @@ plotMotiv <- function (motiv, ncol, nrow, top, bysim, rev, main, sub, trim)
 	}
 	popViewport() #end vp
 	popViewport() #end plotViewport "grid"
-		grid.text(main, gp=gpar(col="black", font=2, cex=1.5), y=unit(0.999,"npc"), just="top")
+		grid.text(main, gp=gpar(col="black", font=2, cex=max(0.8,3/size)), y=unit(0.999,"npc"), just="top")
 
 }
