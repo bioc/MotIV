@@ -10,9 +10,9 @@ distance <- NULL
     {
 		for (seqID in commonSequences)
 		{
-			pos1=unique(positions1$peakPos[  positions1$seqID==seqID & positions1$strand%in%strands ])
-			pos2=unique(positions2$peakPos[ positions2$seqID==seqID & positions2$strand%in%strands ])
-			if (length(pos1)>=1& length(pos2)>=1)
+			pos1=unique(positions1$peakPos[  positions1$seqID==seqID & positions1$strand%in%strands ]) 
+			pos2=unique(positions2$peakPos[ positions2$seqID==seqID & positions2$strand%in%strands ]) 
+			if (length(pos1)>=1 & length(pos2)>=1)
 			{
 				pos1.center=pos1[which(abs(pos1-sequencesLength)==min(abs(pos1-sequencesLength)))] #select center motif
 				distance <- c(distance, pos1.center-pos2) #distance
@@ -36,115 +36,60 @@ distance <- NULL
 	return (list(distance, names))
 }
 
-
 #########
 
-plotDistanceHistogram<- function (harg, xlim, strand, pos, distance, column, row, names,  motifName1, motifName2, strands, sequencesLength)
+plotDistanceHistogram<- function ( xlim, pos, distance, column, row, names,  motifName1, motifName2, strands, col, border, nclass, cex)
 {
-	xlength=xlim[2]
-	nint = harg[["nint"]]
 	pushViewport(plotViewport(c(7/length(pos), 0.5,7/length(pos),0.5), name="plot"))
-		
-	# if (!strand)
-	# {
-	#	distance <- motivDistance(pos[[column]]@positionVector, pos[[row]]@positionVector, commonSequences,  motifName1, motifName2, strands, sequencesLength)
-		distance.xlim <- (distance[distance>xlim[1] & distance<xlim[2]])/(2*xlength) +0.5	
-		distance.hist=hist(distance.xlim, breaks=seq(0,1,length=nint+1), plot=F)$count
-		do.call("panel.rect", c(list(xright=seq(0,1-1/nint,length=nint), ybottom=rep(0,nint), xleft=seq(1/nint,1,length=nint),ytop=distance.hist/(max(distance.hist)+max(distance.hist)/5)), harg))
-	# } else {
-		# distance<- list()
-		# distance.hist <- list()
-		# for (i in 1:2)	
-		# {
-			# distance <- motivDistance(pos[[column]]@positionVector, pos[[row]]@positionVector, commonSequences,  motifName1, motifName2, strands[i], sequencesLength)
-			# distance.xlim <- (distance[[1]][distance[[1]]>xlim[1] & distance[[1]]<xlim[2]])/xlength
-			# distance.hist[[i]]=hist(distance.xlim+0.5, breaks=seq(0,1,length=nint+1), plot=F)$count
-		# }		
-		# arg <- harg[names(harg)!="border"] 
-		# hist.max <- max(distance.hist[[1]], distance.hist[[2]])
-		# do.call("panel.rect", c(list(xright=seq(0,1-1/nint,length=nint), ybottom=rep(0,nint), xleft=seq(1/nint,1,length=nint),ytop=distance.hist[[1]]/(hist.max+hist.max/5), border=2), arg))
-		# do.call("panel.rect", c(list(xright=seq(0,1-1/nint,length=nint), ybottom=rep(0,nint), xleft=seq(1/nint,1,length=nint),ytop=distance.hist[[2]]/(hist.max+hist.max/5), border=4), arg))
-	# }
+	distance.xlim <- (distance[distance>xlim[1] & distance<xlim[2]])/(2*xlim[2]) +0.5	
+	distance.hist=hist(distance.xlim, breaks=seq(0,1,length=nclass+1), plot=F)$count
+	do.call("panel.rect", c(list(xright=seq(0,1-1/nclass,length=nclass), ybottom=rep(0,nclass), xleft=seq(1/nclass,1,length=nclass),ytop=distance.hist/(max(distance.hist)+max(distance.hist)/5), col=col[1], border=border)))	
 	popViewport() #end plotViewport "plot"
-	grid.text(x=unit(0.5,"npc"), y=unit(0.92,"npc"), paste("d(", names[1],"-", names[2],")"))
+	grid.text(x=unit(0.5,"npc"), y=unit(0.92,"npc"), paste("d(", names[1],"-", names[2],")"), gp=gpar(cex=cex))
 }
 
 ##############
 
-plotDistanceDensity <- function (darg, carg, xlim, strand, pos, distance,  column, row,  names, motifName1, motifName2, strands, sequencesLength)
+plotDistanceDensity <- function ( xlim,  pos, distance,  column, row,  names, strands, col, lwd, lty, bw, cex)
 {
-	xlength=xlim[2]
 	pushViewport(plotViewport(c(7/length(pos), 0.5,7/length(pos),0.5), name="plot"))
-	# if(!strand)
-	# {		
-		#distance <- motivDistance(pos[[column]]@positionVector, pos[[row]]@positionVector, commonSequences, motifName1, motifName2, c("+","-"), sequencesLength)
-		distance.xlim <- distance[distance>xlim[1] & distance<xlim[2]]
-		density <- do.call ("density", c(list(x=distance.xlim),darg))
-		density.x <- (density$x[density$x>xlim[1] & density$x<xlim[2]] - xlim[1])/(2*xlength)
-		density.y <- density$y[density$x>xlim[1] & density$x<xlim[2]]
-		do.call("panel.lines", c( list(x=density.x, y=density.y/max(density.y)), carg)) 
-	# } else {
-		# density.x <- list(NULL, NULL)
-		# density.y <- list(NULL, NULL)
-		# for (i in 1:2)
-		# {
-			# distance <- motivDistance(pos[[column]]@positionVector, pos[[row]]@positionVector, commonSequences, motifName1, motifName2, strands[i], sequencesLength)
-			# distance.xlim <- distance[[1]][distance[[1]]>xlim[1] & distance[[1]]<xlim[2]]
-			# if (length(distance)>1)
-			# {
-				# density <- do.call ("density", c(list(x=distance.xlim),darg))
-				# density.x[[i]] <- (density$x[density$x>xlim[1] & density$x<xlim[2]] -xlim[1])/xlength
-				# density.y[[i]] <- density$y[density$x>xlim[1] & density$x<xlim[2]]
-			# }
-		# }
-		# if (length(density.y[[1]])>1 )
-		# {
-			# carg[["col"]] <- "red"
-			# do.call("panel.lines", c( list(x=density.x[[1]], y=density.y[[1]]/max(density.y[[1]], density.y[[2]])), carg)) 
-		# }
-		# if (length(density.y[[2]])>1 )
-		# {
-			# carg[["col"]] <- "blue"
-			# do.call("panel.lines", c( list(x=density.x[[2]], y=density.y[[2]]/max(density.y[[1]], density.y[[2]])), carg)) 
-		# }		
-	# }
+	distance.xlim <- distance[distance>xlim[1] & distance<xlim[2]]
+	density <- do.call ("density", c(list(x=distance.xlim, bw)))
+	density.x <- (density$x[density$x>xlim[1] & density$x<xlim[2]] - xlim[1]) /(2*xlim[2]) 
+	density.y <- density$y[density$x>xlim[1] & density$x<xlim[2]]
+	do.call("panel.lines", c( list(x=density.x, y=density.y/max(density.y), col=col[1], lwd=lwd, lty=lty))) 
 	popViewport() #end plotViewport "plot"
-	grid.text(x=unit(0.5,"npc"), y=unit(0.92,"npc"), paste("d(", names[1],"-", names[2],")"))
+	grid.text(x=unit(0.5,"npc"), y=unit(0.92,"npc"), paste("d(", names[1],"-", names[2],")"), gp=gpar(cex=cex))
 }
 #########
 
-plotDistanceVenn <- function (cooccurences,  varg, motifName1, motifName2, nSequences)
+	plotDistanceVenn <- function (cooccurences, motifName1, motifName2, nSequences, cex, vcol)
 {
 	sequences.n=cooccurences[2, 1]
 	sequences1.n=cooccurences[2, 2]
 	sequences2.n=cooccurences[1, 1]
 	sequences1.alone.n=sequences1.n-sequences.n
 	sequences2.alone.n=sequences2.n-sequences.n
-	do.call("grid.circle", list(x=unit(0.4,"npc"), y=unit(0.5,"npc"), r=unit(0.3,"npc"), gp=gpar(col=varg[["col"]][1], lwd=varg[["lwd"]])))
-	do.call("grid.circle", list(x=unit(0.6,"npc"), y=unit(0.5,"npc"), r=unit(0.3,"npc"), gp=gpar(col=varg[["col"]][2], lwd=varg[["lwd"]])))
-	do.call("grid.text", list(x=unit(0.1,"npc"), y=unit(0.9,"npc"), label=motifName1, just="left", gp=gpar(col=varg[["col"]][1], cex=varg[["cex"]])))
-	do.call("grid.text", list(x=unit(0.9,"npc"), y=unit(0.9,"npc"), label=motifName2, just="right", gp=gpar(col=varg[["col"]][2], cex=varg[["cex"]])))
-	do.call("grid.text", list(x=unit(c(0.5, 0.5),"npc"), y=unit(c(0.5, 0.60),"npc"), label=c(sequences.n , paste(round(100*sequences.n/nSequences,1),"%", sep="")), just="center", gp=gpar(col="black", cex=c(1,0.7)*varg[["cex"]])) )
-	do.call("grid.text", list(x=unit(c(0.35,0.20),"npc"), y=unit(c(0.5,0.75),"npc"), label=c(sequences1.alone.n, paste(round(100*sequences1.alone.n/nSequences,1),"%", sep="")), just="center", gp=gpar(col=varg[["col"]][1], cex=c(1,0.7)*varg[["cex"]])))
-	do.call("grid.text", list(x=unit(c(0.65,0.80),"npc"), y=unit(c(0.5,0.75),"npc"), c(sequences2.alone.n, paste(round(100*sequences2.alone.n/nSequences,1),"%", sep="")), just="center", gp=gpar(col=varg[["col"]][2], cex=c(1,0.7)*varg[["cex"]]))) 
-	
-	#do.call("grid.text", list(x=unit(c(0.35,0.35),"npc"), y=unit(c(0.5,0.35),"npc"), label=c(sequences1.alone.n, paste(round(100*sequences1.alone.n/sequences1.n,1),"%", sep="")), just="center", gp=gpar(col=varg[["col"]][1], cex=c(1,0.7)*varg[["cex"]])))
-	#do.call("grid.text", list(x=unit(c(0.65,0.65),"npc"), y=unit(c(0.5,0.35),"npc"), c(sequences2.alone.n, paste(round(100*sequences2.alone.n/sequences2.n,1),"%", sep="")), just="center", gp=gpar(col=varg[["col"]][2], cex=c(1,0.7)*varg[["cex"]])))   
+	theta <- 2 * pi * (1:360)/360
+	grid.lines(unit(0.35+0.3*cos(theta), "npc"), unit(0.5+0.3 * sin(theta), "npc"), gp=gpar(col=vcol[1], lwd=2))
+	grid.lines(unit(0.65+0.3*cos(theta), "npc"), unit(0.5+0.3 * sin(theta), "npc"), gp=gpar(col=vcol[2], lwd=2))
+	do.call("grid.text", list(x=unit(0.5,"npc"), y=unit(0.9,"npc"), label="# sequences containing", just="center", gp=gpar(col="black", cex=5*cex/7)))
+	do.call("grid.text", list(x=unit(0.1,"npc"), y=unit(0.1,"npc"), label=motifName1, just="left", gp=gpar(col=vcol[1], cex=cex)))
+	do.call("grid.text", list(x=unit(0.9,"npc"), y=unit(0.1,"npc"), label=motifName2, just="right", gp=gpar(col=vcol[2], cex=cex)))
+	do.call("grid.text", list(x=unit(c(0.5, 0.5),"npc"), y=unit(c(0.52, 0.37),"npc"), label=c(sequences.n , paste(round(100*sequences.n/nSequences,1),"%", sep="")), just="center", gp=gpar(col="black", cex=c(1,0.7)*cex)) )
+	do.call("grid.text", list(x=unit(c(0.22,0.24),"npc"), y=unit(c(0.52,0.37),"npc"), label=c(sequences1.alone.n, paste(round(100*sequences1.alone.n/nSequences,1),"%", sep="")), just="center", gp=gpar(col=vcol[1], cex=c(1,0.7)*cex)))
+	do.call("grid.text", list(x=unit(c(0.78,0.77),"npc"), y=unit(c(0.52,0.37),"npc"), c(sequences2.alone.n, paste(round(100*sequences2.alone.n/nSequences,1),"%", sep="")), just="center", gp=gpar(col=vcol[2], cex=c(1,0.7)*cex))) 
 }
 
 #########
 
-plotDistance <- function (pos, table, strand, main, group, bysim, xlim, sequencesLength, nSequences, harg, darg, carg, varg,...)
+plotDistance <- function (pos, table, strand, main, group, bysim, xlim, nSequences, col, border, lwd, lty, nclass, bw, cex, vcol)
 {
 	nmotifs=length(pos)
 	grid.newpage()
 	grid.text(main, gp=gpar(col="black", font=2, cex=1.5), y=unit(0.98,"npc"))
 	grid.text("distance", gp=gpar(col="black", font=3, cex=1), y=unit(0.015,"npc"))
-	if (strand)
-	{
-		grid.text("Forward", gp=gpar( font=3, cex=0.7,  col="blue"), y=unit(0.02,"npc"), x=unit(0.05,"npc"), just="top")
-		grid.text("Reverse", gp=gpar( font=3, cex=0.7,  col="red"), y=unit(0.02,"npc"), x=unit(0.15,"npc"), just="top")
-	}
+	
 	if(bysim)
 	{
 		motifNames <- similarity(pos)
@@ -159,9 +104,7 @@ plotDistance <- function (pos, table, strand, main, group, bysim, xlim, sequence
 	vp <- viewport(layout=grid.layout(nmotifs, nmotifs)) #parse case
 	pushViewport(vp)
 	par(mar=c(2,1,1,1))
-	if (is.null(xlim))
-	{xlim <- c(-sequencesLength, sequencesLength)}
-	xlength=xlim[2]
+	
 	for (row in 1:nmotifs)
 	{
 #plot distance
@@ -172,22 +115,26 @@ plotDistance <- function (pos, table, strand, main, group, bysim, xlim, sequence
 				vpdistance <- viewport(layout.pos.col=distance.col, layout.pos.row=row) #seqLogo
 				pushViewport(vpdistance)	
 				dist.commonSeq <- which(table[,distance.col]!=0 & table[,row]!=0)
+				maxL <- max(pos[[row]]@positionVector$lengthPeak, pos[[distance.col ]]@positionVector$lengthPeak)
 
-				
-				distance <- motivDistance(pos[[distance.col]]@positionVector, pos[[row]]@positionVector, dist.commonSeq, motifNames[distance.col], motifNames[row],  c("+","-"), sequencesLength)
-
-				if(is.null(carg[["plot"]]) || carg[["plot"]])
-				{ plotDistanceDensity( darg, carg, xlim, strand, pos, distance[[1]], distance.col, row, distance[[2]], motifNames[distance.col], motifNames[row], c("+","-"), sequencesLength)}
-				if (is.null(harg[["plot"]]) || harg[["plot"]])
-				{plotDistanceHistogram(harg, xlim, strand, pos, distance[[1]], distance.col, row,  distance[[2]], motifNames[distance.col], motifNames[row], c("+","-"), sequencesLength)}
-				
+				 if (is.null(xlim))
+				 {
+					xl <- c(-maxL, maxL)
+				 } else {
+					xl <- xlim
+				 }
+		
+				distance <- motivDistance(pos[[distance.col]]@positionVector, pos[[row]]@positionVector, dist.commonSeq, motifNames[distance.col], motifNames[row],  c("+","-"), maxL)
+				if (!is.null(distance[[1]]))
+				{
+					plotDistanceDensity(xl, pos, distance[[1]], distance.col, row, distance[[2]], c("+","-"), col, lwd, lty, bw, cex)
+					plotDistanceHistogram(xl, pos, distance[[1]], distance.col, row,  distance[[2]], motifNames[distance.col], motifNames[row], c("+","-"), col, border, nclass, cex)
+				}
+							
 				pushViewport(plotViewport(c(0, 0.5,0,0.5), name="axis"))
 				panel.segments(0,0.13,1,0.13, col="black", lwd=1)
 				panel.segments(x0=c(0.5, 0.25, 0.75), y0=c(0.1, 0.1, 0.1), x1=c(0.5, 0.25, 0.75), y1=c(0.155, 0.155, 0.155), col="black", lwd=1)
-				panel.text(x=c(0.25,0.5,0.75), y=0.045, labels=round(c(-xlength/2,0, xlength/2),0), cex=2.5/nmotifs)				
-				# panel.text(x=0.5, y=0.045, labels="0", cex=2.5/nmotifs)
-				# panel.text(x=0.25, y=0.045, labels=round(*xlength/2), cex=2.5/nmotifs)
-				# panel.text(x=0.75, y=0.045, labels=round(xlength/2), cex=2.5/nmotifs)
+				panel.text(x=c(0.25,0.5,0.75), y=0.045, labels=round(c(-xl[2]/2,0, xl[2]/2),0), cex=max(2.5/nmotifs,0.5)*cex)				
 				popViewport() #end plotViewport "axis"
 				popViewport() #end vpdistance
 			}
@@ -201,11 +148,11 @@ plotDistance <- function (pos, table, strand, main, group, bysim, xlim, sequence
 		
 		if (bysim)
 		{
-			grid.text(x=unit(0.5,"npc"), y=unit(0.5,"npc"), pos[[row]]@similarity, gp=gpar(cex=6/nmotifs, srt=45, col="red", font=2))	
+			grid.text(x=unit(0.5,"npc"), y=unit(0.5,"npc"), pos[[row]]@similarity, gp=gpar(cex=6/nmotifs*cex, srt=45, col="red", font=2))	
 		} 
 		else 
 		{
-			grid.text(x=unit(0.5,"npc"), y=unit(0.5,"npc"), pos[[row]]@motifName, gp=gpar(cex=6/nmotifs, srt=45, col="red", font=2))	
+			grid.text(x=unit(0.5,"npc"), y=unit(0.5,"npc"), pos[[row]]@motifName, gp=gpar(cex=6/nmotifs*cex, srt=45, col="red", font=2))	
 		}
 		popViewport()	 #end "rect"
 		popViewport()	#end vpname
@@ -219,7 +166,7 @@ plotDistance <- function (pos, table, strand, main, group, bysim, xlim, sequence
 				pushViewport(vpseqcom)	
 				venn.commonSeq <- which(table[,venn.col]!=0 & table[,row]!=0)
 				cooccurences = cooccurences(table[,c(venn.col, row)])
-				plotDistanceVenn (cooccurences, varg, motifNames[row], motifNames[venn.col], nSequences)
+				plotDistanceVenn (cooccurences, motifNames[row], motifNames[venn.col], nSequences, cex, vcol)
 				popViewport() #end vpseqcom	
 			}
 		}

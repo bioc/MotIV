@@ -235,7 +235,7 @@ combineMotiv <- function (x, filt, name, verbose, exact)
 				else
 				{
 					combinedMotifs <- c(combinedMotifs, originalNames[l])
-					x@bestMatch[[l]]@similarity <- paste("similarity", filterNumber, sep="")
+					x@bestMatch[[l]]@similarity <- paste("s", filterNumber, sep="")
 				}
 			}
 			if(verbose)

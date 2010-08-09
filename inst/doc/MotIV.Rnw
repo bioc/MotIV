@@ -308,7 +308,7 @@ As this function need an object of type \verb@gadem@, you can use it only with a
 
 \begin{center}
 <<motiv_plotDistance, fig=T, eval=T, width=10, height=7>>=
-plot(foxa1.filter.combine ,gadem,type="distance", correction=TRUE, group=TRUE, bysim=TRUE, main="Distance between FOXA and AP-1", strand=FALSE, xlim=c(-100,100), darg=list(bw=8))
+plot(foxa1.filter.combine ,gadem,type="distance", correction=TRUE, group=TRUE, bysim=TRUE, main="Distance between FOXA and AP-1", strand=FALSE, xlim=c(-100,100), bw=8)
 @
 \end{center}
 

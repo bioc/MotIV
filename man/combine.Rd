@@ -10,11 +10,11 @@
 This function combines motifs according to a set of filters. 
 } 
 \usage{
-\S4method{combine}{motiv,filters}(x, f, name=NULL,exact=FALSE,verbose=TRUE)
+\S4method{combine}{motiv,filters}(x, y, name=NULL,exact=TRUE,verbose=TRUE)
 }
 \arguments{
 	\item{x}{An object of class \code{motiv}.}
-	\item{f}{A filter or a set of filter.}
+	\item{y}{A filter or a set of filter.}
 	\item{name}{Name(s) to be given for similar motifs.}
 	\item{verbose}{If \code{FALSE}, no output will be print.}
 	\item{exact}{If \code{TRUE}, search only for perfect name match.}

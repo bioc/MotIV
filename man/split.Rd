@@ -10,7 +10,7 @@ This function splits a 'motiv' object according filters.
 } 
 
 \usage{
-	\S4method{split}{motiv,filters}(x, f, exact=FALSE,drop=FALSE,verbose=TRUE,...)
+	\S4method{split}{motiv,filters}(x, f, exact=TRUE,drop=FALSE,verbose=TRUE,...)
 }
 \arguments{
 	\item{x}{An object of class motiv (usualy provied by motifMatch).}

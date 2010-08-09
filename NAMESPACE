@@ -2,7 +2,7 @@ useDynLib(MotIV)
 
 importFrom(graphics, par, plot)
 
-importFrom(grid, dataViewport, gpar, grid.circle, grid.layout, grid.newpage, grid.polygon, grid.rect, grid.segments, grid.text, grid.xaxis, grid.yaxis, plotViewport, popViewport, pushViewport, unit, viewport)
+importFrom(grid, dataViewport, gpar, grid.lines, grid.layout, grid.newpage, grid.polygon, grid.rect, grid.segments, grid.text, grid.xaxis, grid.yaxis, plotViewport, popViewport, pushViewport, unit, viewport)
 
 importFrom(IRanges, IRanges, RangedData, start, end, as.data.frame)
 
@@ -24,7 +24,7 @@ importClassesFrom(methods, ANY, character, data.frame, list, matrix, numeric)
 
 importClassesFrom(rGADEM, gadem)
 
-export(motifMatch, exportAsTransfacFile, generateDBScores, readDBScores, writeDBScores, getGademPWM, readGademPWMFile, readPWMfile, viewAlignments, summary, plot, split, filter, combine, makePWM, setFilter,  combine, trimPWMedge, exportAsRangedData, similarity, viewMotifs, occurences, cooccurences, getPWM, nMotifs)
+export(motifMatch, generateDBScores, readDBScores, writeDBScores, getGademPWM, readGademPWMFile, readPWMfile, viewAlignments, summary, plot, split, filter, combine, makePWM, setFilter,  combine, trimPWMedge, exportAsRangedData, similarity, viewMotifs, occurences, cooccurences, getPWM, nMotifs,  motifDistances, motifHclust, motifCutree)
 
 exportClasses(motiv, matches, alignments, transcriptionFactor, filter)
-exportMethods(show,summary, combine, filter, split)
+exportMethods(show,summary, combine, filter, split, exportAsTransfacFile, getPWM)

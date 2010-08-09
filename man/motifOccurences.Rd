@@ -22,6 +22,9 @@ This object can be put in \code{cooccurences} to return the number of sequences 
 \author{Eloi Mercier <\email{eloi.mercier@ircm.qc.ca}>}
 
 \examples{
-#TODO
+data("FOXA1_rGADEM")
+oc <- occurences (gadem)
+coc <- cooccurences (oc)
+coc
 }
 \keyword{misc}

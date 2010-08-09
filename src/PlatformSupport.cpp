@@ -176,7 +176,7 @@ SEXP PlatformSupport::GetRandDistrib( Alignment* A_man)
 	int compt=0;
 	SEXP score;	
 	PROTECT (score =allocMatrix(REALSXP, len,7));
-	
+		
 	//Set up the mean and std_dev arrays
 	double** sum = (double**)malloc(sizeof(double*)*maxLen);
 	double** max = (double**)malloc(sizeof(double*)*maxLen);
@@ -402,31 +402,94 @@ double PlatformSupport::Score2Dist(int len1, int len2, double score, double maxS
 	return((S_eff));
 }
 
-//Print out the pairwise alignments
-void PlatformSupport::PrintPairwise()
+
+
+//Align all matrices against all others
+
+void PlatformSupport::PreAlign(Alignment* A_man)
 {
 	int i, j;
-	for(j=0; j<matCount; j++){
-		Rprintf("\t\t%s",inputMotifs[j]->GetName());
-	}Rprintf("\t\n\n");
-	
+	int i1, i2, aL;
+	double curr_score, curr_z_score, curr_p_val, max_score;
+	bool forward1, forward2;
+	pairwiseAlign = new AlignRec*[matCount];
+	for(i=0; i<matCount; i++)
+	{	
+		pairwiseAlign[i] = new AlignRec[matCount];
+	}
+	//firstly align each matrix to itself (to get max scores later)
+	for(i=0; i<matCount; i++)
+	{
+		curr_score = A_man->AlignMotifs(inputMotifs[i], inputMotifs[i], i1, i2, aL, forward1);
+		pairwiseAlign[i][i].forward1=forward1;
+		pairwiseAlign[i][i].forward2=false;
+		pairwiseAlign[i][i].i1=i1;
+		pairwiseAlign[i][i].i2=i2;
+		pairwiseAlign[i][i].score=curr_score;
+		curr_z_score = Score2ZScore(inputMotifs[i]->len, inputMotifs[i]->len, curr_score);
+		pairwiseAlign[i][i].z_score=curr_z_score;
+		curr_p_val = Score2PVal(inputMotifs[i]->len, inputMotifs[i]->len, curr_score);
+		pairwiseAlign[i][i].p_value = curr_p_val;
+		pairwiseAlign[i][i].CopyAlignSec(A_man->alignSection, aL);
+		strcpy(pairwiseAlign[i][i].alignedNames[0], inputMotifs[i]->name);
+		strcpy(pairwiseAlign[i][i].alignedNames[1], inputMotifs[i]->name);
+		pairwiseAlign[i][i].alignedIDs[0] = i; pairwiseAlign[i][i].alignedIDs[1] = i;
+	}
+
+	//Go through each possible set of alignments
+	for(i=0; i<matCount; i++)
+		for(j=0; j<matCount; j++){//Now possible to set j<i, as long as [i][j] and [j][i] are copied
+			if(i!=j){
+				curr_score = A_man->AlignMotifs2D(inputMotifs[i], inputMotifs[j], i1, i2, aL, forward1, forward2);
+				pairwiseAlign[i][j].forward1=forward1;
+				pairwiseAlign[i][j].forward2=forward2;
+				pairwiseAlign[i][j].i1=i1;
+				pairwiseAlign[i][j].i2=i2;
+				pairwiseAlign[i][j].score=curr_score;
+				curr_z_score = Score2ZScore(inputMotifs[i]->len, inputMotifs[j]->len, curr_score);
+				pairwiseAlign[i][j].z_score=curr_z_score;
+				curr_p_val = Score2PVal(inputMotifs[i]->len, inputMotifs[j]->len, curr_score);
+				pairwiseAlign[i][j].p_value = curr_p_val;
+				pairwiseAlign[i][j].CopyAlignSec(A_man->alignSection, aL);
+				strcpy(pairwiseAlign[i][j].alignedNames[0], inputMotifs[i]->name);
+				strcpy(pairwiseAlign[i][j].alignedNames[1], inputMotifs[j]->name);
+				pairwiseAlign[i][i].alignedIDs[0] = i; pairwiseAlign[i][i].alignedIDs[1] = j;
+				max_score = (pairwiseAlign[i][i].score + pairwiseAlign[j][j].score)/2;
+				pairwiseAlign[i][j].dist = -1 * log(pairwiseAlign[i][j].p_value);
+			}
+		}
+}
+
+//Print out the pairwise alignments
+SEXP PlatformSupport::PrintPairwise()
+{
+	int i, j;
+	SEXP Eval2;
+	PROTECT (Eval2 =allocMatrix(REALSXP, matCount,matCount));
+	int compt=0;
+		
 	for(i=0; i<matCount; i++){
-		Rprintf("\t%s\t",inputMotifs[i]->name);
 		for(j=0; j<matCount; j++){
 			if(i!=j){
 				double Eval = 1-pairwiseAlign[i][j].p_value;
-				Rprintf("\t%e\t", Eval);
+				DOUBLE_DATA(Eval2)[compt]=Eval;
 			}else
-				Rprintf("\t-\t");
+				{
+				DOUBLE_DATA(Eval2)[compt]=0;
+				}
+		compt++;		
 		}
-		Rprintf("\t\n\n");
 	}
+	
+	UNPROTECT(1);
+	return Eval2;
 }
 
 //Find the best matching motifs in the match set and print the pairs to a file
 SEXP PlatformSupport::SimilarityMatching(Alignment* A_man, const int matchTopX)
 {
-	const char *tmp_strand[1000];
+	const char *tmp_strandSeq[1000];
+	const char *tmp_strandMatch[1000];
 	int compt=0;
 	double* topScores;
 	int* topIndices;
@@ -439,16 +502,18 @@ SEXP PlatformSupport::SimilarityMatching(Alignment* A_man, const int matchTopX)
 	char currName[STR_LEN];
 	char*** topAligns;
 	int topX = matchTopX;	
-	SEXP tf, eval, seq, match, strand, pwm, name, vec;
+	SEXP tf, eval, seq, match, strandSeq, strandMatch, pwm, name, vec;
 	int n=GetMatCount()*topX;
-	
+		
 	PROTECT (tf=NEW_CHARACTER(n));
 	PROTECT (eval=NEW_NUMERIC(n));
 	PROTECT (seq=NEW_CHARACTER(n));
 	PROTECT (match=NEW_CHARACTER(n));
-	PROTECT (strand=NEW_CHARACTER(n));
+	PROTECT (strandSeq=NEW_CHARACTER(n));
+	PROTECT (strandMatch=NEW_CHARACTER(n));
 	PROTECT (pwm=NEW_LIST(n));
 	PROTECT(name=NEW_CHARACTER(GetMatCount()));
+	
 	
 	if(topX>GetMatchDBSize()){
 		topX=GetMatchDBSize();
@@ -467,7 +532,7 @@ SEXP PlatformSupport::SimilarityMatching(Alignment* A_man, const int matchTopX)
 		topAligns[x][1]=new char[STR_LEN];
 		strcpy(topAligns[x][0], "");strcpy(topAligns[x][1], "");
 	}
-	
+		
 	if(printAll){
 		Rprintf("\t\t");
 		for(j=0; j<GetMatchDBSize(); j++){
@@ -475,7 +540,7 @@ SEXP PlatformSupport::SimilarityMatching(Alignment* A_man, const int matchTopX)
 		}
 		Rprintf("\t\n");
 	}
-	
+		
 	for(i=0; i<GetMatCount(); i++){
 		
 		if(printAll)
@@ -486,39 +551,49 @@ SEXP PlatformSupport::SimilarityMatching(Alignment* A_man, const int matchTopX)
 			strcpy(topAligns[x][0], "");strcpy(topAligns[x][1], "");
 		}
 		
+		
 		for(j=0; j<GetMatchDBSize(); j++)
 		{			
 			currScore = A_man->AlignMotifs2D(inputMotifs[i], matchMotifs[j], i1, i2, aL, forward1, forward2);
 			currPVal = Score2PVal(inputMotifs[i]->len, matchMotifs[j]->len, currScore);
 			if(printAll){Rprintf("\t%lf\t", currPVal);/*Rprintf("\t%s\t%lf\n", matchMotifs[j]->GetName(),currPVal);*/}
 			
+			
 			//Check the current score against the topScores
 			inserted=false;
 			for(x=0; x<topX && !inserted; x++){
+			
 				if(currPVal>topScores[x]){
+									
 					//Shift and insert
 					for(y=topX-1; y>x; y--){
 						topScores[y]=topScores[y-1];
 						topIndices[y]=topIndices[y-1];
 						strcpy(topAligns[y][0],topAligns[y-1][0]);
 						strcpy(topAligns[y][1],topAligns[y-1][1]);
+						tmp_strandSeq[y]=tmp_strandSeq[y-1];
+						tmp_strandMatch[y]=tmp_strandMatch[y-1];
 					}
 					topScores[x] = currPVal;
 					topIndices[x]=j;
+				
 					if(forward1){
 						one = inputMotifs[i];
+						tmp_strandMatch[x]="+";
 					}else{
 						one = new Motif(inputMotifs[i]->GetLen());
 						inputMotifs[i]->RevCompMotif(one);
+						 tmp_strandMatch[x]="-";
 					}
 					if(forward2){
 						two = matchMotifs[j];
-						tmp_strand[x]="+";
+						tmp_strandSeq[x]="+";
 					}else{
 						two = new Motif(matchMotifs[j]->GetLen());
 						matchMotifs[j]->RevCompMotif(two);
-						tmp_strand[x]="-";
+						tmp_strandSeq[x]="-";
 					}
+										
 					A_man->CopyAlignmentConsensus(one, two,topAligns[x][0], topAligns[x][1]);
 					if(!forward1){
 						delete one;
@@ -531,23 +606,24 @@ SEXP PlatformSupport::SimilarityMatching(Alignment* A_man, const int matchTopX)
 			}
 		}
 		if(printAll){Rprintf("\t\n");}
-		
+						
 		SET_STRING_ELT(name, i, mkChar( inputMotifs[i]->GetName()));
 		
 		for(x=0; x<topX; x++)
 		{
 			sprintf(currName, "%s", matchMotifs[topIndices[x]]->GetName());
-			
 			double Eval =1-topScores[x];
 			SET_STRING_ELT(tf, compt, mkChar(currName));
 			DOUBLE_DATA(eval)[compt]=Eval;
 			SET_STRING_ELT(seq, compt, mkChar( topAligns[x][0]));
 			SET_STRING_ELT(match, compt, mkChar( topAligns[x][1]));
-			SET_STRING_ELT(strand, compt, mkChar(tmp_strand[x]));
+			SET_STRING_ELT(strandSeq, compt, mkChar(tmp_strandSeq[x]));
+			SET_STRING_ELT(strandMatch, compt, mkChar(tmp_strandMatch[x]));
 			SET_VECTOR_ELT(pwm,compt,matchMotifs[topIndices[x]]->PrintMotif(NULL));
 			compt++;
 		}
 	}
+	
 	delete [] topScores;
 	delete [] topIndices;
 	for(x=0; x<topX; x++)
@@ -557,16 +633,17 @@ SEXP PlatformSupport::SimilarityMatching(Alignment* A_man, const int matchTopX)
 	}
 	delete [] topAligns;
 	
-	PROTECT(vec=allocVector(VECSXP,7));
+	PROTECT(vec=allocVector(VECSXP,8));
 	SET_VECTOR_ELT(vec,0,name);
 	SET_VECTOR_ELT(vec,1,tf);
 	SET_VECTOR_ELT(vec,2,pwm);
 	SET_VECTOR_ELT(vec,3,eval);
 	SET_VECTOR_ELT(vec,4,seq);
 	SET_VECTOR_ELT(vec,5,match);
-	SET_VECTOR_ELT(vec,6,strand);
+	SET_VECTOR_ELT(vec,6,strandSeq);
+	SET_VECTOR_ELT(vec,7,strandMatch);
 	
-	UNPROTECT(8);
+	UNPROTECT(9);
 	return vec;	
 }
 

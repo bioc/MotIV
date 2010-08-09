@@ -8,7 +8,8 @@ motifMatch <- function (inputPWM, database=jaspar, DBscores=jaspar.scores, cc="P
 		for (i in 1:(topx*length(res[[1]])))
 		{
 			tf <- new("transcriptionFactor", name=res[[2]][i], pwm=res[[3]][[i]])
-			alig <- new("alignments", TF=tf, evalue=res[[4]][i], sequence=res[[5]][i], match=res[[6]][i], strand=res[[7]][i])	
+			bothStrands=paste(res[[7]][i], res[[8]][i], sep="")
+			alig <- new("alignments", TF=tf, evalue=res[[4]][i], sequence=res[[5]][i], match=res[[6]][i], strand=switch(bothStrands, "++"="+", "--"="+", "+-"="-", "-+"="-", ""))	
 			list1 <- c(list1, alig)
 		}
 		

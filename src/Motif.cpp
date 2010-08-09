@@ -213,6 +213,7 @@ double Motif::Info(int i)
 //Print the motif in TRANSFAC format
 SEXP Motif::PrintMotif(FILE* out, double *PWMs, int* PWMsize, int* max)
 {
+
 	SEXP pwm;
 	PROTECT (pwm =allocMatrix(REALSXP, 4,len));
 	int compt=0;
@@ -225,11 +226,8 @@ SEXP Motif::PrintMotif(FILE* out, double *PWMs, int* PWMsize, int* max)
 			compt++;		
 		}
 	}
-	
-	
-	
+		
 	UNPROTECT(1);
-	
 	return pwm;
 }
 

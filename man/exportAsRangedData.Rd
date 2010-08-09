@@ -7,12 +7,11 @@
 Export your 
 } 
 \usage{
-exportAsRangedData(x, y, bysim=TRUE, correction=TRUE)
+exportAsRangedData(x, y, correction=TRUE)
 }
 \arguments{
 	\item{x}{An object of class \code{motiv}.}
 	\item{y}{The rGADEM type object associated with the \code{motiv }object.}
-	\item{bysim}{If \code{TRUE}, the 'similar' field (defined with the \code{combine} function) will be print instead of the original name.}
 	\item{correction}{If \code{TRUE}, corrects the position according to the alignment.}	
 }
 \value{An object of type \code{RangedData}.}

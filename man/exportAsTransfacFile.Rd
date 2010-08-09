@@ -1,19 +1,24 @@
 
 \name{exportAsTransfacFile}
 \alias{exportAsTransfacFile}
+\alias{exportAsTransfacFile-methods}
+\alias{exportAsTransfacFile,motiv-method}
+\alias{exportAsTransfacFile,list-method}
 \title{Write Transfac Files} 
 
 \description{
 Export an object of class motiv as a Transfac file type.
 } 
 \usage{
-exportAsTransfacFile(x, file)
+	\S4method{exportAsTransfacFile}{motiv}(x, file)
+	\S4method{exportAsTransfacFile}{list}(x, file)
 }
 \arguments{
 	\item{x}{An object of class \code{motiv} to be export.}
 	\item{file}{A character string naming a file.}
 }
-\details{This function is made to provided standard output file used by STAMP. It take an object of class \code{motiv} and write two files named \code{*_matched.txt} and \code{*_match_pairs.txt} containing alignments and identified PWMs.
+\details{
+This function is made to provide standard output file used by STAMP. It take an object of class \code{motiv} and write two files named \code{*_matched.txt} and \code{*_match_pairs.txt} containing alignments and identified PWMs.
 
 For more information about the Transfac file format, please refere to http://www.benoslab.pitt.edu/stamp/help.html.
 }

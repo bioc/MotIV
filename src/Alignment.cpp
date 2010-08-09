@@ -151,9 +151,7 @@ void Alignment::PrintAlignmentConsensus(Motif* one, Motif* two)
 		//if(alignForward){Rprintf("F\n");}
 		for(int q=0; q<2; q++){
 			if(q==0){currMotif=one;}
-			else{currMotif=two;}
-			
-			
+			else{currMotif=two;}			
 			Rprintf("\t%s:\t", currMotif->name);
 			//		last = alignSection[q][alignLen-1];
 			last=-50;
@@ -195,6 +193,9 @@ double Alignment::AlignMotifs2D(Motif* one, Motif* two, int &i1, int &i2, int& a
 	//Send both motifs in reverse direction (takes care of both reversed and "two" reversed)
 	score2 = AlignMotifs(revOne, revTwo, i1_B, i2_B, aL_B, for_B);
 	
+			// printf("for_A : %i\n", for_A);
+
+	
 	if(score1>score2){
 		i1 = i1_A;
 		i2 = i2_A;
@@ -204,7 +205,10 @@ double Alignment::AlignMotifs2D(Motif* one, Motif* two, int &i1, int &i2, int& a
 		}
 		alignL = aL_A;
 		forward1 = for_A;
+		// printf("FORWARD1 : %i\n", forward1);
+
 		forward2 = true;
+		// printf("FORWARD2 : %i\n", forward2);
 		bestScore = score1;
 		if(!forward1)
 			currOne = revOne;

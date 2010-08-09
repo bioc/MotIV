@@ -5,6 +5,8 @@
 \alias{plot,motiv-method}
 \alias{plot,motiv,gadem-method}
 \alias{plot,motiv,gadem-method}
+\alias{plot}
+
 
 \title{Plot Motiv} 
 \description{
@@ -12,29 +14,30 @@ This functions are used to vizualise and validate \code{motiv} analysis.
 } 
 
 \usage{
-	\S4method{plot}{motiv,ANY}(x, y=NULL, main=NULL, sub=NULL, ncol=0, nrow=0, top=3, bysim=TRUE, rev=FALSE, trim=0.05, ...)
-	\S4method{plot}{motiv,gadem}(x, y, sort=FALSE, group=FALSE, main=NULL, sub=NULL, ncol=0, nrow=0, xlim=NULL, correction=TRUE,  bysim=TRUE, strand=FALSE, type="distribution", trim=0.05, harg=list(), darg=list(), carg=list(), varg=list(), ...)
+	\S4method{plot}{motiv,ANY}(x, y=NULL, main=NULL, sub=NULL, ncol=0, nrow=0, top=3, bysim=TRUE, rev=FALSE, trim=0.05, cex)
+	\S4method{plot}{motiv,gadem}(x, y, sort=FALSE, group=FALSE, main=NULL, sub=NULL, ncol=0, nrow=0, xlim=NULL, correction=TRUE,  bysim=TRUE, strand=FALSE, type="distribution", trim=0.05, col=c("blue", "red"), border=c("black", "black"), lwd=2, lty=1, nclass=20, bw="nrd0", cex=1, vcol=c("red", "green"))
 }
 
 \arguments{
 	\item{x}{An object of class \code{motiv}.}
 	\item{y}{The GADEM type object associated with the \code{motiv} object.}
-	\item{ncol}{The desired number of columns.}
-	\item{nrow}{The desired number of rows.}	
-	\item{top}{The top matches to be print.}
-	\item{rev}{Print reverse motif for negatif strand.}	
-	\item{main}{A title of the plot.}
-	\item{sub}{A sub title of the plot.}	
-	\item{type}{The type of plotting.}
-	\item{strand}{If TRUE, two distributions will be plot for forward and reverse strand.}
-	\item{group}{If TRUE, similar motif will be group.}
-	\item{sort}{If TRUE, motifs will be plot by decreased variance order.}
+	\item{ncol, nrow}{A numeric value giving the the number of columns and rows to plot.}
+	\item{top}{A numeric value giving the number of best matches per motif to display.}
+	\item{rev}{A logical value. If \code{TRUE}, print reverse motif for negatif strand.}	
+	\item{main}{An overall title for the plot: see \code{title}.}
+	\item{sub}{A sub title for the plot: see 'title'}	
+	\item{type}{What type of plot should be drawn. Possible values are : distribution to display the binding sites distribution within the peaks or distance to show the pairwise distance between motifs.}
+	\item{strand}{If \code{TRUE}, distribution will be plot for both forward and reverse strand.}
+	\item{group}{If \code{TRUE}, similar motifs will be grouped.}
+	\item{sort}{If \code{TRUE}, motifs will be plot according their computed variance.}
 	\item{bysim}{If \code{TRUE}, the 'similar' field (defined with the \code{combine} function) will be print instead of the original name.}
-	\item{xlim}{numeric vectors of length 2, giving the x coordinates ranges.}
+	\item{xlim}{A numeric vectors of length 2, giving the x coordinates ranges.}
 	\item{correction}{If \code{TRUE}, corrects the position according to the alignment.}
-	\item{harg, darg, carg, varg}{Parameters for histograms, densities, curves and venn diagrams.}
-	\item{trim}{\code{numeric} Only print letters with information content superior to a treshold given by \code{trim}}
-	\item{...}{Further potential arguments passed to methods.}
+	\item{trim}{A \code{numeric} value. Define the mimimun information content value for which the logo letters are shown.}
+	\item{col, border, lwd, lty}{Define respectively the color, the border, the line wide and the line type of both curve and histogram. See 'par'.}
+	\item{nclass}{A numerical value giving the number of class for the histogram.}
+	\item{bw}{he smoothing bandwidth to be used to calculate the density. See \code{density}.}
+	\item{cex, vcol}{A numerical value giving the amount by which plotting text should be magnified relative to the default.}
 }
 
 \details{
@@ -79,8 +82,8 @@ foxa1.filter.combine <- combine(foxa1.filter, c(f.foxa1, f.ap1), exact=FALSE, na
 
 #####Plots#####
 plot(foxa1.filter.combine, ncol=2,top=5, rev=FALSE, main="FOXA", bysim=TRUE)
-plot(foxa1.filter.combine ,gadem,ncol=2, type="distribution", correction=TRUE, group=FALSE, bysim=TRUE, strand=FALSE, sort=TRUE, main="FOXA", harg=list(nint=20), carg=list(bw=2))
-plot(foxa1.filter.combine ,gadem,type="distance", correction=TRUE, group=TRUE, bysim=TRUE, main="FOXA", strand=FALSE, xlim=c(-100,100), harg=list(nint=20), darg=list(bw=8), carg=list(bw=2), varg=list(col=c("red", "blue")))
+plot(foxa1.filter.combine ,gadem,ncol=2, type="distribution", correction=TRUE, group=FALSE, bysim=TRUE, strand=FALSE, sort=TRUE, main="FOXA", nclass=20, bw=2)
+plot(foxa1.filter.combine ,gadem,type="distance", correction=TRUE, group=TRUE, bysim=TRUE, main="FOXA", strand=FALSE, xlim=c(-100,100), nclass=20, bw=8) 
 }
 \keyword{methods}
 

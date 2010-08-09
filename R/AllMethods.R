@@ -102,7 +102,7 @@ function(object) {
 			summary(object[[i]])	
 		}
 	}
-	else if (all(lapply(object, class)=="filter") )
+	else if (all(lapply(object, class)=="filters") )
 	{
 		for (i in 1:length(object))
 		{
@@ -139,6 +139,18 @@ setMethod("names",
 function(x){
 	names<-sapply(x@bestMatch,function(x){x@name})
 	return(names)
+})
+
+setMethod("names",
+"filter",
+function(x){
+	return(x@name[[1]])
+})
+
+setMethod("names",
+"filters",
+function(x){
+	return(names(x@filters[[1]]))
 })
 
 #####replace#####
@@ -330,36 +342,50 @@ setMethod(
 signature(x="motiv", f="filters"),
 function(x, f, exact=FALSE, verbose=TRUE)
 {
-	filt <- f@filters
-	filteredMotiv <- filterMotiv(x, filt, exact, verbose)
+	filteredMotiv <- filterMotiv(x, f@filters, exact, verbose)
+	return(filteredMotiv)
+})
+
+setMethod(
+"filter",
+signature(x="motiv", f="list"),
+function(x, f, exact=FALSE, verbose=TRUE)
+{
+	ff=f[[1]]
+	if (length(f) >=2)
+{
+	for (i in 2:length(f)){
+	ff=ff|f[[i]]}
+}
+	filteredMotiv <- filterMotiv(x, ff@filters, exact, verbose)
 	return(filteredMotiv)
 })
 
 #####combine#####
-setGeneric("combine", function(x, f, name=NULL, exact=FALSE, verbose=TRUE) standardGeneric("combine"))
+setGeneric("combine", function(x, y, name=NULL, exact=TRUE, verbose=TRUE) standardGeneric("combine"))
 
 setMethod("combine",
-signature(x="motiv", f="list"),
-function(x, f, name=NULL, exact=FALSE, verbose=TRUE )
+signature(x="motiv", y="list"),
+function(x, y, name=NULL, exact=TRUE, verbose=TRUE)
 {
 	motiv <- x
-	combinedMotiv <- combineMotiv(motiv, f, name, verbose, exact)
+	combinedMotiv <- combineMotiv(motiv, y, name, verbose, exact)
 	return(combinedMotiv)
 })
 
 setMethod("combine",
-signature(x="motiv", f="filters"),
-function(x, f, name=NULL, exact=FALSE, verbose=TRUE)
+signature(x="motiv", y="filters"),
+function(x, y, name=NULL, exact=TRUE, verbose=TRUE)
 {
-	f <- list(f)
-	combine(x, f, name=name, verbose=verbose, exact=exact)
+	y <- list(y)
+	combine(x, y, name=name, verbose=verbose, exact=exact)
 })
 
 #####split#####
 
 setMethod("split",
 signature(x="motiv", f="list"),
-function(x, f, exact=FALSE, drop = FALSE, verbose=TRUE, ...)
+function(x, f, exact=TRUE, drop = FALSE, verbose=TRUE, ...)
 {
 	splitedMotiv <- splitMotiv (x, f, drop, exact, verbose)
 	return(splitedMotiv)
@@ -367,7 +393,7 @@ function(x, f, exact=FALSE, drop = FALSE, verbose=TRUE, ...)
 
 setMethod("split",
 signature(x="motiv", f="filters"),
-function(x, f, exact=FALSE, drop=FALSE, verbose=TRUE, ...)
+function(x, f, exact=TRUE, drop=FALSE, verbose=TRUE, ...)
 {
 	f <- list(f)
 	split(x, f, drop=drop, exact=exact, verbose=verbose)
@@ -381,9 +407,9 @@ function(x, f, exact=FALSE, drop=FALSE, verbose=TRUE, ...)
 setMethod(
 "plot",
 signature(x="motiv", y="ANY"),
-function(x, y=NULL, main=NULL, sub=NULL, ncol=0, nrow=0, top=3, bysim=TRUE, rev=FALSE, trim=0.05, ...)
+function(x, y=NULL, main=NULL, sub=NULL, ncol=0, nrow=0, top=3, bysim=TRUE, rev=FALSE, trim=0.05, cex=1)
 {
-	plotMotiv(x, ncol, nrow, top, bysim, rev, main, sub, trim)
+	plotMotiv(x, ncol, nrow, top, bysim, rev, main, sub, trim, cex)
 })
 
 #####motiv, gadem#####
@@ -391,32 +417,10 @@ function(x, y=NULL, main=NULL, sub=NULL, ncol=0, nrow=0, top=3, bysim=TRUE, rev=
 setMethod(
 "plot",
 signature(x="motiv", y="gadem"),
-function(x, y, sort=FALSE, group=FALSE, main=NULL, sub=NULL, ncol=0, nrow=0, xlim=NULL, correction=TRUE, bysim=TRUE, strand=FALSE,  type="distribution", trim=0.05, harg=list(), darg=list(), carg=list(), varg=list(), ...)
+function(x, y, sort=FALSE, group=FALSE, main=NULL, sub=NULL, ncol=0, nrow=0, xlim=NULL, correction=TRUE, bysim=TRUE, strand=FALSE,  type="distribution", trim=0.05, col=c("blue", "red"), border=c("black", "black"), lwd=2, lty=1, nclass=20, bw="nrd0", cex=1, vcol=c("red", "green"))
 {
-	sequencesLength=sapply(y@motifList, function(x){sapply(x@alignList, function(x){x@end})-sapply(x@alignList, function(x){x@start})})
-	if (!all(unlist(sequencesLength)==(y@motifList[[1]]@alignList[[1]]@end-y@motifList[[1]]@alignList[[1]]@start)))
-	{
-		stop("Sequences length must be equal.")
-	}
-#default parameters
-	if (is.null(harg[["nint"]]))
-	{harg[["nint"]] <- 20}
-	if (is.null(harg[["col"]]))
-	{harg[["col"]] <- "blue"}
-	if (is.null(darg[["bw"]]))
-	{darg[["bw"]] <- "nrd0"}
-	if (is.null(carg[["col"]]))
-	{carg[["col"]] <- 1}  
-	if (length(varg[["col"]])<1)
-	{varg[["col"]] <- c("red", "green")}
-	if (is.null(varg[["cex"]]	))
-	{varg[["cex"]] <- 1.2}
-	if (is.null(varg[["lwd"]]	))
-	{varg[["lwd"]] <- 2}
-	
-	pos <- calculatePositionVector(x, y, sequencesLength[[1]][1],  group, correction)
+	pos <- calculatePositionVector(x, y,  group, correction)
 
-	
 	if(type=="distance")
 	{
 		table <- occurences(y[names(x)])[names(x)]
@@ -436,7 +440,7 @@ function(x, y, sort=FALSE, group=FALSE, main=NULL, sub=NULL, ncol=0, nrow=0, xli
 		nSequences=try(gadem@parameters[[1]]@nSequences, silent=T)
 		if (!is.numeric(nSequences)){nSequences<-NULL}
 		###!!!!
-		plotDistance( pos, table, strand, main, FALSE, bysim, xlim, sequencesLength[[1]][1], nSequences, harg, darg, carg, varg)
+		plotDistance( pos, table, strand, main, FALSE, bysim, xlim, nSequences, col, border, lwd, lty, nclass, bw, cex, vcol)
 	}
 	else
 	{
@@ -446,6 +450,76 @@ function(x, y, sort=FALSE, group=FALSE, main=NULL, sub=NULL, ncol=0, nrow=0, xli
 			if (y@motifList[[g]]@name %in% names(x@input))
 			{ motifs <- c(motifs, y@motifList[[g]])}
 		}
-		plotDistribution(pos, group, main, sort, ncol, nrow, strand, bysim, sequencesLength[[1]][1], trim, harg, darg, carg)
+		plotDistribution(pos, group, main, sort, ncol, nrow, strand, bysim, trim, col, border, lwd, lty, nclass, bw, cex)
 	}
+})
+
+
+###############################
+###########EXPORT###############
+###############################
+
+setGeneric("exportAsTransfacFile", function(x, file) standardGeneric("exportAsTransfacFile"))
+
+###PWMs###
+
+setMethod("exportAsTransfacFile",
+signature(x="list"),
+function (x, file){ 
+  transfac <- file (file, "w") 
+  for (i in 1:length(x))
+  {
+      writeChar(paste("DE\t", names(x)[i],"\n", sep=""), transfac, eos=NULL)
+      pwm <- format( round(x[[i]],4), digits=4)
+      for (l in 1:dim(pwm)[2])
+      {
+        writeChar(paste(c(l-1, pwm[(4*l-4+1):(4*l)]), c("\t","\t","\t","\t","\n"), sep=""), transfac, eos=NULL)
+      }
+      writeChar("XX\n", transfac, eos=NULL)
+  
+  }
+  close(transfac)
+})
+
+###motiv###
+
+setMethod("exportAsTransfacFile",
+signature(x="motiv"),
+ function (x, file)
+{ 
+  if (class(x)!="motiv")
+  {stop("motiv must be an object of class motiv.")}
+
+  transfac <- file (paste(file, "_matched.txt", sep=""), "w") #PWMs found
+  pairs <-   file (paste(file, "_match_pairs.txt", sep=""), "w") #alignments
+
+  for (i in 1:length(x@input))
+  {
+    writeChar(paste(">\t", names(x@input)[i], "\n", sep=""), pairs, eos=NULL)
+    for (j in 1:length(x@bestMatch[[i]]@aligns))
+    {
+      writeChar(paste(x@bestMatch[[i]]@aligns[[j]]@TF@name, "\t", format(x@bestMatch[[i]]@aligns[[j]]@evalue, digits=5, scientific=T), "\t", x@bestMatch[[i]]@aligns[[j]]@sequence, "\t", x@bestMatch[[i]]@aligns[[j]]@match, "\n", sep=""), pairs, eos=NULL)
+      writeChar(paste("DE\t", x@bestMatch[[i]]@aligns[[j]]@TF@name,"\n", sep=""), transfac, eos=NULL)
+      pwm <- format( round(x@bestMatch[[i]]@aligns[[j]]@TF@pwm,4), digits=4)
+      for (l in 1:dim(x@bestMatch[[i]]@aligns[[j]]@TF@pwm)[2])
+      {
+        writeChar(paste(c(l-1, pwm[(4*l-4+1):(4*l)]), c("\t","\t","\t","\t","\n"), sep=""), transfac, eos=NULL)
+      }
+      writeChar("XX\n", transfac, eos=NULL)
+    }
+  }
+  close(transfac)
+  close(pairs)
+  print(paste(file,"_matched_transfac.txt created.", sep=""))
+  print(paste(file,"_match_pairs.txt created.", sep=""))
+})
+
+###############################
+###########GETPWM###############
+###############################
+
+setMethod("getPWM",
+signature(x="motiv"),
+function (x){ 
+  return(x@input)
 })

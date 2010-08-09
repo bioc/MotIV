@@ -26,11 +26,12 @@ alignmentCorrection <- function (sequence, match)
 
 
 ######POSITION######
-calculatePositionVector <- function (motiv, gadem, seq.length, group, correction)
+calculatePositionVector <- function (motiv, gadem, group, correction)
 {	
 	motiv.count=1;pos.count=1
 	pos <- list()
-	
+	sequencesLength=sapply(gadem@motifList, function(x){sapply(x@alignList, function(x){x@end})-sapply(x@alignList, function(x){x@start})})
+		
 	for (j in seq(1,length(motiv)))
 	{
 		
@@ -50,19 +51,25 @@ calculatePositionVector <- function (motiv, gadem, seq.length, group, correction
 			
 			chr <- sapply(gadem@motifList[[current.motiv]]@alignList, function(x){x@chr})  #gsub("chr","", sapply(gadem@motifList[[current.motiv]]@alignList, function(x){x@chr}) )
 			position <- sapply(gadem@motifList[[current.motiv]]@alignList, function(x){x@pos + x@start })
-			peakPos <- sapply(gadem@motifList[[current.motiv]]@alignList, function(x){x@pos })
+			
+			 # peakPos <- sapply(gadem@motifList[[current.motiv]]@alignList, function(x){x@pos })
+			
+			peakPos <- (-sequencesLength[[current.motiv]])/2 + sapply(gadem@motifList[[current.motiv]]@alignList, function(x){x@pos })
+			
 			seqID <- sapply(gadem@motifList[[current.motiv]]@alignList, function(x){x@seqID})
-
+			
+			lengthPeak <- sapply(gadem@motifList[[current.motiv]]@alignList, function(x){x@end-x@start})
+			
 			if(correction)
 			{
 				correction.table <- alignmentCorrection(as.character(seq.motif), as.character(match.motif))
 				correctionFactor=correction.table[,unlist(sapply(paste(gadem.strand,motiv.strand, sep=""), function(x){switch(x, "++"=1, "+-"=2, "-+"=3, "--"=4, 5)}))] 
 				
 				data.ir <- IRanges(start=position + correctionFactor[1,], end=position + correctionFactor[2,])
-				data.rd <- RangedData(data.ir, space=chr, strand=gadem.strand, seqID=seqID, peakPos=  (2*peakPos+ correctionFactor[1,] + correctionFactor[2,] )/2) 
+				data.rd <- RangedData(data.ir, space=chr, strand=gadem.strand, seqID=seqID, lengthPeak= lengthPeak, peakPos=  (2*peakPos+ correctionFactor[1,] + correctionFactor[2,] )/2) 
 			} else {
-				data.ir <- IRanges(start=position + sapply(gadem@motifList[[current.motiv]]@alignList, function(x){x@start}), end=position + sapply(gadem@motifList[[current.motiv]]@alignList, function(x){x@start}))
-				data.rd <- RangedData(data.ir, space=chr, strand=gadem.strand,  seqID=seqID, peakPos=peakPos)
+				data.ir <- IRanges(start=position + sapply(gadem@motifList[[current.motiv]]@alignList, function(x){x@start}), end=position + sapply(gadem@motifList[[current.motiv]]@alignList, function(x){x@start}) + length(gadem@motifList[[current.motiv]]@consensus ))
+				data.rd <- RangedData(data.ir, space=chr, strand=gadem.strand,  seqID=seqID, lengthPeak=lengthPeak, peakPos=peakPos)
 			}
 
 			if (pos.count>1 && any(similarity(pos) %in% motiv@bestMatch[[j]]@similarity) && group)

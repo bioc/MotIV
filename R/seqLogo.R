@@ -266,7 +266,7 @@ pwm2cons <- function(pwm)
 
 ## plot a sequence logo
 
-seqLogo <- function(pwm, ic.scale=TRUE, xaxis=TRUE, yaxis=TRUE, xfontsize=15, yfontsize=15, vmargins=0, hmargins=0, size=1, trim=0)
+seqLogo <- function(pwm, ic.scale=TRUE, xaxis=TRUE, yaxis=TRUE, xfontsize=15, yfontsize=15, vmargins=c(0,0), hmargins=c(0,0), size=1, trim=0)
 {
   if (class(pwm) == "pwm")
   {
@@ -328,7 +328,7 @@ seqLogo <- function(pwm, ic.scale=TRUE, xaxis=TRUE, yaxis=TRUE, xfontsize=15, yf
 
   #grid.newpage()
 
-  pushViewport(plotViewport(c(vmargins + xfontsize/(3.5*size), hmargins+ xfontsize/(3.5*size) , vmargins, hmargins ))) #margins
+  pushViewport(plotViewport(c(vmargins[1] + xfontsize/(3.5*size), hmargins[1]+ xfontsize/(3.5*size) , vmargins[2], hmargins[2] ))) #margins
   pushViewport(dataViewport(0:ncol(pwm)/size,0:ylim/size, name="vp1"))
   grid.polygon(x=unit(letters$x,"native"), y=unit(letters$y,"native"),
   id=letters$id,

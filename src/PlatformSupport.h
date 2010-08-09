@@ -108,7 +108,7 @@ int  ReadTransfacFile(SEXP inputPWM=0, SEXP inputDB=0);
 	void PreAlign(Alignment* A_man);
 
 	//Print the pairwise alignments
-	void PrintPairwise();
+	SEXP PrintPairwise();
 
 	//Find the best matching motifs in the match set and print the pairs to a file
 SEXP SimilarityMatching(Alignment* A_man, const int matchTopX);

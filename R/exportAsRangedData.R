@@ -1,6 +1,6 @@
 
 #####RANGED DATA#####
-exportAsRangedData <- function (x, y, bysim=TRUE, correction=TRUE)
+exportAsRangedData <- function (x, y, correction=TRUE)
 {
 	if (class(x)!="motiv")
 	{

@@ -28,12 +28,14 @@
 //
 ////////////////////////////////////////////////////////////////////////////////////
 
+#include <iostream>
 #include <stdio.h>
 #include <stdlib.h>
 #include "Alignment.h"
 #include "ColumnComp.h"
 #include "PlatformSupport.h"
 #include "RandPSSMGen.h"
+
 #include <R.h>
 #include <Rinternals.h>
 #include <Rmath.h>
@@ -48,7 +50,7 @@ SEXP motifMatch (SEXP  cc, SEXP align, SEXP top, SEXP go, SEXP ge, SEXP inputPWM
     bool colChosen=false, alignChosen=false;
 	int matchTopX = TOP_MATCH;
 	//int argc=length(argv);
-	
+		
 	//Default alignment settings
 	double gapOpen = DFLT_GAP_OPEN;
 	double gapExtend = DFLT_GAP_EXTEND;
@@ -57,9 +59,7 @@ SEXP motifMatch (SEXP  cc, SEXP align, SEXP top, SEXP go, SEXP ge, SEXP inputPWM
 	bool ungapped=false;	
 	
 	PROTECT (returnData=allocVector(VECSXP,1));
-	
-	
-	
+		
 	if((strcmp(CHAR(STRING_ELT(cc,0)), "PCC"))==0 || (strcmp(CHAR(STRING_ELT(cc,0)), "pcc"))==0){
 		CC = new PearsonCorrelation(); //Pearson's correllation coefficient
 	}else if((strcmp(CHAR(STRING_ELT(cc,0)), "ALLR"))==0 || (strcmp(CHAR(STRING_ELT(cc,0)), "allr"))==0){
@@ -100,11 +100,7 @@ SEXP motifMatch (SEXP  cc, SEXP align, SEXP top, SEXP go, SEXP ge, SEXP inputPWM
 	}
 	alignChosen = true;
 	
-	
-	
-	
-	
-	
+
 	////////////////////////////////////////////////////////////////////////////////////
 	//////// Main Program /////////////////////////////////////////////////////////////
 	//Initialise the background
@@ -122,17 +118,14 @@ SEXP motifMatch (SEXP  cc, SEXP align, SEXP top, SEXP go, SEXP ge, SEXP inputPWM
 	Plat->ReadTransfacFile( 0, inputDB );
 	Rprintf("\tDatabase read\n");
 	SET_VECTOR_ELT(returnData,0,Plat->SimilarityMatching(ALIGN, matchTopX));
-	
+		
 	delete(CC);
 	delete(ALIGN);
-	//} //end else
 	
-	delete(Plat);	
+	delete(Plat);
 	UNPROTECT(1);
 	return   VECTOR_ELT(returnData,0);
 }
-
-
 
 
 //R code
@@ -140,3 +133,4 @@ extern "C" {
 	void RmotifMatch (SEXP  cc, SEXP align, SEXP top, SEXP go, SEXP ge,  SEXP inputPWM, SEXP inputDB, SEXP inputScores)
 	{	motifMatch(cc, align, top, go, ge, inputPWM, inputDB, inputScores );	}
 } 
+

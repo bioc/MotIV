@@ -6,7 +6,7 @@
   motif and plots the corresponding sequence logo. 
 }
 \usage{
-  seqLogo(pwm, ic.scale=TRUE, xaxis=TRUE, yaxis=TRUE, xfontsize=15, yfontsize=15,vmargins=0,hmargins=0,size=1, trim=0)
+  seqLogo(pwm, ic.scale=TRUE, xaxis=TRUE, yaxis=TRUE, xfontsize=15, yfontsize=15,vmargins=c(0,0),hmargins=c(0,0),size=1, trim=0)
 }
 \arguments{
 	\item{pwm}{\code{numeric} The 4xW position weight matrix.}
