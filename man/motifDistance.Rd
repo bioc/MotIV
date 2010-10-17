@@ -20,9 +20,9 @@ Set of functions to perfom clustering of PWMs.}
 \details{
 This function are made to perform motifs clustering. 
 
-The \verb@motifDistances@ function computes the distances between each pair of motifs using the specified alignment.
+The \sQuote{motifDistances} function computes the distances between each pair of motifs using the specified alignment.
 
-The \verb@motifHclust@ and \verb@motifCutree@ functions are simple redefinition of \verb@hclust@ and \verb@cutree@.
+The \sQuote{motifHclust} and \sQuote{motifCutree} functions are simple redefinition of \sQuote{hclust} and \sQuote{cutree}.
 }
 \author{Eloi Mercier <\email{eloi.mercier@ircm.qc.ca}>}
 \examples{
