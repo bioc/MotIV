@@ -13,7 +13,7 @@ This function return a list of the alignments of a motiv object for each motif.
 	\item{x}{An object of class motiv (usualy provied by motifMatch).}
 }
 \details{This function shows the alignements for each motif.}
-\author{Eloi Mercier <\email{eloi.mercier@ircm.qc.ca}>}
+\author{Eloi Mercier <\email{emercier@chibi.ubc.ca}>}
 \examples{
 #####Database and Scores#####
 path <- system.file(package="MotIV")

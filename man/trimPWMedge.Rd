@@ -14,7 +14,7 @@ This function is use to cut edges with low information content.
 }
 \value{A \code{PWM}.}
 
-\author{Eloi Mercier <\email{eloi.mercier@ircm.qc.ca}>}
+\author{Eloi Mercier <\email{emercier@chibi.ubc.ca}>}
 
 \seealso{
 	 \code{makePWM}

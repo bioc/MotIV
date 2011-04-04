@@ -21,7 +21,7 @@
 
 
 \title{Motif Identification and Validation\\MotIV}
-\author{Eloi Mercier\footnote{eloi.mercier@ircm.qc.ca} and Raphael Gottardo\footnote{raphael.gottardo@ircm.qc.ca}}
+\author{Eloi Mercier\footnote{emercier@chibi.ubc.ca} and Raphael Gottardo\footnote{raphael.gottardo@ircm.qc.ca}}
 
 
 \begin{document}
@@ -266,7 +266,7 @@ The \verb@combine@ function is quite a bit different than the two previous funct
 For each \verb@filter@ of the list passed in argument, the \verb@combine@ function 'virtually' regroups motifs that satisfied the \verb@filters@ conditions.
 
 <<combine, eval=T>>=
-foxa1.filter.combine <- combine(foxa1.filter, c(f.foxa1, f.ap1), exact=FALSE, name=c("FOXA1", "AP1"), verbose=TRUE)
+foxa1.filter.combine <- combineMotifs(foxa1.filter, c(f.foxa1, f.ap1), exact=FALSE, name=c("FOXA1", "AP1"), verbose=TRUE)
 @
 
 You should be careful that a same motif is not combined many times.

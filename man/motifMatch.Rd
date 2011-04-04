@@ -26,7 +26,7 @@ Search for motifs matches corresponding to PWM.
 	The e-value is computed according the matric name \code{cc} and is corrected by the \code{DBscores}. 
 }
 \value{A \code{motiv} object.}
-\author{Eloi Mercier <\email{eloi.mercier@ircm.qc.ca}>}
+\author{Eloi Mercier <\email{emercier@chibi.ubc.ca}>}
 \references{S Mahony, PE Auron, PV Benos, \code{DNA familial binding profiles made easy: comparison of various motif alignment and clustering strategies}, \emph{PLoS Computational Biology }(2007) 3(3):e61  }
 \seealso{\code{generateDBScores}}
 \examples{

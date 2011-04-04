@@ -362,9 +362,9 @@ function(x, f, exact=FALSE, verbose=TRUE)
 })
 
 #####combine#####
-setGeneric("combine", function(x, y, name=NULL, exact=TRUE, verbose=TRUE) standardGeneric("combine"))
+setGeneric("combineMotifs", function(x, y, name=NULL, exact=TRUE, verbose=TRUE) standardGeneric("combineMotifs"))
 
-setMethod("combine",
+setMethod("combineMotifs",
 signature(x="motiv", y="list"),
 function(x, y, name=NULL, exact=TRUE, verbose=TRUE)
 {
@@ -373,12 +373,12 @@ function(x, y, name=NULL, exact=TRUE, verbose=TRUE)
 	return(combinedMotiv)
 })
 
-setMethod("combine",
+setMethod("combineMotifs",
 signature(x="motiv", y="filters"),
 function(x, y, name=NULL, exact=TRUE, verbose=TRUE)
 {
 	y <- list(y)
-	combine(x, y, name=name, verbose=verbose, exact=exact)
+	combineMotifs(x, y, name=name, verbose=verbose, exact=exact)
 })
 
 #####split#####

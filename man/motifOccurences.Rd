@@ -19,7 +19,7 @@ cooccurences(x)
 This object can be put in \code{cooccurences} to return the number of sequences where two motifs appear together.
 }
 
-\author{Eloi Mercier <\email{eloi.mercier@ircm.qc.ca}>}
+\author{Eloi Mercier <\email{emercier@chibi.ubc.ca}>}
 
 \examples{
 data("FOXA1_rGADEM")

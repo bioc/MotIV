@@ -16,7 +16,7 @@ Objects can be created by calls of the form \code{new("motiv",input, bestMatch,a
     \item{argv}{List of arguments used.}
 	}
 }
-\author{Eloi Mercier <\email{eloi.mercier@ircm.qc.ca}>}
+\author{Eloi Mercier <\email{emercier@chibi.ubc.ca}>}
 
 \seealso{
 	 \code{matches} , \code{alignments}, \code{transcriptionFactor}

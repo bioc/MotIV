@@ -17,7 +17,7 @@ Objects can be created by calls of the form \code{new("alignments", TF, evalue, 
     \item{strand}{The strand of the alignment.}
 }}
 
-\author{Eloi Mercier <\email{eloi.mercier@ircm.qc.ca}>}
+\author{Eloi Mercier <\email{emercier@chibi.ubc.ca}>}
 \seealso{
 	 \code{motiv} , \code{matches}, \code{transcriptionFactor}
 }

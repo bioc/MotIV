@@ -13,7 +13,7 @@ This function is use to read a gadem file containing PWM.}
 	\item{file}{File's name.}
 	}
 \details{This function is made to read typicaly output file from Gadem (v1.2). Standard name is 'observedPWMs.txt'.}
-\author{Eloi Mercier <\email{eloi.mercier@ircm.qc.ca}>}
+\author{Eloi Mercier <\email{emercier@chibi.ubc.ca}>}
 \examples{
 #####Database and Scores#####
 path <- system.file(package="MotIV")

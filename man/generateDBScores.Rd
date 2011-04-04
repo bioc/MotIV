@@ -33,7 +33,7 @@ The score reflects the biais of the database. It is used to compute more precise
 }
 \value{A numeric matrix. Columns correspond respectively to the first matrix length, second matrix length, variance, mean, matrix number, distance min and max.}
 \section{Warning }{ Because of each matrix is compare to each other, computing time is exponential. You should be aware of this fact before provided a high nRand. 5000 is a good time/accuracy rate choice.}
-\author{Shaun Mahony, modified by Eloi Mercier <\email{eloi.mercier@ircm.qc.ca}>}
+\author{Shaun Mahony, modified by Eloi Mercier <\email{emercier@chibi.ubc.ca}>}
 \seealso{'readDBScores', 'writeDBScores'}
 \references{Sandelin,A. and Wasserman,W.W. (2004) \code{Constrained binding site diversity within families of transcription factors enhances pattern discovery bioinformatics}. J. Mol. Biol., 338, 207/215.
 }

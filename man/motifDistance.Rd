@@ -24,7 +24,7 @@ The \sQuote{motifDistances} function computes the distances between each pair of
 
 The \sQuote{motifHclust} and \sQuote{motifCutree} functions are simple redefinition of \sQuote{hclust} and \sQuote{cutree}.
 }
-\author{Eloi Mercier <\email{eloi.mercier@ircm.qc.ca}>}
+\author{Eloi Mercier <\email{emercier@chibi.ubc.ca}>}
 \examples{
 #####Database and Scores#####
 path <- system.file(package="MotIV")
@@ -44,7 +44,7 @@ d <- motifDistances(getPWM(foxa1.analysis.jaspar))
 hc <- motifHclust(d)
 plot(hc)
 f <- motifCutree(hc, k=2)
-foxa1.combine <- combine(foxa1.analysis.jaspar, f, exact=FALSE, name=c("Group1", "Group2"), verbose=TRUE)
+foxa1.combine <- combineMotifs(foxa1.analysis.jaspar, f, exact=FALSE, name=c("Group1", "Group2"), verbose=TRUE)
 
 }
 

@@ -19,7 +19,7 @@ This function return a list of the identified motifs contained in a \code{motiv}
 \details{This function shows the number of identified motif.}
 \value{A list of motifs names.}
 
-\author{Eloi Mercier <\email{eloi.mercier@ircm.qc.ca}>}
+\author{Eloi Mercier <\email{emercier@chibi.ubc.ca}>}
 \examples{
 #####Database and Scores#####
 path <- system.file(package="MotIV")

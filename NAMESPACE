@@ -24,7 +24,7 @@ importClassesFrom(methods, ANY, character, data.frame, list, matrix, numeric)
 
 importClassesFrom(rGADEM, gadem)
 
-export(motifMatch, generateDBScores, readDBScores, writeDBScores, getGademPWM, readGademPWMFile, readPWMfile, viewAlignments, summary, plot, split, filter, combine, makePWM, setFilter,  combine, trimPWMedge, exportAsRangedData, similarity, viewMotifs, occurences, cooccurences, getPWM, nMotifs,  motifDistances, motifHclust, motifCutree)
+export(motifMatch, generateDBScores, readDBScores, writeDBScores, getGademPWM, readGademPWMFile, readPWMfile, viewAlignments, summary, plot, split, filter, makePWM, setFilter,  combineMotifs, trimPWMedge, exportAsRangedData, similarity, viewMotifs, occurences, cooccurences, getPWM, nMotifs,  motifDistances, motifHclust, motifCutree)
 
 exportClasses(motiv, matches, alignments, transcriptionFactor, filter)
-exportMethods(show,summary, combine, filter, split, exportAsTransfacFile, getPWM)
+exportMethods(show,summary, combineMotifs, filter, split, exportAsTransfacFile, getPWM)

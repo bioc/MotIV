@@ -1,34 +1,36 @@
-\name{split-methods}
+\name{combineMotifs}
 \docType{methods}
-\alias{split-methods}
-\alias{split,motiv,list-method}
-\alias{split,motiv,filters-method}
+\alias{combineMotifs}
+\alias{combineMotifs-method}
+\alias{combineMotifs,motiv,list-method}
+\alias{combineMotifs,motiv,filters-method}
+\title{Combine Motifs } 
 
-\title{Split Motiv Object} 
 \description{
-This function splits a 'motiv' object according filters. 
+This function combines motifs according to a set of filters. 
 } 
-
 \usage{
-	\S4method{split}{motiv,filters}(x, f, exact=TRUE,drop=FALSE,verbose=TRUE,...)
+\S4method{combineMotifs}{motiv,filters}(x, y, name=NULL,exact=TRUE,verbose=TRUE)
 }
 \arguments{
-	\item{x}{An object of class motiv (usualy provied by motifMatch).}
-	\item{f}{A filter or a set of filter for motiv object.}
-	\item{drop}{If \code{TRUE}, no match motifs will be dropped.}
+	\item{x}{An object of class \code{motiv}.}
+	\item{y}{A filter or a set of filter.}
+	\item{name}{Name(s) to be given for similar motifs.}
 	\item{verbose}{If \code{FALSE}, no output will be print.}
 	\item{exact}{If \code{TRUE}, search only for perfect name match.}
-	\item{...}{Further potential arguments passed to methods.}
 }
 \details{
-	This function is used to split motifs that correspond to the filters.
+	This function is used to consider some motifs as a unique motif or \code{similar} motifs.
 	
-	Many \code{filter} could be pass in argument separated by coma. They will be considered independently (coma is considered as \code{OR}).
+	Many \code{filters} could be pass in argument separated by coma. They will be considered independently (coma is considered as \code{OR}).
+
+	If a name or a vector of name is provided, it will be used to assign new name for similar motif  to the corresponding filter.
+Else, a generic name is used. 
 }
-\value{A list of \code{motiv} object.}
+\value{A \code{motiv} object.}
 \author{Eloi Mercier <\email{emercier@chibi.ubc.ca}>}
 \seealso{
-	 \code{setFilter} , \code{filter}, \code{combine}
+	 \code{setFilter} , \code{filter}, \code{split}
 }
 \examples{
 #####Database and Scores#####
@@ -50,8 +52,6 @@ f.foxa1<-setFilter(name="", tfname="FOXA1", top=3, evalueMax=10^-5)
 f.ap1 <- setFilter (tfname="AP1", top=3)
 f.foxa1.ap1 <- f.foxa1 | f.ap1 
 foxa1.filter <- filter(foxa1.analysis.jaspar, f.foxa1.ap1, exact=FALSE, verbose=TRUE)
-foxa1.split <- split(foxa1.analysis.jaspar, c(f.foxa1, f.ap1) , drop=FALSE, exact=FALSE, verbose=TRUE)
 foxa1.filter.combine <- combineMotifs(foxa1.filter, c(f.foxa1, f.ap1), exact=FALSE, name=c("FOXA1", "AP1"), verbose=TRUE)
 }
 \keyword{methods}
-

@@ -24,7 +24,7 @@ Objects can be created by calls of the form \code{ new("filter",name,tfname, top
 \details{
 		This class \code{filter} is used to selected \code{motiv} objects according the filter's arguments.
 }
-\author{Eloi Mercier <\email{eloi.mercier@ircm.qc.ca}>}
+\author{Eloi Mercier <\email{emercier@chibi.ubc.ca}>}
 
 \seealso{
 	 \code{setFilter} , \code{filter}, \code{split}, \code{combine}

@@ -13,7 +13,7 @@ Get PWMs from a motiv object.}
 	\item{x}{An object of class \code{motiv}.}
 }
 
-\author{Eloi Mercier <\email{eloi.mercier@ircm.qc.ca}>}
+\author{Eloi Mercier <\email{emercier@chibi.ubc.ca}>}
 
 \keyword{misc}
  

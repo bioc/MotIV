@@ -24,7 +24,7 @@
 
 }
 
-\author{Eloi Mercier <\email{eloi.mercier@ircm.qc.ca}>}
+\author{Eloi Mercier <\email{emercier@chibi.ubc.ca}>}
 
 \seealso{
 	 \code{setFilter} , \code{filter}, \code{split}, \code{combine}

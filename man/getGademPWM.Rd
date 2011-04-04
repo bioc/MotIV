@@ -12,7 +12,7 @@ This function selects the PWMs contained in an object of type \code{gadem}.}
 	\item{y}{A \code{gadem} object.}
 	}
 \value{A list of PWM.}
-\author{Eloi Mercier <\email{eloi.mercier@ircm.qc.ca}>}
+\author{Eloi Mercier <\email{emercier@chibi.ubc.ca}>}
 \examples{
 #####Database and Scores#####
 path <- system.file(package="MotIV")

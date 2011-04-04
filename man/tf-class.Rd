@@ -16,7 +16,7 @@ Objects can be created by calls of the form \code{new("transcriptionFactor", nam
 }}
 
 
-\author{Eloi Mercier <\email{eloi.mercier@ircm.qc.ca}>}
+\author{Eloi Mercier <\email{emercier@chibi.ubc.ca}>}
 \seealso{
 	 \code{motiv} , \code{matches}, \code{alignments}
 }

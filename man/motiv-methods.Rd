@@ -35,7 +35,7 @@
 	\item{drop}{If \code{TRUE}, no match motifs will be dropped.}
 }
 
-\author{Eloi Mercier <\email{eloi.mercier@ircm.qc.ca}>}
+\author{Eloi Mercier <\email{emercier@chibi.ubc.ca}>}
 
 \seealso{
 	 \code{matches} , \code{alignments}, \code{tf}
