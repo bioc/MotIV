@@ -4,7 +4,7 @@ Title: Motif Identification and Validation
 Version: 1.5.0
 Date: 2010-02-09
 Author: Eloi Mercier, Raphael Gottardo
-Maintainer: Eloi Mercier <eloi.mercier@ircm.qc.ca>, Raphael Gottardo <raphael.gottardo@ircm.qc.ca>
+Maintainer: Eloi Mercier <emercier@chibi.ubc.ca>, Raphael Gottardo <raphael.gottardo@ircm.qc.ca>
 Imports: graphics, grid, IRanges, lattice, methods, rGADEM, stats, utils
 Suggests: rtracklayer
 Description: This package makes use of STAMP for comparing a set of motifs to a given database (e.g. JASPAR). It can also be used to visualize motifs, motif distributions, modules and filter motifs.
