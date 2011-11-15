@@ -1,11 +1,12 @@
 Package: MotIV
 Type: Package
 Title: Motif Identification and Validation
-Version: 1.9.0
+Version: 1.9.1
 Date: 2010-02-09
 Author: Eloi Mercier, Raphael Gottardo
 Maintainer: Eloi Mercier <emercier@chibi.ubc.ca>, Raphael Gottardo <raphael.gottardo@ircm.qc.ca>
-Imports: graphics, grid, IRanges, lattice, methods, rGADEM, stats, utils
+Depends: BiocGenerics (>= 0.1.0)
+Imports: graphics, grid, methods, BiocGenerics, IRanges (>= 1.13.5), lattice, rGADEM, stats, utils
 Suggests: rtracklayer
 Description: This package makes use of STAMP for comparing a set of motifs to a given database (e.g. JASPAR). It can also be used to visualize motifs, motif distributions, modules and filter motifs.
 License: GPL 2
