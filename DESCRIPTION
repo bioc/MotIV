@@ -10,5 +10,5 @@ Imports: graphics, grid, methods, BiocGenerics, IRanges (>= 1.13.5), lattice, rG
 Suggests: rtracklayer
 Description: This package makes use of STAMP for comparing a set of motifs to a given database (e.g. JASPAR). It can also be used to visualize motifs, motif distributions, modules and filter motifs.
 License: GPL 2
-biocViews:  Microarray, ChIPchip, ChIPSeq, GenomicSequence
+biocViews:  Microarray, ChIPchip, ChIPseq, GenomicSequence
 
