@@ -109,7 +109,6 @@ void Motif::RevCompMotif(Motif* out)
 		}
 	}else{
 		Rprintf("error: lengths of motifs do not match!\n");
-		exit(1);
 	}
 }
 

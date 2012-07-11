@@ -14,6 +14,9 @@ This function return a list of the alignments of a motiv object for each motif.
 }
 \details{This function shows the alignements for each motif.}
 \author{Eloi Mercier <\email{emercier@chibi.ubc.ca}>}
+\seealso{
+	 \code{as.data.frame}
+}
 \examples{
 #####Database and Scores#####
 path <- system.file(package="MotIV")

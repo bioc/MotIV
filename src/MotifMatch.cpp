@@ -49,7 +49,6 @@ SEXP motifMatch (SEXP  cc, SEXP align, SEXP top, SEXP go, SEXP ge, SEXP inputPWM
 	Alignment* ALIGN=NULL;
     bool colChosen=false, alignChosen=false;
 	int matchTopX = TOP_MATCH;
-	//int argc=length(argv);
 		
 	//Default alignment settings
 	double gapOpen = DFLT_GAP_OPEN;
@@ -77,10 +76,9 @@ SEXP motifMatch (SEXP  cc, SEXP align, SEXP top, SEXP go, SEXP ge, SEXP inputPWM
 	}
 	colChosen=true;
 	
-	gapOpen=NUMERIC_VALUE(go); //strtod(CHAR(STRING_ELT(go,0)), NULL);
-	gapExtend=NUMERIC_VALUE(ge); //strtod(CHAR(STRING_ELT(ge,0)), NULL);
-	matchTopX=INTEGER_VALUE(top); //strtol(CHAR(STRING_ELT(top,0)), NULL, 10);
-	
+	gapOpen=NUMERIC_VALUE(go); 
+	gapExtend=NUMERIC_VALUE(ge); 
+	matchTopX=INTEGER_VALUE(top); 	
 	
 	if((strcmp(CHAR(STRING_ELT(align,0)), "NW"))==0 || (strcmp(CHAR(STRING_ELT(align,0)), "nw"))==0)
 	{
@@ -124,7 +122,7 @@ SEXP motifMatch (SEXP  cc, SEXP align, SEXP top, SEXP go, SEXP ge, SEXP inputPWM
 	
 	delete(Plat);
 	UNPROTECT(1);
-	return   VECTOR_ELT(returnData,0);
+	return VECTOR_ELT(returnData,0);
 }
 
 

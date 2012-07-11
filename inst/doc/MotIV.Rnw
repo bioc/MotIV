@@ -48,6 +48,11 @@ S. Mahony, P.V. Benos "STAMP: a web tool for exploring DNA-binding motif similar
 S Mahony, PE Auron, PV Benos, "DNA familial binding profiles made easy: comparison of various motif alignment and clustering strategies", PLoS Computational Biology (2007) 3(3):e61 
 \end{center}
 
+\part{Special thanks}
+
+A special thanks to all the authors of the package
+ \verb@seqLogo@ package develop and maintain by Oliver Bembom.
+
 \part{Introduction}
 
 One of the most challenging part of the molecular biology is to understand the genetic regulation mechanisms. That's why is it important to work on the identification of the regulatory sequences such as transcription factors. It's in general short sequences located upstream the transcription initiation factor and recruiting proteic complex. Furthermore, this factors are themselves regulate by other proteic complex forming 'module' and adding a new level of complexity to the understanding of the genetic regulation system \cite{Banerjee}. This modules still are hard to detect because of the complexity of the current identification algorithms.
@@ -398,6 +403,13 @@ foxa1.names <- names(foxa1.filter.combine["FOXA1"])
 sum(length(gadem[foxa1.names]))
 @
 
+\subsection{as.data.frame}
+
+You can convert a \verb@MotIV@ object into a data frame by using the method \verb@as.data.frame@
+
+<<as_data_frame, eval=T>>=
+head(as.data.frame(foxa1.analysis.jaspar))
+@
 \part{Appendix}
 
 \section{GSL Installation}

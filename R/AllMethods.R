@@ -44,11 +44,29 @@ function(object) {
 	cat("\n")
 })
 
-#####filter#####
+setMethod("as.data.frame", signature("motiv"),
+function (x) {
+	if (length (x@bestMatch) == 0)
+	return (NA)
+	df = data.frame (stringsAsFactors=FALSE)
+	for (k in seq(length(x@bestMatch)))
+	{
+		alignments = x@bestMatch[[k]]@aligns
+		motif = x@bestMatch[[k]]@name
+		for (alignment in alignments) {
+			TF = alignment@TF@name
+			eVal = alignment@evalue
+			sequence = alignment@sequence
+			match = alignment@match
+			strand = alignment@strand
+			df = rbind (df, data.frame ( motif=motif, TF=match, eVal=eVal, sequence=sequence, match=match, strand=strand, stringsAsFactors=FALSE))
+		}        
+	}
+	return (df)
+})
 
-setMethod(
-"summary",
-"filter",
+#####filter#####
+setMethod("summary", "filter",
 function(object){
 	for (i in 1:length(object@name))
 	{
@@ -73,10 +91,8 @@ function(object){
 	}
 })
 
-#####filter#####
-setMethod(
-"summary",
-"filters",
+#####filters#####
+setMethod("summary", "filters",
 function(object){
 	cat("Filter will select motifs that satisfy the conditions :\n")
 	for(i in 1:length(object@filters))
@@ -90,9 +106,7 @@ function(object){
 })
 
 #####list#####
-setMethod(
-"summary",
-"list",
+setMethod("summary", "list",
 function(object) {	
 	if(all(lapply(object, class)=="motiv"))
 	{
@@ -112,7 +126,6 @@ function(object) {
 })
 
 #####motifs#####
-
 setGeneric("viewMotifs", function(x, n=100) standardGeneric("viewMotifs"))
 setMethod("viewMotifs",
 "motiv",
@@ -436,11 +449,7 @@ function(x, y, sort=FALSE, group=FALSE, main=NULL, sub=NULL, ncol=0, nrow=0, xli
 				table[,similar]
 			}}))
 		}
-		###!!!!!
-		nSequences=try(gadem@parameters[[1]]@nSequences, silent=T)
-		if (!is.numeric(nSequences)){nSequences<-NULL}
-		###!!!!
-		plotDistance( pos, table, strand, main, FALSE, bysim, xlim, nSequences, col, border, lwd, lty, nclass, bw, cex, vcol)
+		plotDistance( pos, table, strand, main, FALSE, bysim, xlim, y@parameters[[1]]@nSequences, col, border, lwd, lty, nclass, bw, cex, vcol)
 	}
 	else
 	{

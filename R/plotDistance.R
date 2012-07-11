@@ -73,7 +73,7 @@ plotDistanceDensity <- function ( xlim,  pos, distance,  column, row,  names, st
 	theta <- 2 * pi * (1:360)/360
 	grid.lines(unit(0.35+0.3*cos(theta), "npc"), unit(0.5+0.3 * sin(theta), "npc"), gp=gpar(col=vcol[1], lwd=2))
 	grid.lines(unit(0.65+0.3*cos(theta), "npc"), unit(0.5+0.3 * sin(theta), "npc"), gp=gpar(col=vcol[2], lwd=2))
-	do.call("grid.text", list(x=unit(0.5,"npc"), y=unit(0.9,"npc"), label="# sequences containing", just="center", gp=gpar(col="black", cex=5*cex/7)))
+	do.call("grid.text", list(x=unit(0.5,"npc"), y=unit(0.9,"npc"), label="# of sequences containing", just="center", gp=gpar(col="black", cex=5*cex/7)))
 	do.call("grid.text", list(x=unit(0.1,"npc"), y=unit(0.1,"npc"), label=motifName1, just="left", gp=gpar(col=vcol[1], cex=cex)))
 	do.call("grid.text", list(x=unit(0.9,"npc"), y=unit(0.1,"npc"), label=motifName2, just="right", gp=gpar(col=vcol[2], cex=cex)))
 	do.call("grid.text", list(x=unit(c(0.5, 0.5),"npc"), y=unit(c(0.52, 0.37),"npc"), label=c(sequences.n , paste(round(100*sequences.n/nSequences,1),"%", sep="")), just="center", gp=gpar(col="black", cex=c(1,0.7)*cex)) )

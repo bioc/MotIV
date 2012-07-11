@@ -5,10 +5,10 @@ viewAlignments <- function (x)
 	align <- list()
 	for (i in 1:length(x@bestMatch))
 	{
-		seq <-{}
-		match <-{}
-		name <-{}
-		evalue <-{}
+		seq <- {}
+		match <- {}
+		name <- {}
+		evalue <- {}
 		for (j in 1:length(x@bestMatch[[i]]@aligns))
 		{
 			seq <- c(seq, x@bestMatch[[i]]@aligns[[j]]@sequence)

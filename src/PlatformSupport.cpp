@@ -72,7 +72,7 @@ void PlatformSupport::ReadBackground(char* fn)
 	xmer=(char*)malloc((MAX_MARKOV+1)*sizeof(char));	
 	if(fn!=NULL){
 		FILE* modelp = fopen(fn, "r");
-		if(modelp==NULL){perror("Cannot open background file");exit(1);}
+		if(modelp==NULL){perror("Cannot open background file");}
 		
 		while(fscanf(modelp,"%d %s %lf\n",&i,xmer,&px) != EOF)
 		{
@@ -116,11 +116,10 @@ int PlatformSupport::ReadTransfacFile( SEXP inputPWM, SEXP inputDB)
 		input=inputDB;
 	}
 	else
-	{Rprintf("\tERROR.\n");exit(1);}
+	{Rprintf("\tERROR.\n");}
 	
 	if(!backgroundSet)
 	{	Rprintf("\tReadBackground not called; exiting");
-		exit(1);
 	}
 	
 	currCnt=0;
