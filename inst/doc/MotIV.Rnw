@@ -43,6 +43,10 @@
 \verb@MotIV@ is a free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation; either version 2 of the License, or (at your option) any later version.
 \verb@Motiv@ is based on the C++ functions of the STAMP algorithm \cite{STAMP} and it also use a modified version of the SeqLogo package \cite{SeqLogo}. Please cite the following papers if you use \verb@MotIV@ for publication :
 \begin{center}
+E Mercier, A Droit, L Li, G Robertson, X Zhang, R Gottardo (2011) An integrated pipeline for the
+genome-wide analysis of transcription factor binding sites from ChIP-Seq. PLoS ONE. 6(2): e16432.
+doi:10.1371/journal.pone.0016432
+\\
 S. Mahony, P.V. Benos "STAMP: a web tool for exploring DNA-binding motif similarities." Nucl Acids Res, (2007) 35:W253-258
 \\
 S Mahony, PE Auron, PV Benos, "DNA familial binding profiles made easy: comparison of various motif alignment and clustering strategies", PLoS Computational Biology (2007) 3(3):e61 
