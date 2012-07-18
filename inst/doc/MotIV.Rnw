@@ -91,10 +91,10 @@ example.jaspar <- motifMatch(inputPWM=example.motifs,align="SWU",cc="PCC",databa
 @
 
 \subsection{View results}
-<<Viewresults, fig=T, eval=T>>=
+<<Viewresults, fig=F, eval=T>>=
 summary(example.jaspar)
 viewAlignments(example.jaspar)[[1]]
-plot(example.jaspar[1:4],ncol=2,top=5)
+plot(example.jaspar[1:4],ncol=2,top=5, cex=0.8)
 @
 
 \subsection{Apply filters}
