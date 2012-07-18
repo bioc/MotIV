@@ -23,6 +23,6 @@ jaspar.scores <- readDBScores(paste(path,"/extdata/jaspar2010_PCC_SWU.scores",se
 #####Input#####
 data(FOXA1_rGADEM)
 motifs <- getPWM(gadem)
-motifs.trimed <- trimPWMedge(motifs, threshold=1)
+motifs.trimed <- lapply(motifs,trimPWMedge, threshold=1)
 }
 \keyword{misc}

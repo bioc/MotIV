@@ -44,6 +44,7 @@ function(object) {
 	cat("\n")
 })
 
+#as.data.frame
 setMethod("as.data.frame", signature("motiv"),
 function (x) {
 	if (length (x@bestMatch) == 0)
@@ -222,9 +223,10 @@ function(x){
 
 setMethod("[",
 "motiv",
-function(x, i, j=ANY, bysim=TRUE, ..., exact=TRUE, drop=FALSE){
+function(x, i, j=ANY, bysim=TRUE, ..., exact=TRUE, ignore.case=FALSE, drop=FALSE){
 	selected <- NULL
 	selectedMatch <- NULL
+	if (ignore.case) exact <- FALSE
 	if (is.numeric(i))
 	{
 		selected = i
@@ -245,7 +247,7 @@ function(x, i, j=ANY, bysim=TRUE, ..., exact=TRUE, drop=FALSE){
 				}
 				if (!exact)
 				{
-					if (grepl(i[kk], selectedNames))
+					if (grepl(i[kk], selectedNames,  ignore.case= ignore.case))
 					{
 						selected <- c(selected, k)
 					}

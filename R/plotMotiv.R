@@ -27,11 +27,11 @@ plotMotif <- function( object, current, column,  top, layout, bysim, group, trim
 	vpmotif <- viewport(layout.pos.col=1:2, layout.pos.row=1) #seqLogo
 	pushViewport(vpmotif)	
 	grid.rect(x=unit(1,"npc"), y=unit(0.45,"npc"), height=unit(0.95,"npc"), width=unit(1.9,"npc"), gp=gpar(col="grey95", fill="grey95"))	
-	seqLogo(matrix, yaxis=F, xaxis=F, size=1, yfontsize=0, xfontsize=0, vmargins=c(0,0.4), hmargins=c(0.1,0.1), trim=trim)
+	seqLogo2(matrix, yaxis=F, xaxis=F, size=1, yfontsize=0, xfontsize=0, vmargins=c(0,0.4), hmargins=c(0.1,0.1), trim=trim)
 	popViewport() #end vpmotif
 	vpmotifrev <- viewport(layout.pos.col=3:4, layout.pos.row=1) #seqLogo
 	pushViewport(vpmotifrev)	
-	seqLogo(revmat, yaxis=F, xaxis=F, size=1, yfontsize=0, xfontsize=0, vmargins=c(0, 0.4), hmargins=c(0.1, 0.1))
+	seqLogo2(revmat, yaxis=F, xaxis=F, size=1, yfontsize=0, xfontsize=0, vmargins=c(0, 0.4), hmargins=c(0.1, 0.1))
 	
 	do.call("grid.text", list(c(plotname[current],"forward","RC"), x=unit(c(0,-0.5,0.5),"npc"), y=unit(c(1.05,1,1),"npc"), gp=gpar(cex=c(max(3/size,0.7), rep(max(2/size,0.6),2))*cex, font=c(2,3,3))))	
 }
@@ -98,7 +98,7 @@ plotMotiv <- function (motiv, ncol, nrow, top, bysim, rev, main, sub, trim, cex)
 						}
 					}
 					mat3<- makePWM(mat3)
-					seqLogo(mat3, yaxis=F, xaxis=F, size=1, yfontsize=0, xfontsize=0, vmargins=c(0.1, 0.1), hmargins=c(0.2,0.2), trim=trim) #plot Logo
+					seqLogo2(mat3, yaxis=F, xaxis=F, size=1, yfontsize=0, xfontsize=0, vmargins=c(0.1, 0.1), hmargins=c(0.2,0.2), trim=trim) #plot Logo
 					popViewport() #end vptop3
 					vpeval <- viewport(layout.pos.col=3:4, layout.pos.row=k+1) 
 					pushViewport(vpeval)		

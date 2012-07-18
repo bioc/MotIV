@@ -191,12 +191,10 @@ double Alignment::AlignMotifs2D(Motif* one, Motif* two, int &i1, int &i2, int& a
 		alignSectionTmp[1][i] = alignSection[1][i];
 	}
 	//Send both motifs in reverse direction (takes care of both reversed and "two" reversed)
-	score2 = AlignMotifs(revOne, revTwo, i1_B, i2_B, aL_B, for_B);
-	
-			// printf("for_A : %i\n", for_A);
+	// score2 = AlignMotifs(revOne, revTwo, i1_B, i2_B, aL_B, for_B); 
+		
 
-	
-	if(score1>score2){
+	// if(score1>=score2){
 		i1 = i1_A;
 		i2 = i2_A;
 		for(int i=0; i<aL_A; i++){
@@ -205,27 +203,24 @@ double Alignment::AlignMotifs2D(Motif* one, Motif* two, int &i1, int &i2, int& a
 		}
 		alignL = aL_A;
 		forward1 = for_A;
-		// printf("FORWARD1 : %i\n", forward1);
-
 		forward2 = true;
-		// printf("FORWARD2 : %i\n", forward2);
 		bestScore = score1;
 		if(!forward1)
 			currOne = revOne;
-	}else{
-		i1 = i1_B;
-		i2 = i2_B;
-		alignL = aL_B;
-		if(for_B)
-			forward1 = false;
-		else
-			forward1 = true;
-		forward2=false;
-		if(!forward1)
-		{	currOne = revOne;		}
-		currTwo=revTwo;
-		bestScore = score2;
-	}	
+	// }else{ //Ignoring double reversed
+		// i1 = i1_B;
+		// i2 = i2_B;
+		// alignL = aL_B;
+		// if(for_B)
+			// forward1 = false;
+		// else
+			// forward1 = true;
+		// forward2=false;
+		// if(!forward1)
+		// {	currOne = revOne;		}
+		// currTwo=revTwo;
+		// bestScore = score2;
+	// }	
 	//	PrintAlignmentConsensus(currOne,currTwo);
 	
 	delete revOne;

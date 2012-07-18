@@ -1,27 +1,24 @@
 
 #####TRIM#####
-
 trimPWMedge <- function(x, threshold=1)
 {
-  res <- list()
-  for (i in seq(length(x)))
-  {
+  res <- x 
     for (k in 1:2)
     {
       j=1
-      ic  <- x2ic(x[[i]]/sum(x[[i]][,1]))
+      ic  <- x2ic(res/sum(res[,1]))
       if(all(ic < threshold))
       {
         stop("Threshold too high.")
       }
       while (ic[j] < threshold)
       {
-        res[[i]] <- x[[i]][,-1]
+        res <- res[,-1]
         j=j+1
       }	
-      res[[i]] <- x[[i]][, dim(x[[i]])[2]:1]
+      res <- res[, dim(res)[2]:1]
     }
-  }
+ 
   names(res) <- names(x)
   return (res)
 }

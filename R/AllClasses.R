@@ -2,7 +2,7 @@
 
 ###SeqLogo###
 
-setClass("pwm",representation(
+setClass("pwm2",representation(
 pwm="matrix",
 consensus="character",
 ic="numeric",

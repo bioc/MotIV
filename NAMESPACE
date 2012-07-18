@@ -6,6 +6,8 @@ importFrom(grid, dataViewport, gpar, grid.lines, grid.layout, grid.newpage, grid
 
 importFrom(BiocGenerics, cbind, rbind, order)
 
+importFrom(Biostrings, DNAString, reverseComplement)
+
 importFrom(IRanges, IRanges, RangedData, start, end, as.data.frame)
 
 importFrom(lattice, panel.lines, panel.segments, panel.text, panel.rect)

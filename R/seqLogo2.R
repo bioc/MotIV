@@ -239,7 +239,7 @@ makePWM <- function(pwm, alphabet="DNA")
   cons <- pwm2cons(pwm)
   ic <- pwm2ic(pwm)
 
-  new("pwm", pwm=pwm, consensus=cons, ic=ic, width=width, alphabet=alphabet)
+  new("pwm2", pwm=pwm, consensus=cons, ic=ic, width=width, alphabet=alphabet)
 }
 
 
@@ -266,9 +266,9 @@ pwm2cons <- function(pwm)
 
 ## plot a sequence logo
 
-seqLogo <- function(pwm, ic.scale=TRUE, xaxis=TRUE, yaxis=TRUE, xfontsize=15, yfontsize=15, vmargins=c(0,0), hmargins=c(0,0), size=1, trim=0)
+seqLogo2 <- function(pwm, ic.scale=TRUE, xaxis=TRUE, yaxis=TRUE, xfontsize=15, yfontsize=15, vmargins=c(0,0), hmargins=c(0,0), size=1, trim=0)
 {
-  if (class(pwm) == "pwm")
+  if (class(pwm) == "pwm2")
   {
     pwm <- pwm@pwm    
   }

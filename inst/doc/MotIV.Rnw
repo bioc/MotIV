@@ -184,7 +184,7 @@ motifs.example <- readPWMfile(paste(path,"/extdata/example_motifs.txt",sep=""))
 You can trim the edges of the input PWMs to improve \href{http://en.wikipedia.org/wiki/Position-specific_scoring_matrix#Information_content_of_a_PWM}{the information content of your PWM}. It could improve the results by removing the noise and generating better alignments. The default threshold is an information content of 1.
 
 <<trim input,eval=T>>=
-motifs.trimed <- trimPWMedge(motifs, threshold=1)
+motifs.trimed <- lapply(motifs,trimPWMedge, threshold=1)
 @
 
 \section{MotIV Analysis}
