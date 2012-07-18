@@ -24,7 +24,7 @@
   Within each column, the height of a given letter is proportional to its frequency at that position.
   If ic.scale is TRUE, the height of each column in the plot indicates the information content at that position of the motif. Otherwise, the height of all columns are identical.
   
-  This is an internal function for the package MotIV. User should prefer the \code{seqLogo} function from the package \code{seqLogo} to vizualise individual motif.
+  This is an internal function for the package MotIV. User should prefer the \code{seqLogo} function from the package \code{seqLogo} to visualize individual motif.
 }
 \value{
   None.
