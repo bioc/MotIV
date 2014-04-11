@@ -9,6 +9,7 @@
 \alias{names<-,motiv-method}
 \alias{length,motiv-method}
 \alias{[,motiv-method}
+\alias{[,motiv,ANY,ANY-method}
 \alias{similarity}
 \alias{similarity,motiv-method}
 \alias{similarity,list-method}
@@ -44,4 +45,4 @@
 \examples{
 showClass("motiv")
 }
-\keyword{classes}
+\keyword{methods}

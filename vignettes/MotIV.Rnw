@@ -21,7 +21,7 @@
 
 
 \title{Motif Identification and Validation\\MotIV}
-\author{Eloi Mercier\footnote{emercier@chibi.ubc.ca} and Raphael Gottardo\footnote{raphael.gottardo@ircm.qc.ca}}
+\author{Eloi Mercier\footnote{emercier@bcgsc.ca} and Raphael Gottardo\footnote{rgottard@fhcrc.org}}
 
 
 \begin{document}
