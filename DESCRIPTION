@@ -8,7 +8,7 @@ Maintainer: Eloi Mercier <emercier@bcgsc.ca>, Raphael Gottardo
         <rgottard@fhcrc.org>
 Depends: R (>= 2.10), BiocGenerics (>= 0.1.0)
 Imports: graphics, grid, methods, S4Vectors, IRanges (>= 1.13.5),
-        Biostrings (>= 1.24.0), lattice, rGADEM, stats, utils
+        Biostrings (>= 1.24.0), lattice, rGADEM, utils
 Suggests: rtracklayer
 SystemRequirements: GNU Scientific Library >= 1.6 (http://www.gnu.org/software/gsl/)
 Description: This package makes use of STAMP for comparing a set of
