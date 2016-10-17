@@ -1,7 +1,7 @@
 Package: MotIV
 Type: Package
 Title: Motif Identification and Validation
-Version: 1.30.0
+Version: 1.31.0
 Date: 2014-04-09
 Author: Eloi Mercier, Raphael Gottardo
 Maintainer: Eloi Mercier <emercier@bcgsc.ca>, Raphael Gottardo
