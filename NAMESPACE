@@ -1,13 +1,14 @@
 useDynLib(MotIV)
 
 import(methods)
+import(graphics)
+importFrom(stats, as.dist)
+import(grid)
+
 import(BiocGenerics)
 import(S4Vectors)
 import(IRanges)
-
-importFrom(graphics, par, plot)
-
-importFrom(grid, dataViewport, gpar, grid.lines, grid.layout, grid.newpage, grid.polygon, grid.rect, grid.segments, grid.text, grid.xaxis, grid.yaxis, plotViewport, popViewport, pushViewport, unit, viewport)
+import(GenomicRanges)
 
 importFrom(Biostrings, DNAString, reverseComplement)
 
@@ -19,7 +20,7 @@ importMethodsFrom(rGADEM, nMotifs, getPWM)
 
 importClassesFrom(rGADEM, gadem)
 
-export(motifMatch, generateDBScores, readDBScores, writeDBScores, getGademPWM, readGademPWMFile, readPWMfile, viewAlignments, summary, plot, split, filter, makePWM, setFilter,  combineMotifs, trimPWMedge, exportAsRangedData, similarity, viewMotifs, occurences, cooccurences, getPWM, nMotifs,  motifDistances, motifHclust, motifCutree)
+export(motifMatch, generateDBScores, readDBScores, writeDBScores, getGademPWM, readGademPWMFile, readPWMfile, viewAlignments, summary, plot, split, filter, makePWM, setFilter,  combineMotifs, trimPWMedge, exportAsRangedData, exportAsGRanges, similarity, viewMotifs, occurences, cooccurences, getPWM, nMotifs,  motifDistances, motifHclust, motifCutree)
 
 exportClasses(motiv, matches, alignments, transcriptionFactor, filter)
-exportMethods(show, summary, as.data.frame, combineMotifs, filter, split, exportAsTransfacFile, getPWM)
+exportMethods(show, summary, plot, as.data.frame, combineMotifs, filter, split, exportAsTransfacFile, getPWM)

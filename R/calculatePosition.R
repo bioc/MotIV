@@ -66,18 +66,18 @@ calculatePositionVector <- function (motiv, gadem, group, correction)
 				correctionFactor=correction.table[,unlist(sapply(paste(gadem.strand,motiv.strand, sep=""), function(x){switch(x, "++"=1, "+-"=2, "-+"=3, "--"=4, 5)}))] 
 				
 				data.ir <- IRanges(start=position + correctionFactor[1,], end=position + correctionFactor[2,])
-				data.rd <- RangedData(data.ir, space=chr, strand=gadem.strand, seqID=seqID, lengthPeak= lengthPeak, peakPos=  (2*peakPos+ correctionFactor[1,] + correctionFactor[2,] )/2) 
+				data.gr <- GRanges(chr, data.ir, gadem.strand, seqID=seqID, lengthPeak= lengthPeak, peakPos=  (2*peakPos+ correctionFactor[1,] + correctionFactor[2,] )/2) 
 			} else {
 				data.ir <- IRanges(start=position + sapply(gadem@motifList[[current.motiv]]@alignList, function(x){x@start}), end=position + sapply(gadem@motifList[[current.motiv]]@alignList, function(x){x@start}) + length(gadem@motifList[[current.motiv]]@consensus ))
-				data.rd <- RangedData(data.ir, space=chr, strand=gadem.strand,  seqID=seqID, lengthPeak=lengthPeak, peakPos=peakPos)
+				data.gr <- GRanges(chr, data.ir, gadem.strand,  seqID=seqID, lengthPeak=lengthPeak, peakPos=peakPos)
 			}
 
 			if (pos.count>1 && any(similarity(pos) %in% motiv@bestMatch[[j]]@similarity) && group)
 			{
 				whichsimilarity=which(similarity(pos)%in% motiv@bestMatch[[j]]@similarity)
-				pos[[whichsimilarity]] <- new("position", motifName=c(pos[[whichsimilarity]]@motifName, gadem@motifList[[current.motiv]]@name), positionVector=rbind(pos[[whichsimilarity]]@positionVector, data.rd), pwm=c(pos[[whichsimilarity]]@pwm, PWMs), similarity=pos[[whichsimilarity]]@similarity )
+				pos[[whichsimilarity]] <- new("position", motifName=c(pos[[whichsimilarity]]@motifName, gadem@motifList[[current.motiv]]@name), positionVector=c(pos[[whichsimilarity]]@positionVector, data.gr), pwm=c(pos[[whichsimilarity]]@pwm, PWMs), similarity=pos[[whichsimilarity]]@similarity )
 			} else   {
-				pos[[pos.count]] <- new("position", motifName=gadem@motifList[[current.motiv]]@name, positionVector=data.rd, pwm=PWMs, similarity=motiv@bestMatch[[j]]@similarity)
+				pos[[pos.count]] <- new("position", motifName=gadem@motifList[[current.motiv]]@name, positionVector=data.gr, pwm=PWMs, similarity=motiv@bestMatch[[j]]@similarity)
 				pos.count=pos.count+1
 			}
 	}

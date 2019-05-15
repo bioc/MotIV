@@ -223,7 +223,7 @@ function(x){
 
 setMethod("[",
 "motiv",
-function(x, i, j=ANY, bysim=TRUE, ..., exact=TRUE, ignore.case=FALSE, drop=FALSE){
+function(x, i, j, bysim=TRUE, ..., exact=TRUE, ignore.case=FALSE, drop=FALSE){
 	selected <- NULL
 	selectedMatch <- NULL
 	if (ignore.case) exact <- FALSE
@@ -417,6 +417,8 @@ function(x, f, exact=TRUE, drop=FALSE, verbose=TRUE, ...)
 ###############################
 ############PLOT################
 ###############################
+
+setGeneric("plot")
 
 #####motiv#####
 setMethod(

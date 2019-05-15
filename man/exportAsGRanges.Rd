@@ -1,23 +1,21 @@
 
-\name{exportAsRangedData}
-\alias{exportAsRangedData}
+\name{exportAsGRanges}
+\alias{exportAsGRanges}
 \title{Export MotIV Results} 
 
 \description{
-IMPORTANT NOTE: The \code{exportAsRangedData()} function is deprecated in favor of \code{exportAsGRanges()}.
-
 Export your 
 } 
 \usage{
-exportAsRangedData(x, y, correction=TRUE)
+exportAsGRanges(x, y, correction=TRUE)
 }
 \arguments{
 	\item{x}{An object of class \code{motiv}.}
 	\item{y}{The rGADEM type object associated with the \code{motiv }object.}
 	\item{correction}{If \code{TRUE}, corrects the position according to the alignment.}	
 }
-\value{An object of type \code{RangedData}.}
-\details{Use this function to export the results into a \code{RangedData} object.}
+\value{An object of type \code{GRanges}.}
+\details{Use this function to export the results into a \code{GRanges} object.}
 \author{Eloi Mercier <\email{emercier@chibi.ubc.ca}>}
 \examples{
 #####Database and Scores#####
@@ -47,11 +45,9 @@ foxa1.filter.combine <- combineMotifs(foxa1.filter, c(f.foxa1, f.ap1), exact=FAL
 #plot(foxa1.filter.combine ,gadem,ncol=2, type="distribution", correction=TRUE, group=FALSE, bysim=TRUE, strand=FALSE, sort=TRUE, main="FOXA1")
 #plot(foxa1.filter.combine ,gadem,type="distance", correction=TRUE, group=TRUE, bysim=TRUE, main="FOXA1", strand=FALSE, method=3, xlim=c(-100,100), darg=list(bw=8))
 
-#####RangedData#####
-\dontrun{
-foxa1.rd <- exportAsRangedData(foxa1.filter.combine["FOXA1"], gadem)
-ap1.rd <- exportAsRangedData(foxa1.filter.combine["AP1"], gadem)
-}
+#####GRanges#####
+foxa1.gr <- exportAsGRanges(foxa1.filter.combine["FOXA1"], gadem)
+ap1.gr <- exportAsGRanges(foxa1.filter.combine["AP1"], gadem)
 }
 \keyword{misc}
  

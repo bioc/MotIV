@@ -10,6 +10,7 @@
 \alias{length,motiv-method}
 \alias{[,motiv-method}
 \alias{[,motiv,ANY,ANY-method}
+\alias{[,motiv,ANY,ANY,ANY-method}
 \alias{similarity}
 \alias{similarity,motiv-method}
 \alias{similarity,list-method}

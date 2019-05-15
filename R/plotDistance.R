@@ -115,7 +115,7 @@ plotDistance <- function (pos, table, strand, main, group, bysim, xlim, nSequenc
 				vpdistance <- viewport(layout.pos.col=distance.col, layout.pos.row=row) #seqLogo
 				pushViewport(vpdistance)	
 				dist.commonSeq <- which(table[,distance.col]!=0 & table[,row]!=0)
-				maxL <- max(pos[[row]]@positionVector$lengthPeak, pos[[distance.col ]]@positionVector$lengthPeak)
+				maxL <- max(mcols(pos[[row]]@positionVector)$lengthPeak, mcols(pos[[distance.col ]]@positionVector)$lengthPeak)
 
 				 if (is.null(xlim))
 				 {

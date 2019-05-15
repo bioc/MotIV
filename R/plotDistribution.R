@@ -4,7 +4,7 @@ plotDistributionHistogram <- function (pos, curr, size, strand, maxL, col, borde
 {
 	if (!strand)
 	{
-		pos.mean <- pos[[curr]]@positionVector$peakPos/maxL + 0.5
+		pos.mean <- mcols(pos[[curr]]@positionVector)$peakPos/maxL + 0.5
 		distance.hist=hist(pos.mean[pos.mean>0 & pos.mean<1], breaks=seq(0,1,length=nclass+1), plot=F)$count
 		do.call("panel.rect", c(list(xright=seq(0,1-1/nclass,length=nclass), ybottom=rep(0,nclass), xleft=seq(1/nclass,1,length=nclass),ytop=distance.hist/(max(distance.hist)+max(distance.hist)/5), col=col[1], border=border)))
 	} else {
@@ -13,7 +13,7 @@ plotDistributionHistogram <- function (pos, curr, size, strand, maxL, col, borde
 		distance.hist <- list()
 		for (i in 1:2)
 		{
-			pos.mean <- (pos[[curr]]@positionVector$peakPos[pos[[curr]]@positionVector$strand==strands[i]] )/(maxL ) + 0.5
+			pos.mean <- (mcols(pos[[curr]]@positionVector)$peakPos[as.character(strand(pos[[curr]]@positionVector))==strands[i]] )/(maxL ) + 0.5
 			distance.hist[[i]]=hist(pos.mean , breaks=seq(0,1,length=nclass+1), plot=F)$count
 		}		
 		hist.max <- max(distance.hist[[1]], distance.hist[[2]])
@@ -29,7 +29,7 @@ plotDistributionDensity <- function(pos, curr, size,  strand, maxL, col, lwd, lt
 	xlim=c(0,maxL)
 	if(!strand)
 	{
-		pos.mean <- pos[[curr]]@positionVector$peakPos + maxL/2 
+		pos.mean <- mcols(pos[[curr]]@positionVector)$peakPos + maxL/2 
 		density <- do.call ("density", c(list(x=pos.mean),bw=bw))
 		density.x <- (density$x[density$x>xlim[1] & density$x<xlim[2]]) /maxL
 		density.y <- density$y[density$x>xlim[1] & density$x<xlim[2]]
@@ -41,7 +41,7 @@ plotDistributionDensity <- function(pos, curr, size,  strand, maxL, col, lwd, lt
 		distance.y <- list(NULL, NULL)
 		for (i in 1:2)
 		{
-			pos.mean <- (pos[[curr]]@positionVector$peakPos[pos[[curr]]@positionVector$strand==strands[i]] ) +  maxL/2 
+			pos.mean <- (mcols(pos[[curr]]@positionVector)$peakPos[as.character(strand(pos[[curr]]@positionVector))==strands[i]] ) +  maxL/2 
 			
 			if (length(pos.mean)>1)
 			{
@@ -67,7 +67,7 @@ plotDistribution <- function (pos, group, main, sort, ncol, nrow, strand, bysim,
 	positionVector <- list()
 	for (i in 1:length(pos))
 	{
-		positionVector[[i]]=pos[[i]]@positionVector[["peakPos"]] 
+		positionVector[[i]]=mcols(pos[[i]]@positionVector)[["peakPos"]]
 	}
 	
 	var <- sapply(positionVector, function(x){var(as.integer(x))})
@@ -137,7 +137,7 @@ plotDistribution <- function (pos, group, main, sort, ncol, nrow, strand, bysim,
 				pushViewport(vpdistribution)		
 				pushViewport(plotViewport(c(max(5/size,0.9), 0,3.5/size,0), name="plot"))
 				
-				maxL <- max(pos[[curr]]@positionVector$lengthPeak)
+				maxL <- max(mcols(pos[[curr]]@positionVector)$lengthPeak)
 				plotDistributionDensity(pos, curr, size, strand, maxL, col, lwd, lty, bw, cex)
 				plotDistributionHistogram(pos, curr, size,  strand, maxL, col, border, nclass)
 												

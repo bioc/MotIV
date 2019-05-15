@@ -319,16 +319,16 @@ plot(foxa1.filter.combine ,gadem,type="distance", correction=TRUE, group=TRUE, b
 This function is an useful way to discover motifs co-occurrences. Studies showed that distance between two co-occurent motifs are relatively constant. Thus, a bimodal curve around the peak center could indicate a potential co-occurrence.
 
 
-\section{RangedData}
+\section{Genomic Ranges}
 
-\subsection{Ranged Data}
+\subsection{GRanges}
 
-A \verb@rangedData@ is an object created by the \verb@IRanges@ library \cite{IRanges}.
-To create a \verb@rangedData@ object, use the \verb@exportAsRangedData@ function on a \verb@motiv@ and \verb@rGADEM@ object.
+A \verb@GRanges@ is an object created by the \verb@GenomicRanges@ library \cite{GenomicRanges}.
+To create a \verb@GRanges@ object, use the \verb@exportAsGRanges@ function on a \verb@motiv@ and \verb@rGADEM@ object.
 
 <<rangedData, eval=T>>=
-foxa1.rd <- exportAsRangedData(foxa1.filter.combine["FOXA1"], gadem)
-ap1.rd <- exportAsRangedData(foxa1.filter.combine["AP1"], gadem)
+foxa1.gr <- exportAsGRanges(foxa1.filter.combine["FOXA1"], gadem)
+ap1.gr <- exportAsGRanges(foxa1.filter.combine["AP1"], gadem)
 @
 
 \section{Saving and Exporting Results}
@@ -357,7 +357,7 @@ To do it, simply use the \verb@rtracklayer@ export function.
 
 <<bedfile, eval=F>>=
 library(rtracklayer)
-export(foxa1.rd, file="FOXA.bed")
+export(foxa1.gr, file="FOXA.bed")
 @
 
 \section{Miscellaneous}
@@ -452,7 +452,8 @@ $R CMD INSTALL MotIV_x.y.z.tar.gz --configure-args="--with-blas='-framework vecL
 
 \bibitem{TRANSFAC} Matys V. \emph{et al. TRANSFAC: transcriptional regulation, from patterns to profiles}. Nucleic Acids Res. 2003 Jan 1;31(1):374-8
 
-\bibitem{IRanges} H. Pages, P. Aboyoun and M. Lawrence, available at \url{http://www.bioconductor.org/packages/bioc/html/IRanges.html}.
+\bibitem{GenomicRanges} M. Lawrence, W. Huber, H. Pag\`es, P. Aboyoun, M. Carlson, R. Gentleman, M. T. Morgan and V. J. Carey. \emph{Software for Computing and Annotating Genomic Ranges}. PLOS Computational Biology, 4(3), 2013.
+
 \end{thebibliography}
 
 \end{document}
