@@ -1,7 +1,7 @@
 Package: MotIV
 Type: Package
 Title: Motif Identification and Validation
-Version: 1.45.0
+Version: 1.45.1
 Date: 2014-04-09
 Author: Eloi Mercier, Raphael Gottardo
 Maintainer: Eloi Mercier <emercier@bcgsc.ca>, Raphael Gottardo
@@ -18,3 +18,4 @@ Description: This package makes use of STAMP for comparing a set of
 License: GPL-2
 biocViews: Microarray, ChIPchip, ChIPSeq, GenomicSequence,
         MotifAnnotation
+PackageStatus: Deprecated
