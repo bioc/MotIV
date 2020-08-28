@@ -1,4 +1,4 @@
-.onAttach <- function(lib, pkg){
+.onAttach <- function(libname, pkgname){
   data(jaspar2010)
   data(jaspar2010_scores)
     msg <- sprintf(
